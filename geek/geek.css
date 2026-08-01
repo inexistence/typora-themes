@@ -1,0 +1,921 @@
+/*
+ * Geek — Typora theme
+ * Ported from the built-in “极客 / 工程编辑部” style in
+ * wechat-article-template.
+ */
+
+:root {
+  --bg-color: #f7f7f4;
+  --text-color: #26251e;
+  --muted-text-color: #74736d;
+  --md-char-color: #9b9a94;
+  --meta-content-color: #6f7f76;
+  --primary-color: #26251e;
+  --primary-btn-border-color: #26251e;
+  --primary-btn-text-color: #f7f7f4;
+  --surface-color: #f0efea;
+  --surface-muted-color: #f1f1ec;
+  --surface-raised-color: #fdfdfc;
+  --border-color: #d6d5d2;
+  --border-soft-color: #e2e2df;
+  --border-strong-color: #bdbcb8;
+  --divider-color: #acaba7;
+  --code-bg-color: #20201e;
+  --code-text-color: #f7f7f4;
+  --code-border-color: #424240;
+  --code-cursor-color: #ff8f70;
+  --math-editor-bg-color: #f0efea;
+  --math-editor-text-color: #26251e;
+  --math-command-color: #8f4f2f;
+  --math-parameter-color: #376b59;
+  --math-meta-color: #6f6d66;
+  --math-cursor-color: #d04f2b;
+  --selection-color: rgba(38, 37, 30, 0.16);
+  --shadow-color: rgba(38, 37, 30, 0.12);
+  --shadow-strong-color: rgba(38, 37, 30, 0.2);
+
+  --window-border: 1px solid var(--border-color);
+  --side-bar-bg-color: #f0efea;
+  --active-file-bg-color: #e2e1dc;
+  --active-file-text-color: var(--text-color);
+  --active-file-border-color: var(--text-color);
+  --item-hover-bg-color: #e9e8e3;
+  --item-hover-text-color: var(--text-color);
+  --blur-text-color: #aaa9a4;
+
+  --body-font: "Cursor Gothic", "CursorGothic", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --heading-font: var(--body-font);
+  --monospace: "Berkeley Mono", "BerkeleyMono", "Operator Mono",
+    "SFMono-Regular", "SF Mono", "Fira Code", "Cascadia Code", Menlo,
+    Consolas, Monaco, monospace;
+  --content-width: 52rem;
+  --content-gutter: clamp(1.5rem, 5vw, 3.5rem);
+  --radius-small: 0.2667rem;
+  --radius-medium: 0.6667rem;
+}
+
+html {
+  font-size: 15px;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+html,
+body {
+  font-family: var(--body-font);
+  line-height: 1.625;
+}
+
+body,
+content {
+  background: var(--bg-color);
+}
+
+::selection {
+  background: var(--selection-color);
+}
+
+:focus-visible {
+  outline: 2px solid var(--text-color);
+  outline-offset: 2px;
+}
+
+#write {
+  box-sizing: border-box;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 2rem var(--content-gutter) 3.4667rem;
+  color: var(--text-color);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+#write p {
+  margin: 0 0 1.0667rem;
+  color: var(--text-color);
+  font-size: 1rem;
+  line-height: 1.625;
+  letter-spacing: 0.005em;
+  text-align: left;
+}
+
+#write h1,
+#write h2,
+#write h3,
+#write h4,
+#write h5,
+#write h6 {
+  padding: 0;
+  color: var(--text-color);
+  font-family: var(--heading-font);
+  text-wrap: balance;
+}
+
+#write h1 {
+  margin: 0 0 2.1333rem;
+  font-size: 2.2667rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+#write h2 {
+  margin: 3.2rem 0 1.0667rem;
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+}
+
+#write h3 {
+  margin: 2.4rem 0 0.9333rem;
+  font-size: 1.1333rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.003em;
+}
+
+#write h4 {
+  margin: 2rem 0 0.8rem;
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+#write h5 {
+  margin: 1.7333rem 0 0.6667rem;
+  font-size: 0.9333rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+#write h6 {
+  margin: 1.6rem 0 0.6667rem;
+  color: var(--muted-text-color);
+  font-size: 0.8rem;
+  font-weight: 650;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+#write > h1:first-child,
+#write > h2:first-child,
+#write > h3:first-child {
+  margin-top: 0;
+}
+
+#write strong {
+  color: var(--text-color);
+  font-weight: 700;
+}
+
+#write em {
+  font-style: italic;
+}
+
+#write del {
+  color: var(--muted-text-color);
+  opacity: 0.68;
+}
+
+#write mark {
+  padding: 0.08em 0.24em;
+  border-radius: var(--radius-small);
+  background: #e8dfbd;
+  color: var(--text-color);
+}
+
+#write a {
+  color: var(--text-color);
+  font-weight: 400;
+  text-decoration-line: underline;
+  text-decoration-color: var(--divider-color);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+#write a:hover {
+  text-decoration-color: var(--text-color);
+  text-decoration-thickness: 2px;
+}
+
+#write hr {
+  height: 0;
+  margin: 2.6667rem 0;
+  border: 0;
+  border-top: 1px solid var(--border-soft-color);
+  background: transparent;
+}
+
+#write blockquote {
+  margin: 1.6rem 0;
+  padding: 0.8rem 1.0667rem;
+  border: 1px solid var(--border-soft-color);
+  border-radius: var(--radius-medium);
+  background: var(--surface-color);
+  color: var(--text-color);
+  font-size: 0.9333rem;
+  line-height: 1.4286;
+}
+
+#write blockquote blockquote {
+  margin: 0.8rem 0 0.2rem;
+  border-color: var(--border-color);
+  background: var(--surface-muted-color);
+}
+
+#write blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+#write ul,
+#write ol {
+  margin: 0 0 1.0667rem;
+  padding-left: 1.42em;
+  color: var(--text-color);
+}
+
+#write ul {
+  margin-top: 1.6rem;
+  list-style-type: square;
+}
+
+#write ul ul,
+#write ul ol,
+#write ol ul,
+#write ol ol {
+  margin-top: 0.5333rem;
+  margin-bottom: 0;
+}
+
+#write li {
+  margin: 0 0 0.5333rem;
+  padding-left: 0.2667rem;
+  color: var(--text-color);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+#write li::marker {
+  color: var(--muted-text-color);
+  font-family: var(--monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+#write li > p {
+  margin-bottom: 0.5333rem;
+}
+
+ul.task-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+li.task-list-item {
+  padding-left: 0;
+}
+
+.task-list-item input {
+  width: 0.9333rem;
+  height: 0.9333rem;
+  margin-right: 0.5333rem;
+  border-radius: 2px;
+  accent-color: var(--text-color);
+  vertical-align: -0.1em;
+}
+
+#write figure.md-table-fig {
+  margin: 1.6rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid var(--border-soft-color);
+  border-radius: var(--radius-small);
+  background: transparent;
+}
+
+#write table {
+  width: max-content;
+  min-width: 100%;
+  margin: 1.6rem 0;
+  border: 1px solid var(--border-soft-color);
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--radius-small);
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-variant-numeric: tabular-nums;
+}
+
+#write figure.md-table-fig table {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+#write th,
+#write td {
+  min-width: 5.6667rem;
+  padding: 0.8rem 1.0667rem;
+  border: 0;
+  color: var(--text-color);
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+#write th {
+  border-bottom: 1px solid var(--border-soft-color);
+  background: var(--surface-color);
+  font-family: var(--monospace);
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.34;
+}
+
+#write td {
+  background: var(--bg-color);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+#write tbody tr:not(:last-child) td {
+  border-bottom: 1px solid var(--border-soft-color);
+}
+
+.md-table-edit {
+  border-color: var(--border-color);
+  border-radius: var(--radius-small);
+  background: var(--surface-raised-color);
+  color: var(--text-color);
+  box-shadow: 0 0.6667rem 1.6rem var(--shadow-color);
+}
+
+#write img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.8667rem auto;
+  border: 1px solid var(--border-soft-color);
+  border-radius: var(--radius-medium);
+}
+
+#write code,
+#write tt {
+  margin: 0;
+  padding: 0.2667rem;
+  border: 1px solid var(--border-soft-color);
+  border-radius: var(--radius-small);
+  background: var(--surface-muted-color);
+  color: var(--text-color);
+  font-family: var(--monospace);
+  font-size: 0.8rem;
+  font-variant-ligatures: none;
+  letter-spacing: 0.005em;
+  line-height: 1.3333;
+}
+
+.md-fences {
+  position: relative;
+  margin: 1.6rem 0;
+  padding: 3.6rem 1.3333rem 1.3333rem;
+  overflow: hidden;
+  border: 1px solid var(--code-border-color);
+  border-radius: var(--radius-medium);
+  background: linear-gradient(
+    to bottom,
+    var(--code-border-color) 0,
+    var(--code-border-color) 2.2667rem,
+    var(--code-bg-color) 2.2667rem,
+    var(--code-bg-color) 100%
+  );
+  color: var(--code-text-color);
+  box-shadow: 0 0.6667rem 1.6rem var(--shadow-strong-color);
+  font-family: var(--monospace);
+  font-size: 0.8rem;
+  font-variant-ligatures: none;
+  line-height: 1.7;
+  tab-size: 4;
+}
+
+.md-fences::before {
+  position: absolute;
+  z-index: 2;
+  top: 0.8667rem;
+  left: 0.8rem;
+  width: 3.4667rem;
+  height: 0.5333rem;
+  background:
+    radial-gradient(circle at 0.2667rem 0.2667rem, #ff5f57 0 0.2667rem, transparent 0.3rem),
+    radial-gradient(circle at 1.2rem 0.2667rem, #febc2e 0 0.2667rem, transparent 0.3rem),
+    radial-gradient(circle at 2.1333rem 0.2667rem, #28c840 0 0.2667rem, transparent 0.3rem);
+  content: "";
+  pointer-events: none;
+}
+
+.md-fences[lang]::after {
+  position: absolute;
+  z-index: 2;
+  top: 0.68rem;
+  right: 0.8rem;
+  color: var(--code-text-color);
+  content: attr(lang);
+  font-family: var(--monospace);
+  font-size: 0.7333rem;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  opacity: 0.66;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/*
+ * Advanced fences such as Mermaid switch between a rendered preview and a
+ * focused CodeMirror editor. Use a plain document card for the idle preview,
+ * and let Typora's live preview escape the terminal-styled editor frame.
+ */
+pre.md-fences-advanced:not(.md-focus) {
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-soft-color);
+  background: var(--surface-raised-color);
+  box-shadow: none;
+}
+
+pre.md-fences-advanced:not(.md-focus)::before,
+pre.md-fences-advanced:not(.md-focus)::after {
+  display: none;
+}
+
+pre.md-fences-advanced:not(.md-focus) .CodeMirror {
+  display: none !important;
+}
+
+pre.md-fences-advanced:not(.md-focus) .md-fences-adv-panel {
+  position: static;
+  border: 0;
+}
+
+pre.md-fences-advanced:not(.md-focus) .md-diagram-panel-preview {
+  padding-top: 0;
+}
+
+pre.md-fences-advanced:not(.md-focus) .md-diagram-panel {
+  margin: 0;
+  border: 0;
+  border-radius: 0 0 var(--radius-medium) var(--radius-medium);
+}
+
+pre.md-fences-advanced.md-focus {
+  overflow: visible;
+}
+
+.cm-s-inner.CodeMirror,
+.cm-s-inner .CodeMirror-gutters {
+  background: transparent;
+  color: var(--code-text-color);
+}
+
+.cm-s-inner .CodeMirror-gutters {
+  border-right-color: var(--code-border-color);
+}
+
+.cm-s-inner .CodeMirror-linenumber {
+  color: #777d78;
+}
+
+.cm-s-inner .CodeMirror-cursor {
+  border-left: 2px solid var(--code-cursor-color) !important;
+}
+
+.cm-s-inner .CodeMirror-selected,
+.cm-s-inner.CodeMirror-focused .CodeMirror-selected {
+  background: rgba(247, 247, 244, 0.14);
+}
+
+.cm-s-inner .cm-comment {
+  color: #93a298;
+  font-style: italic;
+}
+
+.cm-s-inner .cm-keyword {
+  color: #e8896b;
+  font-weight: 700;
+}
+
+.cm-s-inner .cm-string,
+.cm-s-inner .cm-string-2 {
+  color: #e0bd78;
+}
+
+.cm-s-inner .cm-atom,
+.cm-s-inner .cm-builtin {
+  color: #d5a185;
+}
+
+.cm-s-inner .cm-number,
+.cm-s-inner .cm-variable-2,
+.cm-s-inner .cm-variable-3 {
+  color: #aacac0;
+}
+
+.cm-s-inner .cm-def,
+.cm-s-inner .cm-variable,
+.cm-s-inner .cm-property {
+  color: #d7e3dc;
+}
+
+.cm-s-inner .cm-operator,
+.cm-s-inner .cm-meta {
+  color: #c1b6a4;
+}
+
+.cm-s-inner .cm-tag,
+.cm-s-inner .cm-attribute,
+.cm-s-inner .cm-qualifier {
+  color: #d8bd84;
+}
+
+.cm-s-inner .cm-type,
+.cm-s-inner .cm-bracket {
+  color: #9fc2b5;
+}
+
+.cm-s-inner .cm-error {
+  color: #ff8f86;
+  text-decoration: underline wavy;
+}
+
+.md-math-block.md-focus .md-math-container {
+  border: 1px solid var(--border-soft-color);
+  border-radius: var(--radius-small);
+  background: var(--math-editor-bg-color);
+  color: var(--math-editor-text-color);
+}
+
+.md-math-block .md-math-container.math-jax-preprocess {
+  opacity: 1;
+}
+
+.ty-before-first-render
+  .md-math-block
+  .md-math-container.math-jax-preprocess {
+  opacity: 0;
+}
+
+.md-math-block .cm-s-inner.CodeMirror,
+.md-math-block .cm-s-inner .CodeMirror-gutters {
+  background: transparent;
+  color: var(--math-editor-text-color);
+}
+
+.md-math-block .cm-s-inner .cm-comment,
+.md-math-block .cm-s-inner .cm-meta,
+.md-math-block .cm-s-inner .cm-operator {
+  color: var(--math-meta-color);
+}
+
+.md-math-block .cm-s-inner .cm-keyword,
+.md-math-block .cm-s-inner .cm-string,
+.md-math-block .cm-s-inner .cm-string-2,
+.md-math-block .cm-s-inner .cm-tag,
+.md-math-block .cm-s-inner .cm-attribute,
+.md-math-block .cm-s-inner .cm-qualifier {
+  color: var(--math-command-color);
+}
+
+.md-math-block .cm-s-inner .cm-atom,
+.md-math-block .cm-s-inner .cm-builtin,
+.md-math-block .cm-s-inner .cm-number,
+.md-math-block .cm-s-inner .cm-variable,
+.md-math-block .cm-s-inner .cm-variable-2,
+.md-math-block .cm-s-inner .cm-variable-3,
+.md-math-block .cm-s-inner .cm-def,
+.md-math-block .cm-s-inner .cm-property,
+.md-math-block .cm-s-inner .cm-type,
+.md-math-block .cm-s-inner .cm-bracket {
+  color: var(--math-parameter-color);
+}
+
+.md-math-block .cm-s-inner .CodeMirror-cursor {
+  border-left: 2px solid var(--math-cursor-color) !important;
+}
+
+.md-math-block .cm-s-inner .CodeMirror-selected,
+.md-math-block .cm-s-inner.CodeMirror-focused .CodeMirror-selected {
+  background: rgba(208, 79, 43, 0.16);
+}
+
+pre.md-meta-block {
+  margin: 0 0 2rem;
+  padding: 0.8rem 1.0667rem;
+  border: 1px solid var(--border-soft-color);
+  border-radius: var(--radius-medium);
+  background: var(--surface-color);
+  color: var(--meta-content-color);
+  font-family: var(--monospace);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.md-meta {
+  color: var(--md-char-color);
+}
+
+.md-content {
+  color: var(--meta-content-color);
+}
+
+.md-def-link,
+.md-def-footnote {
+  color: var(--meta-content-color);
+}
+
+.md-toc {
+  margin: 1.6rem 0;
+  padding: 1.0667rem 1.3333rem;
+  border: 1px solid var(--border-soft-color);
+  border-radius: var(--radius-medium);
+  background: var(--surface-color);
+}
+
+.md-toc-content {
+  color: var(--text-color);
+}
+
+.md-toc-tooltip,
+.md-tooltip,
+.md-image > .md-meta {
+  border-color: var(--border-color);
+  background: var(--surface-raised-color);
+  color: var(--muted-text-color);
+}
+
+[mdtype="math_block"],
+.mathjax-block,
+.md-diagram-panel {
+  margin: 1.6rem 0;
+  overflow-x: auto;
+  color: var(--text-color);
+}
+
+.md-diagram-panel {
+  padding: 1.0667rem;
+  border: 1px solid var(--border-soft-color);
+  border-radius: var(--radius-medium);
+  background: var(--surface-raised-color);
+}
+
+.md-diagram-panel svg text {
+  fill: var(--text-color);
+}
+
+.md-diagram-panel svg .node rect,
+.md-diagram-panel svg .node circle,
+.md-diagram-panel svg .node polygon {
+  fill: var(--surface-color);
+  stroke: var(--border-strong-color);
+}
+
+.footnotes {
+  margin-top: 3.2rem;
+  padding-top: 1.0667rem;
+  border-top: 1px solid var(--border-soft-color);
+  color: var(--muted-text-color);
+  font-size: 0.8667rem;
+}
+
+#typora-source,
+.cm-s-typora-default {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--monospace);
+  font-size: 0.9333rem;
+  font-variant-ligatures: none;
+  line-height: 1.7;
+}
+
+#typora-source .CodeMirror-lines {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 2rem var(--content-gutter) 3.4667rem;
+}
+
+.cm-s-typora-default .CodeMirror-cursor {
+  border-left-color: var(--text-color);
+}
+
+.cm-s-typora-default .CodeMirror-selected,
+.cm-s-typora-default.CodeMirror-focused .CodeMirror-selected {
+  background: var(--selection-color);
+}
+
+.cm-s-typora-default .cm-header {
+  color: var(--text-color);
+  font-weight: 650;
+}
+
+.cm-s-typora-default .cm-comment,
+.cm-s-typora-default .cm-formatting {
+  color: var(--md-char-color);
+}
+
+.cm-s-typora-default .cm-link,
+.cm-s-typora-default .cm-string,
+.cm-s-typora-default .cm-url {
+  color: var(--meta-content-color);
+}
+
+.cm-s-typora-default .cm-quote {
+  color: var(--muted-text-color);
+  font-style: italic;
+}
+
+.cm-s-typora-default .cm-comment.cm-code {
+  color: #6f7f76;
+}
+
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) {
+  color: var(--blur-text-color);
+}
+
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) img,
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) .md-fences {
+  opacity: 0.46;
+}
+
+#typora-sidebar {
+  border-right: 1px solid var(--border-color);
+  background: var(--side-bar-bg-color);
+  color: var(--text-color);
+}
+
+.typora-node,
+.file-node-content,
+.outline-item {
+  color: var(--text-color);
+}
+
+.file-node-content:hover,
+.outline-item:hover,
+.typora-node:hover {
+  background: var(--item-hover-bg-color);
+}
+
+.file-node-content.active,
+.outline-item-active,
+.typora-node.active {
+  background: var(--active-file-bg-color);
+  color: var(--active-file-text-color);
+}
+
+.modal-content,
+.popover,
+.context-menu,
+.auto-suggest-container,
+.megamenu-content {
+  border-color: var(--border-color);
+  background: var(--surface-raised-color);
+  color: var(--text-color);
+  box-shadow: 0 0.6667rem 1.6rem var(--shadow-color);
+}
+
+input,
+textarea,
+select,
+.form-control {
+  border-color: var(--border-color);
+  border-radius: var(--radius-small);
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+button,
+.btn {
+  border-radius: var(--radius-small);
+}
+
+.btn-primary {
+  border-color: var(--primary-btn-border-color);
+  background: var(--primary-color);
+  color: var(--primary-btn-text-color);
+}
+
+.searchpanel-search-option-btn.active,
+.menuitem:hover,
+.dropdown-menu > li > a:hover {
+  background: var(--item-hover-bg-color);
+  color: var(--text-color);
+}
+
+footer,
+.status-bar {
+  border-top-color: var(--border-color);
+  background: var(--bg-color);
+  color: var(--muted-text-color);
+}
+
+::-webkit-scrollbar {
+  width: 0.7333rem;
+  height: 0.7333rem;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 0.2rem solid transparent;
+  border-radius: 999px;
+  background: var(--border-strong-color);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--divider-color);
+  background-clip: padding-box;
+}
+
+@media (max-width: 640px) {
+  #write {
+    padding: 1.6rem 1.3333rem 3.2rem;
+  }
+
+  #write h1 {
+    font-size: 2rem;
+  }
+
+  #write th,
+  #write td {
+    padding: 0.6667rem 0.8rem;
+  }
+
+  #typora-source .CodeMirror-lines {
+    padding: 1.6rem 1.3333rem 3.2rem;
+  }
+}
+
+@media print {
+  :root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --surface-color: #f3f3f0;
+    --surface-muted-color: #f3f3f0;
+    --surface-raised-color: #ffffff;
+    --border-color: #d5d5d0;
+    --border-soft-color: #e0e0dc;
+    --code-bg-color: #20201e;
+    --code-text-color: #ffffff;
+  }
+
+  html,
+  body,
+  #write {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  #write {
+    max-width: none;
+    padding: 0;
+  }
+
+  #write h1,
+  #write h2,
+  #write h3,
+  #write h4,
+  #write h5,
+  #write h6,
+  #write p,
+  #write li,
+  #write a {
+    color: #000000;
+  }
+
+  #write h1,
+  #write h2,
+  #write h3,
+  #write h4,
+  #write figure.md-table-fig,
+  #write blockquote,
+  .md-fences,
+  .md-diagram-panel {
+    break-inside: avoid;
+  }
+
+  #write a {
+    text-decoration: underline;
+  }
+
+  .md-fences {
+    box-shadow: none;
+  }
+
+  .typora-export * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
