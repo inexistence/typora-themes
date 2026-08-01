@@ -24,6 +24,7 @@
   --code-text-color: #f7f7f4;
   --code-border-color: #424240;
   --code-cursor-color: #ff8f70;
+  --code-active-line-color: rgba(255, 143, 112, 0.08);
   --math-editor-bg-color: #f0efea;
   --math-editor-text-color: #26251e;
   --math-command-color: #8f4f2f;
@@ -487,8 +488,20 @@ pre.md-fences-advanced.md-focus {
   color: #777d78;
 }
 
-.cm-s-inner .CodeMirror-cursor {
+#write .md-fences {
+  caret-color: var(--code-cursor-color);
+}
+
+.cm-s-inner .CodeMirror-cursor,
+#write .md-fences .CodeMirror div.CodeMirror-cursor {
   border-left: 2px solid var(--code-cursor-color) !important;
+}
+
+#write
+  .md-fences:not(.md-fences-math)
+  .cm-s-inner.CodeMirror-focused
+  .CodeMirror-activeline-background {
+  background: var(--code-active-line-color) !important;
 }
 
 .cm-s-inner .CodeMirror-selected,
@@ -647,10 +660,15 @@ pre.md-meta-block {
 }
 
 .md-toc-tooltip,
-.md-tooltip,
-.md-image > .md-meta {
+.md-tooltip {
   border-color: var(--border-color);
   background: var(--surface-raised-color);
+  color: var(--muted-text-color);
+}
+
+.md-image > .md-meta {
+  border-color: var(--border-color);
+  background: transparent;
   color: var(--muted-text-color);
 }
 

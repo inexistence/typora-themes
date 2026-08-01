@@ -11,7 +11,13 @@
 
 ## 预览
 
+### 岛屿
+
 ![岛屿 Typora 主题总览](./island/preview/overview.jpg)
+
+### 极客
+
+![极客 Typora 主题总览](./geek/preview/overview.jpg)
 
 ## 安装
 

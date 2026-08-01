@@ -96,6 +96,8 @@
   --code-bg-color: #2b2118;
   --code-text-color: #e8d5bc;
   --code-border-color: #3d3028;
+  --code-cursor-color: #f7cd67;
+  --code-active-line-color: rgba(247, 205, 103, 0.1);
   --selection-color: rgba(79, 159, 112, 0.24);
   --shadow-color: rgba(101, 76, 54, 0.12);
 
@@ -655,9 +657,20 @@ pre.md-meta-block {
   border-right-color: var(--code-border-color);
 }
 
+#write .md-fences {
+  caret-color: var(--code-cursor-color);
+}
+
 #write .md-fences .cm-s-inner .CodeMirror-cursor,
 #write .md-fences .CodeMirror div.CodeMirror-cursor {
-  border-left: 2px solid var(--secondary-color) !important;
+  border-left: 2px solid var(--code-cursor-color) !important;
+}
+
+#write
+  .md-fences:not(.md-fences-math)
+  .cm-s-inner.CodeMirror-focused
+  .CodeMirror-activeline-background {
+  background: var(--code-active-line-color) !important;
 }
 
 #write .md-math-block,
