@@ -526,8 +526,23 @@ pre.md-meta-block {
   border-right-color: var(--code-border-color);
 }
 
-.cm-s-inner .CodeMirror-cursor {
-  border-left-color: var(--secondary-color);
+#write .md-fences .cm-s-inner .CodeMirror-cursor,
+#write .md-fences .CodeMirror div.CodeMirror-cursor {
+  border-left: 2px solid var(--secondary-color) !important;
+}
+
+#write .md-math-block,
+#write .mathjax-block,
+#write [mdtype="math_block"],
+#write .md-inline-math {
+  caret-color: var(--primary-color);
+}
+
+#write .md-math-block .CodeMirror-cursor,
+#write .mathjax-block .CodeMirror-cursor,
+#write [mdtype="math_block"] .CodeMirror-cursor,
+#write .md-fences-math .CodeMirror-cursor {
+  border-left: 2px solid var(--primary-color) !important;
 }
 
 .cm-s-inner .CodeMirror-selected,
@@ -621,6 +636,129 @@ pre.md-meta-block {
 .mathjax-block,
 [mdtype="math_block"] {
   overflow-x: auto;
+}
+
+.md-diagram-panel {
+  margin: 1.7em 0;
+  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-large);
+  background: var(--surface-color);
+}
+
+.md-diagram-panel .mermaid,
+.md-diagram-panel svg {
+  color: var(--text-color);
+  font-family: var(--body-font) !important;
+}
+
+.md-diagram-panel svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.md-diagram-panel .node rect,
+.md-diagram-panel .node circle,
+.md-diagram-panel .node ellipse,
+.md-diagram-panel .node polygon,
+.md-diagram-panel .node path,
+.md-diagram-panel .stateGroup rect,
+.md-diagram-panel .statediagram-state rect,
+.md-diagram-panel .classGroup rect {
+  fill: var(--surface-muted-color) !important;
+  stroke: var(--primary-color) !important;
+  stroke-width: 2px !important;
+}
+
+.md-diagram-panel .node rect,
+.md-diagram-panel .stateGroup rect,
+.md-diagram-panel .statediagram-state rect,
+.md-diagram-panel .classGroup rect {
+  rx: 12px;
+  ry: 12px;
+}
+
+.md-diagram-panel .label,
+.md-diagram-panel .nodeLabel,
+.md-diagram-panel .cluster-label,
+.md-diagram-panel .classText,
+.md-diagram-panel .classGroup text,
+.md-diagram-panel .stateLabel,
+.md-diagram-panel text {
+  color: var(--text-color) !important;
+  fill: var(--text-color) !important;
+  font-family: var(--body-font) !important;
+}
+
+.md-diagram-panel .label foreignObject,
+.md-diagram-panel .label div,
+.md-diagram-panel .label span,
+.md-diagram-panel .label p,
+.md-diagram-panel .nodeLabel,
+.md-diagram-panel .edgeLabel {
+  color: var(--text-color) !important;
+}
+
+.md-diagram-panel .edgePath .path,
+.md-diagram-panel .flowchart-link,
+.md-diagram-panel .transition {
+  stroke: var(--muted-text-color) !important;
+  stroke-width: 2px !important;
+}
+
+.md-diagram-panel marker path,
+.md-diagram-panel .arrowheadPath {
+  fill: var(--muted-text-color) !important;
+  stroke: var(--muted-text-color) !important;
+}
+
+.md-diagram-panel .edgeLabel rect,
+.md-diagram-panel .labelBkg {
+  fill: var(--highlight-color) !important;
+}
+
+.md-diagram-panel span.edgeLabel,
+.md-diagram-panel .edgeLabel p {
+  border-radius: 0.35em;
+  background: var(--highlight-color) !important;
+}
+
+.md-diagram-panel .cluster rect {
+  fill: var(--bg-color) !important;
+  stroke: var(--secondary-color) !important;
+  stroke-width: 2px !important;
+  rx: 16px;
+  ry: 16px;
+}
+
+.md-diagram-panel rect.actor,
+.md-diagram-panel rect.labelBox,
+.md-diagram-panel rect.activation0,
+.md-diagram-panel rect.activation1,
+.md-diagram-panel rect.activation2 {
+  fill: var(--surface-muted-color) !important;
+  stroke: var(--primary-color) !important;
+}
+
+.md-diagram-panel .actor-line {
+  stroke: var(--border-strong-color) !important;
+}
+
+.md-diagram-panel .messageLine0,
+.md-diagram-panel .messageLine1 {
+  stroke: var(--primary-color) !important;
+  stroke-width: 2px !important;
+}
+
+.md-diagram-panel .note {
+  fill: var(--highlight-color) !important;
+  stroke: var(--secondary-color) !important;
+}
+
+.md-diagram-panel .loopLine,
+.md-diagram-panel .classGroup line,
+.md-diagram-panel .divider {
+  stroke: var(--secondary-color) !important;
 }
 
 .mathjax-block,

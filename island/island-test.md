@@ -76,7 +76,27 @@ $$
 
 ```mermaid
 flowchart LR
-  Draft --> Inspect --> Refine --> Export
+  Draft[草稿] --> Inspect{检查}
+  Inspect -- 通过 --> Export[导出]
+  Inspect -- 调整 --> Refine[润色]
+  Refine --> Inspect
+
+  subgraph Island[岛屿工作流]
+    direction LR
+    Draft
+    Inspect
+    Refine
+    Export
+  end
+```
+
+```mermaid
+sequenceDiagram
+  participant W as 写作者
+  participant T as Typora
+  W->>T: 打开岛屿主题
+  T-->>W: 呈现暖纸与绿叶
+  Note over W,T: Mermaid 也保持同一视觉语言
 ```
 
 ## Media and long content
