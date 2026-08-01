@@ -1,0 +1,764 @@
+/*
+ * Island — Typora theme
+ * Ported from the “岛屿” style in wechat-article-template.
+ */
+
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./island-fonts/nunito-latin-500-normal.78b3b3a4.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./island-fonts/nunito-latin-700-normal.0b62b606.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("./island-fonts/nunito-latin-900-normal.8b5d13b8.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./island-fonts/noto-sans-sc-latin-400-normal.d0072abd.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./island-fonts/noto-sans-sc-latin-500-normal.df58f967.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./island-fonts/noto-sans-sc-latin-700-normal.11e48442.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./island-fonts/noto-sans-sc-chinese-simplified-400-normal.e25467c8.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./island-fonts/noto-sans-sc-chinese-simplified-500-normal.d3553b6f.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./island-fonts/noto-sans-sc-chinese-simplified-700-normal.6e0a7691.woff2") format("woff2");
+}
+
+:root {
+  --bg-color: #faf8f2;
+  --text-color: #654c36;
+  --muted-text-color: #917a66;
+  --md-char-color: #b7a897;
+  --meta-content-color: #7c927d;
+  --primary-color: #4f9f70;
+  --primary-btn-border-color: #3f805a;
+  --primary-btn-text-color: #ffffff;
+  --surface-color: #fffefb;
+  --surface-muted-color: #e9f5e9;
+  --highlight-color: #fef2d7;
+  --highlight-text-color: #56845d;
+  --secondary-color: #f7cd67;
+  --border-color: #e6ded2;
+  --border-strong-color: #d4c9bc;
+  --code-bg-color: #2b2118;
+  --code-text-color: #e8d5bc;
+  --code-border-color: #3d3028;
+  --selection-color: rgba(79, 159, 112, 0.24);
+  --shadow-color: rgba(101, 76, 54, 0.12);
+
+  --window-border: 1px solid var(--border-color);
+  --side-bar-bg-color: #f8f2e7;
+  --active-file-bg-color: #e9f5e9;
+  --active-file-text-color: var(--text-color);
+  --active-file-border-color: var(--primary-color);
+  --item-hover-bg-color: #f1eadf;
+  --item-hover-text-color: var(--text-color);
+  --blur-text-color: #c0b4a7;
+
+  --body-font: Nunito, "Noto Sans SC", -apple-system, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --heading-font: var(--body-font);
+  --monospace: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  --content-width: 48rem;
+  --content-gutter: clamp(1.625rem, 5vw, 4rem);
+  --radius-medium: 1.125rem;
+  --radius-large: 1.5rem;
+}
+
+html {
+  font-size: 16px;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+html,
+body {
+  font-family: var(--body-font);
+  line-height: 1.95;
+}
+
+body,
+content {
+  background: var(--bg-color);
+}
+
+::selection {
+  background: var(--selection-color);
+}
+
+#write {
+  box-sizing: border-box;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 2.25rem var(--content-gutter) 3.5rem;
+  color: var(--text-color);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+#write p {
+  margin: 0 0 1.3em;
+  color: var(--text-color);
+  font-size: 1rem;
+  line-height: 1.95;
+  letter-spacing: 0.025em;
+  text-align: justify;
+}
+
+#write p:has(code),
+#write p:has(tt) {
+  text-align: left;
+}
+
+#write h1,
+#write h2,
+#write h3,
+#write h4,
+#write h5,
+#write h6 {
+  color: var(--text-color);
+  font-family: var(--heading-font);
+  text-wrap: balance;
+}
+
+#write h1 {
+  margin: 0 0 0.8em;
+  font-size: 1.75rem;
+  font-weight: 900;
+  line-height: 1.32;
+  letter-spacing: -0.025em;
+}
+
+#write h2 {
+  margin: 2.45em 0 0.85em;
+  font-size: 1.4375rem;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+#write h2::before {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  margin-right: 0.34em;
+  background: url("./island-assets/icon-leaf.40329f03.png") center / contain
+    no-repeat;
+  content: "";
+  vertical-align: -0.3em;
+}
+
+#write h3 {
+  margin: 2em 0 0.7em;
+  font-size: 1.1875rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+#write h4 {
+  margin: 1.7em 0 0.7em;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+#write h5 {
+  margin: 1.6em 0 0.65em;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+#write h6 {
+  margin: 1.5em 0 0.6em;
+  color: var(--muted-text-color);
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+#write > h1:first-child,
+#write > h2:first-child,
+#write > h3:first-child {
+  margin-top: 0;
+}
+
+#write strong {
+  color: var(--primary-color);
+  font-weight: 800;
+}
+
+#write em {
+  font-style: italic;
+}
+
+#write del {
+  color: var(--muted-text-color);
+  opacity: 0.65;
+}
+
+#write mark {
+  padding: 0.08em 0.26em;
+  border-radius: 0.3em;
+  background: var(--highlight-color);
+  color: var(--highlight-text-color);
+}
+
+#write a {
+  color: var(--primary-color);
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+
+#write a:hover {
+  background: var(--highlight-color);
+}
+
+#write blockquote {
+  position: relative;
+  margin: 1.7em 0;
+  padding: 1.375rem 1.375rem 1.375rem 2.5rem;
+  border: 0;
+  border-radius: var(--radius-medium) 1.75rem 1.25rem 1.625rem;
+  background: var(--surface-muted-color);
+  color: var(--text-color);
+  font-size: 0.9375rem;
+  line-height: 1.95;
+}
+
+#write blockquote::before {
+  position: absolute;
+  top: 0.9rem;
+  left: 0.9rem;
+  color: var(--primary-color);
+  content: "“";
+  font-family: Georgia, serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+#write blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+#write ul,
+#write ol {
+  margin: 0 0 1.4em;
+  padding-left: 1.45em;
+  color: var(--text-color);
+}
+
+#write li {
+  margin: 0.45em 0;
+  padding-left: 0.2em;
+  line-height: 1.95;
+}
+
+#write li::marker {
+  color: var(--primary-color);
+  font-weight: 800;
+}
+
+#write li > p {
+  margin-bottom: 0.45em;
+}
+
+#write li.task-list-item {
+  position: relative;
+  min-height: 22px;
+  padding-left: 2rem;
+  color: #725d42;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+#write li.task-list-item:has(input[type="checkbox"]:checked) {
+  color: #794f27;
+}
+
+#write .task-list-item input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  top: 0.29rem;
+  left: 0;
+  display: block;
+  box-sizing: border-box;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border: 2px solid #c4b89e;
+  border-radius: 50%;
+  background-color: #f7f3df;
+  background-position: center;
+  background-size: 12px 11px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  transition:
+    border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+#write .task-list-item input[type="checkbox"]:focus-visible {
+  outline: 2px solid #f5c31c;
+  outline-offset: 2px;
+}
+
+#write .task-list-item input[type="checkbox"]:checked {
+  border-color: #50b9ab;
+  background-color: #19c8b9;
+  background-image: url("./island-assets/checkbox-check.svg");
+  animation: island-checkbox-splash 0.6s ease forwards;
+}
+
+#write .task-list-item input[type="checkbox"]:disabled {
+  border-color: #d4c9b4;
+  background-color: #f0ece2;
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+#write .task-list-item input[type="checkbox"]:checked:disabled {
+  animation: none;
+}
+
+@keyframes island-checkbox-splash {
+  40% {
+    box-shadow:
+      0 -18px 0 -8px #19c8b9,
+      16px -8px 0 -8px #19c8b9,
+      16px 8px 0 -8px #19c8b9,
+      0 18px 0 -8px #19c8b9,
+      -16px 8px 0 -8px #19c8b9,
+      -16px -8px 0 -8px #19c8b9;
+  }
+
+  100% {
+    box-shadow:
+      0 -36px 0 -10px transparent,
+      32px -16px 0 -10px transparent,
+      32px 16px 0 -10px transparent,
+      0 36px 0 -10px transparent,
+      -32px 16px 0 -10px transparent,
+      -32px -16px 0 -10px transparent;
+  }
+}
+
+#write hr {
+  width: 100%;
+  height: 0.75rem;
+  margin: 2.7em auto;
+  border: 0;
+  background: url("./island-assets/divider-line-yellow.838b9359.svg") center / contain
+    no-repeat;
+}
+
+#write table {
+  width: 100%;
+  margin: 1.8em 0;
+  border: 0.3125rem solid var(--highlight-color);
+  border-radius: 1.25rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  background: var(--highlight-color);
+  color: var(--text-color);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.7;
+}
+
+#write th,
+#write td {
+  padding: 0.75rem 0.625rem;
+  border: 0;
+  border-bottom: 1px dashed var(--border-color);
+  color: var(--text-color);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+#write th {
+  padding-top: 0.8125rem;
+  padding-bottom: 0.8125rem;
+  border-bottom-color: var(--border-strong-color);
+  background: var(--highlight-color);
+  font-weight: 800;
+}
+
+#write tbody tr:nth-child(even) td {
+  background: var(--bg-color);
+}
+
+#write tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+#write img {
+  display: block;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: auto;
+  margin: 2em auto;
+  border: 0.375rem solid var(--bg-color);
+  border-radius: var(--radius-large);
+  box-shadow: 0 0.75rem 1.875rem var(--shadow-color);
+}
+
+#write code,
+#write tt {
+  box-sizing: border-box;
+  margin: 0 2px;
+  padding: 0.12em 0.5em;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  background: #f5f0e6;
+  color: #7d623f;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  user-select: text;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.md-fences,
+pre.md-meta-block {
+  border: 1px solid var(--code-border-color);
+  border-radius: 1.25rem;
+  background: var(--code-bg-color);
+  color: var(--code-text-color);
+  font-family: var(--monospace);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+.md-fences {
+  margin: 1.7em 0;
+  padding: 1.25rem 1.5rem;
+  overflow: auto;
+  white-space: pre;
+  tab-size: 4;
+}
+
+.md-fences code {
+  box-sizing: content-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  white-space: inherit;
+  overflow-wrap: normal;
+  word-break: normal;
+  -webkit-box-decoration-break: slice;
+  box-decoration-break: slice;
+}
+
+.cm-s-inner.CodeMirror,
+.cm-s-inner .CodeMirror-gutters {
+  background: var(--code-bg-color);
+  color: var(--code-text-color);
+}
+
+.cm-s-inner .CodeMirror-gutters {
+  border-right-color: var(--code-border-color);
+}
+
+.cm-s-inner .CodeMirror-cursor {
+  border-left-color: var(--secondary-color);
+}
+
+.cm-s-inner .CodeMirror-selected,
+.cm-s-inner .CodeMirror-line::selection,
+.cm-s-inner .CodeMirror-line > span::selection,
+.cm-s-inner .CodeMirror-line > span > span::selection {
+  background: rgba(247, 205, 103, 0.22);
+}
+
+.cm-s-inner .cm-comment {
+  color: #6b5e50;
+  font-style: normal;
+}
+
+.cm-s-inner .cm-string,
+.cm-s-inner .cm-string-2 {
+  color: #a8d4a0;
+}
+
+.cm-s-inner .cm-keyword,
+.cm-s-inner .cm-atom {
+  color: #d4a0e0;
+}
+
+.cm-s-inner .cm-number {
+  color: #a8d4a0;
+}
+
+.cm-s-inner .cm-def {
+  color: #61afef;
+}
+
+.cm-s-inner .cm-variable,
+.cm-s-inner .cm-variable-2 {
+  color: #e8d5bc;
+}
+
+.cm-s-inner .cm-builtin {
+  color: #e06c75;
+}
+
+.cm-s-inner .cm-variable-3,
+.cm-s-inner .cm-type,
+.cm-s-inner .cm-qualifier {
+  color: #80c0e0;
+}
+
+.cm-s-inner .cm-tag {
+  color: #f0a870;
+}
+
+.cm-s-inner .cm-property,
+.cm-s-inner .cm-attribute {
+  color: #e8c87a;
+}
+
+.cm-s-inner .cm-operator,
+.cm-s-inner .cm-bracket {
+  color: #d4b896;
+}
+
+pre.md-meta-block {
+  padding: 0.875rem 1.125rem;
+  color: #d9cdbd;
+}
+
+.md-meta,
+.md-content {
+  color: var(--md-char-color);
+}
+
+.md-def-link,
+.md-def-footnote,
+.footnotes {
+  color: var(--meta-content-color);
+}
+
+.md-toc {
+  margin: 1.7em 0;
+  padding: 1.1rem 1.3rem;
+  border: 0;
+  border-radius: var(--radius-medium) var(--radius-large);
+  background: var(--surface-muted-color);
+}
+
+.md-toc-content a {
+  border-bottom: 0;
+}
+
+.md-diagram-panel,
+.mathjax-block,
+[mdtype="math_block"] {
+  overflow-x: auto;
+}
+
+.mathjax-block,
+[mdtype="math_block"] {
+  margin: 1.7em 0;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-medium);
+  background: var(--surface-color);
+}
+
+#typora-source,
+.cm-s-typora-default {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--monospace);
+  font-size: inherit;
+  line-height: 1.8;
+}
+
+.cm-s-typora-default .cm-header {
+  color: var(--text-color);
+  font-weight: 800;
+}
+
+.cm-s-typora-default .cm-comment {
+  color: var(--md-char-color);
+}
+
+.cm-s-typora-default .cm-link,
+.cm-s-typora-default .cm-string,
+.cm-s-typora-default .cm-url {
+  color: var(--primary-color);
+}
+
+.cm-s-typora-default .cm-strong {
+  color: var(--primary-color);
+}
+
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) {
+  color: var(--blur-text-color);
+}
+
+#typora-sidebar,
+.typora-node,
+.file-node-content,
+.outline-item {
+  color: var(--text-color);
+}
+
+.file-node-content:hover,
+.outline-item:hover {
+  background: var(--item-hover-bg-color);
+}
+
+.modal-content,
+.popover,
+.context-menu,
+.md-table-edit {
+  border-color: var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-color);
+}
+
+input,
+textarea,
+button,
+select {
+  border-color: var(--border-color);
+}
+
+input:focus,
+textarea:focus,
+button:focus-visible,
+select:focus {
+  outline: 2px solid var(--selection-color);
+  outline-offset: 1px;
+}
+
+::-webkit-scrollbar {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 0.2rem solid transparent;
+  border-radius: 999px;
+  background: #c8bbad;
+  background-clip: padding-box;
+}
+
+@media (max-width: 640px) {
+  #write {
+    padding: 2rem 1.25rem 4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #write .task-list-item input[type="checkbox"]:checked {
+    animation: none;
+  }
+}
+
+@media print {
+  :root {
+    --bg-color: #ffffff;
+    --text-color: #654c36;
+  }
+
+  html,
+  body,
+  #write {
+    background: var(--bg-color);
+    color: var(--text-color);
+  }
+
+  #write {
+    max-width: none;
+    padding: 0;
+  }
+
+  .typora-export * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #write a {
+    color: var(--primary-color);
+  }
+
+  #write blockquote,
+  #write table,
+  #write img,
+  #write pre,
+  .md-fences {
+    break-inside: avoid;
+  }
+}
