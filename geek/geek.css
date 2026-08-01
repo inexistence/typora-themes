@@ -275,22 +275,9 @@ content {
   margin-bottom: 0.5333rem;
 }
 
-ul.task-list {
-  padding-left: 0;
-  list-style: none;
-}
-
-li.task-list-item {
-  padding-left: 0;
-}
-
 .task-list-item input {
-  width: 0.9333rem;
-  height: 0.9333rem;
-  margin-right: 0.5333rem;
   border-radius: 2px;
   accent-color: var(--text-color);
-  vertical-align: -0.1em;
 }
 
 #write figure.md-table-fig {
@@ -931,7 +918,6 @@ footer,
     --surface-raised-color: #ffffff;
     --border-color: #d5d5d0;
     --border-soft-color: #e0e0dc;
-    --code-bg-color: #20201e;
     --code-text-color: #ffffff;
   }
 
