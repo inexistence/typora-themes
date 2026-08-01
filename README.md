@@ -8,6 +8,10 @@
 | --- | --- | --- |
 | [岛屿（Island）](./island/) | 可用 | 基于并改编自 `animal-island-ui` 的暖色岛屿风格。 |
 
+## 预览
+
+![岛屿 Typora 主题总览](./island/preview/overview.jpg)
+
 ## 安装
 
 1. 在 Typora 中打开“偏好设置 → 外观 → 打开主题文件夹”。
