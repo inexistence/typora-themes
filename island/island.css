@@ -628,13 +628,8 @@ pre.md-meta-block {
 .md-fences {
   margin: 1.7em 0;
   padding: 1.25rem 1.5rem;
-  overflow: auto;
   white-space: pre;
   tab-size: 4;
-}
-
-pre.md-fences.md-focus {
-  overflow: visible;
 }
 
 .md-fences code {
@@ -770,8 +765,7 @@ pre.md-meta-block {
 }
 
 .md-diagram-panel,
-.mathjax-block,
-[mdtype="math_block"] {
+.mathjax-block {
   overflow-x: auto;
 }
 
