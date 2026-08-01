@@ -538,7 +538,7 @@ content {
 
 #write
   p:is(:has(> .md-image ~ .md-image), :has(> img ~ img))::-webkit-scrollbar {
-  height: 14px;
+  height: 10px;
 }
 
 #write
