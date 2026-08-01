@@ -554,7 +554,11 @@ content {
   background-clip: padding-box;
 }
 
-#write p.md-focus:is(:has(> .md-image ~ .md-image), :has(> img ~ img)) {
+#write[contenteditable="true"]
+  p:has(> .md-image.md-expand):is(
+    :has(> .md-image ~ .md-image),
+    :has(> img ~ img)
+  ) {
   display: block;
   padding: 0;
   overflow: visible;
@@ -563,8 +567,11 @@ content {
   white-space: normal;
 }
 
-#write
-  p.md-focus:is(:has(> .md-image ~ .md-image), :has(> img ~ img))
+#write[contenteditable="true"]
+  p:has(> .md-image.md-expand):is(
+    :has(> .md-image ~ .md-image),
+    :has(> img ~ img)
+  )
   > :is(.md-image, img) {
   display: block;
   width: 100%;
@@ -572,8 +579,11 @@ content {
   margin: 1em 0;
 }
 
-#write
-  p.md-focus:is(:has(> .md-image ~ .md-image), :has(> img ~ img))
+#write[contenteditable="true"]
+  p:has(> .md-image.md-expand):is(
+    :has(> .md-image ~ .md-image),
+    :has(> img ~ img)
+  )
   > .md-image
   img {
   width: auto;
@@ -758,6 +768,32 @@ pre.md-meta-block {
 .mathjax-block,
 [mdtype="math_block"] {
   overflow-x: auto;
+}
+
+#write[contenteditable="false"] .md-fences-advanced {
+  padding: 0;
+  border: 0;
+  background: inherit;
+  white-space: nowrap;
+}
+
+#write[contenteditable="false"] .md-fences-advanced .CodeMirror {
+  display: none !important;
+}
+
+#write[contenteditable="false"] pre.md-fences-advanced.md-focus {
+  margin-bottom: 0 !important;
+}
+
+#write[contenteditable="false"] .md-fences-advanced .code-tooltip {
+  display: none !important;
+}
+
+#write[contenteditable="false"]
+  pre.md-fences-advanced.md-focus
+  .md-fences-adv-panel {
+  position: static;
+  border: 0;
 }
 
 .md-diagram-panel {
