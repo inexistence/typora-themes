@@ -407,45 +407,76 @@ content {
 }
 
 #write table {
+  box-sizing: border-box;
   width: 100%;
   margin: 1.8em 0;
-  border: 0.3125rem solid var(--highlight-color);
-  border-radius: 1.25rem;
+  border: 6px solid #f7f3df;
+  border-radius: 20px;
   border-collapse: separate;
   border-spacing: 0;
   overflow: hidden;
-  background: var(--highlight-color);
-  color: var(--text-color);
-  font-size: 0.875rem;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.7;
+  background: #f7f3df;
+  color: #725d42;
+  font-family: var(--body-font);
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 #write th,
 #write td {
-  padding: 0.75rem 0.625rem;
   border: 0;
-  border-bottom: 1px dashed var(--border-color);
-  color: var(--text-color);
+  color: #725d42;
   text-align: left;
-  vertical-align: top;
   overflow-wrap: anywhere;
 }
 
 #write th {
-  padding-top: 0.8125rem;
-  padding-bottom: 0.8125rem;
-  border-bottom-color: var(--border-strong-color);
-  background: var(--highlight-color);
-  font-weight: 800;
+  padding: 16px 20px;
+  background: transparent;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
-#write tbody tr:nth-child(even) td {
-  background: var(--bg-color);
+#write td {
+  padding: 14px 20px;
+  font-weight: 500;
 }
 
-#write tbody tr:last-child td {
-  border-bottom: 0;
+#write thead,
+#write tbody {
+  background: #f7f3df;
+}
+
+#write thead tr,
+#write tbody tr {
+  position: relative;
+}
+
+#write thead tr::after,
+#write tbody tr::after {
+  content: "";
+  position: absolute;
+  right: 20px;
+  bottom: 0;
+  left: 20px;
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    #f0e8d8 0,
+    #f0e8d8 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  pointer-events: none;
+}
+
+#write tbody tr:nth-child(even) {
+  background: rgba(248, 248, 240, 0.6);
+}
+
+#write tbody tr:last-child::after {
+  display: none;
 }
 
 #write img {
