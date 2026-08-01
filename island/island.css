@@ -432,6 +432,7 @@ content {
 
 #write th {
   padding: 16px 20px;
+  border-bottom: 1px dashed var(--border-strong-color);
   background: transparent;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -448,12 +449,10 @@ content {
   background: #f7f3df;
 }
 
-#write thead tr,
 #write tbody tr {
   position: relative;
 }
 
-#write thead tr::after,
 #write tbody tr::after {
   content: "";
   position: absolute;
