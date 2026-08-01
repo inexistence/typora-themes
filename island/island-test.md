@@ -101,6 +101,12 @@ sequenceDiagram
 
 ## Media and long content
 
+下面三张图片之间没有空行，用于测试横向滚动画廊：
+
+![Gallery image one](https://placehold.co/960x640/e9f5e9/654c36.png?text=Island+Gallery+1)
+![Gallery image two](https://placehold.co/960x640/fef2d7/654c36.png?text=Island+Gallery+2)
+![Gallery image three](https://placehold.co/960x640/f7f3df/654c36.png?text=Island+Gallery+3)
+
 ![Remote placeholder image](https://placehold.co/960x360/png?text=Typora+Theme+Test)
 
 Long token for overflow testing: `https://example.com/a/very/long/path/that/should/not/destroy/the/writing-area-layout-or-overflow-controls`.

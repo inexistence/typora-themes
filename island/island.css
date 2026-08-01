@@ -489,6 +489,98 @@ content {
   box-shadow: 0 0.75rem 1.875rem var(--shadow-color);
 }
 
+#write p:is(:has(> .md-image ~ .md-image), :has(> img ~ img)) {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  margin: 1.8em 0;
+  padding: 16px 16px 36px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: 16px;
+  scroll-snap-type: x proximity;
+  color: var(--text-color);
+  font-size: 0;
+  line-height: 0;
+  text-align: left;
+  text-indent: 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-color: rgba(79, 159, 112, 0.48) transparent;
+  scrollbar-width: thin;
+}
+
+#write
+  p:is(:has(> .md-image ~ .md-image), :has(> img ~ img))
+  > :is(.md-image, img) {
+  display: flex;
+  flex: 0 0 86%;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-width: 86%;
+  margin: 0;
+  scroll-snap-align: start;
+  vertical-align: top;
+}
+
+#write
+  p:is(:has(> .md-image ~ .md-image), :has(> img ~ img))
+  > .md-image
+  img,
+#write p:is(:has(> .md-image ~ .md-image), :has(> img ~ img)) > img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  white-space: normal;
+}
+
+#write
+  p:is(:has(> .md-image ~ .md-image), :has(> img ~ img))::-webkit-scrollbar {
+  height: 8px;
+}
+
+#write
+  p:is(:has(> .md-image ~ .md-image), :has(> img ~ img))::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#write
+  p:is(:has(> .md-image ~ .md-image), :has(> img ~ img))::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: rgba(79, 159, 112, 0.48);
+  background-clip: padding-box;
+}
+
+#write p.md-focus:is(:has(> .md-image ~ .md-image), :has(> img ~ img)) {
+  display: block;
+  padding: 0;
+  overflow: visible;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: normal;
+}
+
+#write
+  p.md-focus:is(:has(> .md-image ~ .md-image), :has(> img ~ img))
+  > :is(.md-image, img) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 1em 0;
+}
+
+#write
+  p.md-focus:is(:has(> .md-image ~ .md-image), :has(> img ~ img))
+  > .md-image
+  img {
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
 #write code,
 #write tt {
   box-sizing: border-box;
@@ -911,6 +1003,31 @@ select:focus {
   #write {
     max-width: none;
     padding: 0;
+  }
+
+  #write p:is(:has(> .md-image ~ .md-image), :has(> img ~ img)) {
+    display: block;
+    margin: 1.8em 0;
+    padding: 0;
+    overflow: visible;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  #write
+    p:is(:has(> .md-image ~ .md-image), :has(> img ~ img))
+    > :is(.md-image, img) {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin: 1em 0;
+  }
+
+  #write
+    p:is(:has(> .md-image ~ .md-image), :has(> img ~ img))
+    > .md-image
+    img {
+    margin: 0;
   }
 
   .typora-export * {
