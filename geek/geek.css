@@ -31,6 +31,11 @@
   --math-parameter-color: #376b59;
   --math-meta-color: #6f6d66;
   --math-cursor-color: #d04f2b;
+  --diagram-bg-color: #fdfdfc;
+  --diagram-node-bg-color: #f0efea;
+  --diagram-node-border-color: #bdbcb8;
+  --diagram-line-color: #26251e;
+  --diagram-label-bg-color: #fdfdfc;
   --selection-color: rgba(38, 37, 30, 0.16);
   --shadow-color: rgba(38, 37, 30, 0.12);
   --shadow-strong-color: rgba(38, 37, 30, 0.2);
@@ -254,7 +259,7 @@ content {
 
 #write li {
   margin: 0 0 0.5333rem;
-  padding-left: 0.2667rem;
+  padding-left: 0.1rem;
   color: var(--text-color);
   font-size: 1rem;
   line-height: 1.5;
@@ -262,7 +267,7 @@ content {
 
 #write li::marker {
   color: var(--muted-text-color);
-  font-family: var(--monospace);
+  font-family: var(--body-font);
   font-variant-numeric: tabular-nums;
 }
 
@@ -684,18 +689,59 @@ pre.md-meta-block {
   padding: 1.0667rem;
   border: 1px solid var(--border-soft-color);
   border-radius: var(--radius-medium);
-  background: var(--surface-raised-color);
+  background: var(--diagram-bg-color);
 }
 
 .md-diagram-panel svg text {
-  fill: var(--text-color);
+  fill: var(--text-color) !important;
+}
+
+.md-diagram-panel svg .nodeLabel,
+.md-diagram-panel svg .nodeLabel p,
+.md-diagram-panel svg .nodeLabel span,
+.md-diagram-panel svg .edgeLabel p,
+.md-diagram-panel svg .edgeLabel span {
+  color: var(--text-color) !important;
 }
 
 .md-diagram-panel svg .node rect,
 .md-diagram-panel svg .node circle,
-.md-diagram-panel svg .node polygon {
-  fill: var(--surface-color);
-  stroke: var(--border-strong-color);
+.md-diagram-panel svg .node ellipse,
+.md-diagram-panel svg .node polygon,
+.md-diagram-panel svg .node path {
+  fill: var(--diagram-node-bg-color) !important;
+  stroke: var(--diagram-node-border-color) !important;
+  stroke-width: 1.25px !important;
+}
+
+.md-diagram-panel svg .node rect {
+  rx: var(--radius-small);
+  ry: var(--radius-small);
+}
+
+.md-diagram-panel svg .edgePath path,
+.md-diagram-panel svg path.flowchart-link,
+.md-diagram-panel svg .relationshipLine {
+  stroke: var(--diagram-line-color) !important;
+  stroke-width: 1.4px !important;
+}
+
+.md-diagram-panel svg marker path,
+.md-diagram-panel svg .arrowheadPath {
+  fill: var(--diagram-line-color) !important;
+  stroke: var(--diagram-line-color) !important;
+}
+
+.md-diagram-panel svg .edgeLabel rect,
+.md-diagram-panel svg rect.labelBkg {
+  fill: var(--diagram-label-bg-color) !important;
+  opacity: 1 !important;
+}
+
+.md-diagram-panel svg .cluster rect {
+  fill: var(--surface-muted-color) !important;
+  stroke: var(--border-color) !important;
+  stroke-width: 1px !important;
 }
 
 .footnotes {
