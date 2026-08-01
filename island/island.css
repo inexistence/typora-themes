@@ -500,14 +500,12 @@ content {
   overscroll-behavior-x: contain;
   scroll-padding-inline: 16px;
   scroll-snap-type: x proximity;
-  color: var(--text-color);
   font-size: 0;
   line-height: 0;
   text-align: left;
   text-indent: 0;
   -webkit-overflow-scrolling: touch;
   scrollbar-color: rgba(79, 159, 112, 0.68) rgba(200, 187, 173, 0.18);
-  scrollbar-width: auto;
 }
 
 #write
@@ -521,7 +519,6 @@ content {
   max-width: 86%;
   margin: 0;
   scroll-snap-align: start;
-  vertical-align: top;
 }
 
 #write
@@ -531,9 +528,7 @@ content {
 #write p:is(:has(> .md-image ~ .md-image), :has(> img ~ img)) > img {
   width: 100%;
   max-width: 100%;
-  height: auto;
   margin: 0;
-  white-space: normal;
 }
 
 #write
@@ -851,7 +846,6 @@ pre.md-meta-block {
 .md-diagram-panel .label div,
 .md-diagram-panel .label span,
 .md-diagram-panel .label p,
-.md-diagram-panel .nodeLabel,
 .md-diagram-panel .edgeLabel {
   color: var(--text-color) !important;
 }
@@ -1058,20 +1052,9 @@ select:focus {
     margin: 1em 0;
   }
 
-  #write
-    p:is(:has(> .md-image ~ .md-image), :has(> img ~ img))
-    > .md-image
-    img {
-    margin: 0;
-  }
-
   .typora-export * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-  }
-
-  #write a {
-    color: var(--primary-color);
   }
 
   #write blockquote,
