@@ -632,6 +632,10 @@ pre.md-meta-block {
   tab-size: 4;
 }
 
+pre.md-fences-advanced.md-focus {
+  overflow: visible;
+}
+
 .md-fences code {
   box-sizing: content-box;
   margin: 0;
