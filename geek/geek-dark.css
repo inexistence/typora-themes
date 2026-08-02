@@ -1,0 +1,125 @@
+/*
+ * Geek Dark — Typora theme
+ * Dark companion to geek.css, using the warm dark palette from Cursor Docs.
+ * Keep this file beside geek.css when installing the theme.
+ */
+
+@import url("./geek.css");
+
+:root {
+  color-scheme: dark;
+  --bg-color: #14120b;
+  --text-color: #edecec;
+  --muted-text-color: #969592;
+  --md-char-color: #706f6b;
+  --meta-content-color: #b0afab;
+  --primary-color: #eb5600;
+  --primary-btn-border-color: #eb5600;
+  --primary-btn-text-color: #ffffff;
+  --surface-color: #1b1913;
+  --surface-muted-color: #201e18;
+  --surface-raised-color: #1b1913;
+  --border-color: #2a2822;
+  --border-soft-color: #201e18;
+  --border-strong-color: #46443d;
+  --divider-color: #54514a;
+  --code-bg-color: #14120b;
+  --code-text-color: #edecec;
+  --code-border-color: #2a2822;
+  --code-cursor-color: #eb5600;
+  --code-active-line-color: rgba(235, 86, 0, 0.1);
+  --math-editor-bg-color: #1b1913;
+  --math-editor-text-color: #edecec;
+  --math-command-color: #e8896b;
+  --math-parameter-color: #aacac0;
+  --math-meta-color: #969592;
+  --math-cursor-color: #eb5600;
+  --diagram-bg-color: #1b1913;
+  --diagram-node-bg-color: #201e18;
+  --diagram-node-border-color: #46443d;
+  --diagram-line-color: #d7d6d6;
+  --diagram-label-bg-color: #1b1913;
+  --selection-color: rgba(237, 236, 236, 0.16);
+  --shadow-color: rgba(0, 0, 0, 0.28);
+  --shadow-strong-color: rgba(0, 0, 0, 0.42);
+  --mark-bg-color: #5a4517;
+  --mark-text-color: #f7e4aa;
+  --table-header-text-color: #d7d6d6;
+  --code-gutter-color: #706f6b;
+  --code-selection-color: rgba(237, 236, 236, 0.14);
+  --math-selection-color: rgba(235, 86, 0, 0.2);
+
+  --side-bar-bg-color: #1b1913;
+  --active-file-bg-color: #201e18;
+  --active-file-text-color: #edecec;
+  --active-file-border-color: #edecec;
+  --item-hover-bg-color: #201e18;
+  --item-hover-text-color: #edecec;
+  --blur-text-color: #55534e;
+}
+
+html {
+  font-size: 15px;
+}
+
+@media screen {
+  #write blockquote {
+    border-color: var(--border-color);
+  }
+
+  #write table,
+  #write td {
+    background: var(--surface-color);
+  }
+
+  #write th {
+    background: var(--surface-muted-color);
+    color: var(--table-header-text-color);
+    font-family: var(--body-font);
+    font-size: 0.8rem;
+  }
+
+  #write td {
+    color: var(--text-color);
+    font-size: 1rem;
+  }
+
+  #write th,
+  #write tbody tr:not(:last-child) td {
+    border-bottom-color: var(--border-color);
+  }
+}
+
+@media print {
+  :root {
+    color-scheme: light;
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --muted-text-color: #555555;
+    --md-char-color: #777777;
+    --meta-content-color: #4f6258;
+    --primary-color: #000000;
+    --primary-btn-border-color: #000000;
+    --primary-btn-text-color: #ffffff;
+    --surface-color: #f3f3f0;
+    --surface-muted-color: #f3f3f0;
+    --surface-raised-color: #ffffff;
+    --border-color: #d5d5d0;
+    --border-soft-color: #e0e0dc;
+    --border-strong-color: #bdbdb8;
+    --divider-color: #999994;
+    --code-bg-color: #20201e;
+    --code-text-color: #ffffff;
+    --code-border-color: #424240;
+    --math-editor-bg-color: #f3f3f0;
+    --math-editor-text-color: #000000;
+    --diagram-bg-color: #ffffff;
+    --diagram-node-bg-color: #f3f3f0;
+    --diagram-node-border-color: #bdbdb8;
+    --diagram-line-color: #000000;
+    --diagram-label-bg-color: #ffffff;
+    --mark-bg-color: #e8dfbd;
+    --mark-text-color: #000000;
+    --table-header-text-color: #333333;
+  }
+}

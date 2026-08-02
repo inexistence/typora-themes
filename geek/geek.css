@@ -5,6 +5,7 @@
  */
 
 :root {
+  color-scheme: light;
   --bg-color: #f7f7f4;
   --text-color: #26251e;
   --muted-text-color: #74736d;
@@ -39,6 +40,12 @@
   --selection-color: rgba(38, 37, 30, 0.16);
   --shadow-color: rgba(38, 37, 30, 0.12);
   --shadow-strong-color: rgba(38, 37, 30, 0.2);
+  --mark-bg-color: #e8dfbd;
+  --mark-text-color: var(--text-color);
+  --table-header-text-color: var(--text-color);
+  --code-gutter-color: #777d78;
+  --code-selection-color: rgba(247, 247, 244, 0.14);
+  --math-selection-color: rgba(208, 79, 43, 0.16);
 
   --window-border: 1px solid var(--border-color);
   --side-bar-bg-color: #f0efea;
@@ -190,8 +197,8 @@ content {
 #write mark {
   padding: 0.08em 0.24em;
   border-radius: var(--radius-small);
-  background: #e8dfbd;
-  color: var(--text-color);
+  background: var(--mark-bg-color);
+  color: var(--mark-text-color);
 }
 
 #write a {
@@ -323,6 +330,7 @@ content {
 #write th {
   border-bottom: 1px solid var(--border-soft-color);
   background: var(--surface-color);
+  color: var(--table-header-text-color);
   font-family: var(--monospace);
   font-size: 0.8rem;
   font-weight: 400;
@@ -477,7 +485,7 @@ pre.md-fences-advanced.md-focus {
 }
 
 .cm-s-inner .CodeMirror-linenumber {
-  color: #777d78;
+  color: var(--code-gutter-color);
 }
 
 #write .md-fences {
@@ -498,7 +506,7 @@ pre.md-fences-advanced.md-focus {
 
 .cm-s-inner .CodeMirror-selected,
 .cm-s-inner.CodeMirror-focused .CodeMirror-selected {
-  background: rgba(247, 247, 244, 0.14);
+  background: var(--code-selection-color);
 }
 
 .cm-s-inner .cm-comment {
@@ -611,7 +619,7 @@ pre.md-fences-advanced.md-focus {
 
 .md-math-block .cm-s-inner .CodeMirror-selected,
 .md-math-block .cm-s-inner.CodeMirror-focused .CodeMirror-selected {
-  background: rgba(208, 79, 43, 0.16);
+  background: var(--math-selection-color);
 }
 
 pre.md-meta-block {
@@ -686,9 +694,19 @@ pre.md-meta-block {
 .md-diagram-panel svg .nodeLabel,
 .md-diagram-panel svg .nodeLabel p,
 .md-diagram-panel svg .nodeLabel span,
+.md-diagram-panel svg .edgeLabel,
+.md-diagram-panel svg .edgeLabel div,
 .md-diagram-panel svg .edgeLabel p,
 .md-diagram-panel svg .edgeLabel span {
   color: var(--text-color) !important;
+}
+
+.md-diagram-panel svg .edgeLabel,
+.md-diagram-panel svg .edgeLabel foreignObject,
+.md-diagram-panel svg .edgeLabel div,
+.md-diagram-panel svg .edgeLabel p,
+.md-diagram-panel svg .edgeLabel span {
+  background: var(--diagram-label-bg-color) !important;
 }
 
 .md-diagram-panel svg .node rect,
@@ -786,7 +804,7 @@ pre.md-meta-block {
 }
 
 .cm-s-typora-default .cm-comment.cm-code {
-  color: #6f7f76;
+  color: var(--meta-content-color);
 }
 
 .on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) {
@@ -911,6 +929,7 @@ footer,
 
 @media print {
   :root {
+    color-scheme: light;
     --bg-color: #ffffff;
     --text-color: #000000;
     --surface-color: #f3f3f0;
