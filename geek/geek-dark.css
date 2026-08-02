@@ -67,6 +67,11 @@ html {
     border-color: var(--border-color);
   }
 
+  #write code,
+  #write tt {
+    border-color: var(--border-color);
+  }
+
   #write table,
   #write td {
     background: var(--surface-color);
