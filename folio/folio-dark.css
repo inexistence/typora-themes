@@ -8,7 +8,7 @@
 :root {
   color-scheme: dark;
 
-  --bg-color: #141413;
+  --bg-color: #1a1a19;
   --text-color: #c2c0b6;
   --heading-color: #faf9f5;
   --muted-text-color: #9c9a92;
@@ -89,7 +89,7 @@
   --alert-caution-border-color: #e56962;
   --alert-caution-text-color: #f0aaa5;
 
-  --side-bar-bg-color: #1f1e1d;
+  --side-bar-bg-color: #0d0d0d;
   --active-file-bg-color: #30302e;
   --active-file-text-color: #faf9f5;
   --active-file-border-color: #d97757;
