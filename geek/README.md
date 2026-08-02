@@ -8,7 +8,7 @@
 
 ![极客主题的提示、列表与表格](./preview/content.jpg)
 
-![极客主题的代码、数学公式与 Mermaid 图表](./preview/code.jpg)
+![极客主题的代码与 Mermaid 图表](./preview/code.jpg)
 
 ## 视觉特征
 
@@ -25,6 +25,7 @@
 - `geek-dark.css`：深色 `Geek Dark` 主题，通过本地导入复用 `geek.css`，不依赖网络资源。
 - `geek-test.md`：覆盖标题、引用、列表、任务、表格、代码、数学公式、Mermaid、脚注和打印的测试文档。
 - `preview/`：用于 README 展示的 1440 × 900 主题效果图。
+- `preview-source/`：用于在 Typora 中拍摄真实主题效果的预览文档和截图说明。
 
 脚手架生成的 `geek/` 资源目录当前为空，是为未来的本地字体或图片资源保留的标准主题目录。
 

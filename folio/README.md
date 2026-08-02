@@ -4,6 +4,14 @@ Folio 是一套介于产品文档与编辑刊物之间的 Typora 主题，提供
 
 它参考 Claude Platform Docs 的视觉语言：衬线标题、无衬线正文、暖中性色、低对比边界和克制的代码组件。主题没有复制或打包 Anthropic 的字体、图片或源 CSS。
 
+## 预览
+
+![Folio Typora 主题总览](./preview/overview.jpg)
+
+![Folio 主题的语义提示与表格](./preview/content.jpg)
+
+![Folio Dark 主题的代码标签组与图表](./preview/code.jpg)
+
 ## 文件
 
 - `folio.css`：暖白浅色版本。
@@ -11,6 +19,8 @@ Folio 是一套介于产品文档与编辑刊物之间的 Typora 主题，提供
 - `folio-enhancer.js`：无依赖的实验性代码标签组增强器。
 - `install-macos.sh`：带备份、恢复和卸载能力的 macOS 安装脚本。
 - `folio-test.md`：覆盖排版、代码、图表、图片和 Typora 状态的测试文档。
+- `preview/`：用于 README 展示的 1440 × 900 主题效果图。
+- `preview-source/`：用于在 Typora 中拍摄真实主题效果的预览文档和截图说明。
 
 ## 视觉系统
 

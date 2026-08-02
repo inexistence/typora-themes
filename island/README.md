@@ -8,7 +8,7 @@
 
 ![岛屿主题的画廊与表格](./preview/content.jpg)
 
-![岛屿主题的代码、数学公式与 Mermaid 图表](./preview/code-diagram.jpg)
+![岛屿主题的代码与 Mermaid 图表](./preview/code-diagram.jpg)
 
 ## 文件
 
@@ -17,6 +17,7 @@
 - `island-fonts/`：与 `animal-island-ui` 对齐的 Nunito 与 Noto Sans SC 本地字体及许可证。
 - `island-assets/`：主题专属视觉资源；分割线使用 Divider 组件的 `line-yellow` 原始 SVG。
 - `preview/`：用于 README 展示的主题效果图。
+- `preview-source/`：用于在 Typora 中拍摄真实主题效果的预览文档和截图说明。
 
 ## 安装
 

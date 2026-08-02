@@ -20,6 +20,10 @@
 
 ![极客 Typora 主题总览](./geek/preview/overview.jpg)
 
+### 书页
+
+![书页 Typora 主题总览](./folio/preview/overview.jpg)
+
 ## 安装
 
 1. 在 Typora 中打开“偏好设置 → 外观 → 打开主题文件夹”。
