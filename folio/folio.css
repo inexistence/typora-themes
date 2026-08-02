@@ -511,7 +511,7 @@ content {
 }
 
 #write table {
-  width: max-content;
+  width: 100%;
   min-width: 100%;
   margin: 1.7rem 0;
   border: 0;
@@ -537,6 +537,9 @@ content {
   color: var(--text-color);
   text-align: left;
   vertical-align: top;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 #write th {
