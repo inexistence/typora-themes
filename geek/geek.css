@@ -433,6 +433,65 @@ content {
   pointer-events: none;
 }
 
+.md-fences:has(> .code-tooltip)::after {
+  display: none;
+}
+
+.md-fences .code-tooltip {
+  z-index: 3;
+  top: 0.3333rem;
+  right: 0.3333rem;
+  bottom: auto;
+  padding: 0;
+  background: transparent;
+  color: var(--code-text-color);
+  box-shadow: none;
+  font-family: var(--monospace);
+  font-size: 0.7333rem;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+  pointer-events: auto;
+}
+
+.md-fences .code-tooltip .ty-cm-lang-input {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: inline-block;
+  min-width: 5rem;
+  min-height: 1.6667rem;
+  margin: 0;
+  padding: 0.2667rem 0.4rem;
+  border: 1px solid rgba(247, 247, 244, 0.24);
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: right;
+  text-transform: inherit;
+  cursor: text;
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-modify: read-write-plaintext-only;
+}
+
+.md-fences .code-tooltip .ty-cm-lang-input:hover {
+  border-color: rgba(247, 247, 244, 0.48);
+}
+
+.md-fences .code-tooltip .ty-cm-lang-input:focus,
+.md-fences .code-tooltip .ty-cm-lang-input:focus-visible {
+  border-color: var(--code-cursor-color);
+  outline: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 /*
  * Advanced fences such as Mermaid switch between a rendered preview and a
  * focused CodeMirror editor. Use a plain document card for the idle preview,

@@ -332,9 +332,12 @@
   async function copyFence(fence, button) {
     try {
       const text = panelCode(fence)
-      if (navigator.clipboard?.writeText) {
+      try {
+        if (!navigator.clipboard?.writeText) {
+          throw new Error('Clipboard API unavailable')
+        }
         await navigator.clipboard.writeText(text)
-      } else {
+      } catch {
         fallbackCopy(text)
       }
       button.classList.add('is-copied')
