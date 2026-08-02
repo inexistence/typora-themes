@@ -1,0 +1,186 @@
+/*
+ * Folio Dark — Typora theme
+ * Warm charcoal companion to folio.css.
+ */
+
+@import url("./folio.css");
+
+:root {
+  color-scheme: dark;
+
+  --bg-color: #141413;
+  --text-color: #c2c0b6;
+  --heading-color: #faf9f5;
+  --muted-text-color: #9c9a92;
+  --md-char-color: #74726c;
+  --meta-content-color: #aaa79f;
+  --primary-color: #d97757;
+  --primary-btn-border-color: #d97757;
+  --primary-btn-text-color: #141413;
+
+  --surface-color: #1f1e1d;
+  --surface-muted-color: #262624;
+  --surface-strong-color: #30302e;
+  --surface-raised-color: #30302e;
+  --border-color: rgba(250, 249, 245, 0.1);
+  --border-soft-color: rgba(250, 249, 245, 0.07);
+  --border-strong-color: rgba(250, 249, 245, 0.18);
+  --divider-color: #4b4a46;
+
+  --code-bg-color: #1f1e1d;
+  --code-text-color: #dedcd3;
+  --code-fence-bg-color: #383835;
+  --code-fence-text-color: #c3c2b7;
+  --code-control-color: #898781;
+  --code-control-hover-bg-color: #151515;
+  --code-tab-active-bg-color: #151515;
+  --code-tab-active-text-color: #ffffff;
+  --code-border-color: rgba(255, 255, 255, 0.1);
+  --code-gutter-color: #74726c;
+  --code-cursor-color: #ef8d6d;
+  --code-active-line-color: rgba(217, 119, 87, 0.11);
+  --code-selection-color: rgba(217, 119, 87, 0.22);
+
+  --math-editor-bg-color: #1f1e1d;
+  --math-editor-text-color: #dedcd3;
+  --math-command-color: #ef8d6d;
+  --math-parameter-color: #9cc9bd;
+  --math-meta-color: #9c9a92;
+  --math-cursor-color: #ef8d6d;
+  --math-selection-color: rgba(217, 119, 87, 0.22);
+
+  --diagram-bg-color: #1f1e1d;
+  --diagram-node-bg-color: #262624;
+  --diagram-node-border-color: #5b5953;
+  --diagram-line-color: #aaa79f;
+  --diagram-label-bg-color: #1f1e1d;
+
+  --syntax-comment: #8d958e;
+  --syntax-keyword: #ef8d6d;
+  --syntax-string: #cbbb78;
+  --syntax-number: #d9a17f;
+  --syntax-variable: #9cc9bd;
+  --syntax-operator: #c2b7d0;
+  --syntax-tag: #d5bd82;
+  --syntax-error: #ff8f86;
+
+  --selection-color: rgba(217, 119, 87, 0.24);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --shadow-strong-color: rgba(0, 0, 0, 0.46);
+  --mark-bg-color: #5a451f;
+  --mark-text-color: #f3df9e;
+  --table-header-text-color: #faf9f5;
+
+  --quote-bg-color: #1f1e1d;
+  --quote-border-color: rgba(250, 249, 245, 0.14);
+  --alert-note-bg-color: rgba(85, 152, 231, 0.1);
+  --alert-note-border-color: #5598e7;
+  --alert-note-text-color: #9ec5f4;
+  --alert-tip-bg-color: #1f1e1d;
+  --alert-tip-border-color: rgba(250, 249, 245, 0.2);
+  --alert-tip-text-color: #faf9f5;
+  --alert-important-bg-color: rgba(168, 132, 224, 0.11);
+  --alert-important-border-color: #a884e0;
+  --alert-important-text-color: #d0b8f3;
+  --alert-warning-bg-color: rgba(220, 157, 64, 0.1);
+  --alert-warning-border-color: #dc9d40;
+  --alert-warning-text-color: #efc782;
+  --alert-caution-bg-color: rgba(229, 105, 98, 0.1);
+  --alert-caution-border-color: #e56962;
+  --alert-caution-text-color: #f0aaa5;
+
+  --side-bar-bg-color: #1f1e1d;
+  --active-file-bg-color: #30302e;
+  --active-file-text-color: #faf9f5;
+  --active-file-border-color: #d97757;
+  --item-hover-bg-color: #262624;
+  --item-hover-text-color: #faf9f5;
+  --blur-text-color: #5f5d58;
+}
+
+html {
+  font-size: 16px;
+}
+
+pre.md-fences-advanced:not(.md-focus)::before,
+pre.md-fences-advanced:not(.md-focus)::after {
+  display: none;
+}
+
+@media screen {
+  #write tbody tr:hover td {
+    background: var(--surface-color);
+  }
+
+  #write img {
+    border-color: var(--border-color);
+  }
+
+  pre.md-fences-advanced:not(.md-focus) {
+    background: var(--diagram-bg-color);
+  }
+
+  .modal-content,
+  .popover,
+  .context-menu,
+  .auto-suggest-container,
+  .megamenu-content {
+    box-shadow: 0 0.7rem 1.7rem var(--shadow-strong-color);
+  }
+}
+
+@media print {
+  :root {
+    color-scheme: light;
+    --bg-color: #ffffff;
+    --text-color: #222222;
+    --heading-color: #000000;
+    --muted-text-color: #555555;
+    --surface-color: #ffffff;
+    --surface-muted-color: #f5f5f3;
+    --surface-strong-color: #eeeeeb;
+    --border-color: #d8d8d3;
+    --border-soft-color: #e5e5e1;
+    --code-bg-color: #f5f5f3;
+    --code-text-color: #222222;
+    --code-fence-bg-color: #ffffff;
+    --code-fence-text-color: #222222;
+    --code-control-color: #555555;
+    --code-control-hover-bg-color: #eeeeeb;
+    --code-tab-active-bg-color: #eeeeeb;
+    --code-tab-active-text-color: #000000;
+    --code-border-color: #d8d8d3;
+    --quote-bg-color: #f8f8f6;
+    --quote-border-color: rgba(11, 11, 11, 0.12);
+    --alert-note-bg-color: rgba(47, 123, 213, 0.1);
+    --alert-note-border-color: #2f7bd5;
+    --alert-note-text-color: #205a9f;
+    --alert-tip-bg-color: #ffffff;
+    --alert-tip-border-color: rgba(11, 11, 11, 0.2);
+    --alert-tip-text-color: #282724;
+    --alert-important-bg-color: rgba(111, 86, 160, 0.1);
+    --alert-important-border-color: #8064b2;
+    --alert-important-text-color: #62488f;
+    --alert-warning-bg-color: rgba(177, 112, 24, 0.1);
+    --alert-warning-border-color: #b17018;
+    --alert-warning-text-color: #80500f;
+    --alert-caution-bg-color: rgba(180, 55, 48, 0.09);
+    --alert-caution-border-color: #b43730;
+    --alert-caution-text-color: #8f2f2a;
+    --math-editor-bg-color: #f5f5f3;
+    --math-editor-text-color: #222222;
+    --diagram-bg-color: #ffffff;
+    --diagram-node-bg-color: #f5f5f3;
+    --diagram-node-border-color: #bdbdb8;
+    --diagram-line-color: #555555;
+    --diagram-label-bg-color: #ffffff;
+    --syntax-comment: #666666;
+    --syntax-keyword: #8b3f2c;
+    --syntax-string: #3f6a4b;
+    --syntax-number: #7c4f28;
+    --syntax-variable: #28566d;
+    --syntax-operator: #5f5370;
+    --syntax-tag: #66531f;
+    --syntax-error: #a61b13;
+  }
+}
