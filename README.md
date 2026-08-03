@@ -9,6 +9,7 @@
 | [岛屿（Island）](./island/) | 可用 | 基于并改编自 `animal-island-ui` 的暖色岛屿风格。 |
 | [极客（Geek）](./geek/) | 可用 | 参考 Cursor Docs、同时提供浅色与深色版本的工程文档风格。 |
 | [书页（Folio）](./folio/) | 可用 | 参考 Claude Platform Docs 的浅色与深色编辑刊物风格，含实验性的轻量代码标签组增强器。 |
+| [晴窗（Sunlit）](./sunlit/) | 原型 | 暖象牙纸面与动态枝叶投影；当前视频素材仅供本地效果验证。 |
 
 ## 预览
 
