@@ -25,6 +25,12 @@
 
 ![书页 Typora 主题总览](./folio/preview/overview.jpg)
 
+### 晴窗
+
+<video src="./sunlit/preview/sunlit-preview.mp4" controls autoplay muted loop playsinline preload="metadata" width="960" aria-label="晴窗 Typora 主题动态预览">
+  <a href="./sunlit/preview/sunlit-preview.mp4">观看晴窗 Typora 主题动态预览</a>
+</video>
+
 ## 安装
 
 本节是仓库唯一的安装说明。执行安装、卸载或恢复前，请先完全退出 Typora。
