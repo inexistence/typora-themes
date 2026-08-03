@@ -1,0 +1,24 @@
+DEVELOPMENT.md
+  s_c3ecf27284d474::t_f1d2652e05731b 68-78,106-113,115,292,297
+README.md
+  s_c3ecf27284d474::t_6576cf6780b1de 101-111
+tests/theme-scaffold.test.sh
+  s_c3ecf27284d474::t_24be68c4a71872 1-96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4f864c517c1b2fc300ac7cc59af13dc71e738512",
+  "prompts": {},
+  "logical_commit_id": "4f864c517c1b2fc300ac7cc59af13dc71e738512",
+  "sessions": {
+    "s_c3ecf27284d474": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fc6a8-6605-7701-9308-3e39b1fde073",
+        "model": "unknown"
+      },
+      "human_author": "Jianbin <inexistenceorz@gmail.com>"
+    }
+  }
+}
