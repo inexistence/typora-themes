@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dayroom — 百叶窗时光 Demo</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --room-bg: 247 243 232;
+      --paper-bg: 251 248 239;
+      --ink: 48 48 42;
+      --muted: 111 107 96;
+      --accent: 154 103 45;
+      --border: 75 70 58;
+      --room-glow: 255 222 164;
+      --night-glow-opacity: 0;
+      --daylight-opacity: 0.72;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow-x: hidden;
+      background:
+        radial-gradient(
+          circle at 16% 12%,
+          rgb(var(--room-glow) / var(--night-glow-opacity)),
+          transparent 42%
+        ),
+        rgb(var(--room-bg));
+      color: rgb(var(--ink));
+      font-family: "Avenir Next", Avenir, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      transition: background-color 1.4s ease;
+    }
+
+    body::before {
+      position: fixed;
+      z-index: 0;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background:
+        linear-gradient(115deg, rgb(255 255 255 / 0.17), transparent 40%),
+        repeating-linear-gradient(
+          90deg,
+          rgb(70 62 48 / 0.012) 0,
+          rgb(70 62 48 / 0.012) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+      opacity: 0.7;
+    }
+
+    #window-glow,
+    #window-shadow {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    #window-glow {
+      z-index: 2;
+      mix-blend-mode: screen;
+    }
+
+    #window-shadow {
+      z-index: 3;
+      mix-blend-mode: multiply;
+      opacity: var(--daylight-opacity);
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      width: min(100% - 40px, 980px);
+      min-height: calc(100vh - 92px);
+      margin: 46px auto;
+      padding: clamp(56px, 8vw, 92px) clamp(32px, 8vw, 96px) 132px;
+      overflow: hidden;
+      border: 1px solid rgb(var(--border) / 0.08);
+      border-radius: 3px;
+      background: rgb(var(--paper-bg) / 0.9);
+      box-shadow:
+        0 1px 1px rgb(49 44 34 / 0.03),
+        0 24px 70px rgb(49 44 34 / 0.09);
+      backdrop-filter: blur(1px);
+      transition: background-color 1.4s ease, border-color 1.4s ease;
+    }
+
+    .eyebrow {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin: 0 0 28px;
+      color: rgb(var(--muted));
+      font-size: 0.72rem;
+      font-weight: 650;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 22px;
+      height: 1px;
+      content: "";
+      background: rgb(var(--accent));
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Songti SC",
+        "Noto Serif SC", serif;
+      font-weight: 500;
+      text-wrap: balance;
+    }
+
+    h1 {
+      max-width: 720px;
+      font-size: clamp(2.5rem, 6vw, 5.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+    }
+
+    h1 span {
+      color: rgb(var(--accent));
+    }
+
+    .dek {
+      max-width: 610px;
+      margin: 26px 0 58px;
+      color: rgb(var(--muted));
+      font-family: "Iowan Old Style", "Palatino Linotype", "Songti SC",
+        "Noto Serif SC", serif;
+      font-size: clamp(1.05rem, 2vw, 1.28rem);
+      line-height: 1.75;
+    }
+
+    .prose {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 190px;
+      gap: clamp(42px, 8vw, 84px);
+      max-width: 720px;
+      border-top: 1px solid rgb(var(--border) / 0.12);
+      padding-top: 38px;
+    }
+
+    .prose p {
+      margin: 0 0 1.4em;
+      font-size: 1rem;
+      line-height: 1.85;
+      letter-spacing: 0.008em;
+    }
+
+    .note {
+      color: rgb(var(--muted));
+      font-size: 0.76rem;
+      line-height: 1.75;
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 8px;
+      color: rgb(var(--ink));
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .controls {
+      position: fixed;
+      z-index: 5;
+      right: 22px;
+      bottom: 22px;
+      left: 22px;
+      display: grid;
+      grid-template-columns: auto minmax(180px, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      width: min(760px, calc(100% - 44px));
+      margin: 0 auto;
+      padding: 13px 15px;
+      border: 1px solid rgb(255 255 255 / 0.23);
+      border-radius: 14px;
+      background: rgb(30 29 25 / 0.82);
+      color: rgb(247 242 231);
+      box-shadow: 0 15px 45px rgb(12 11 9 / 0.23);
+      backdrop-filter: blur(18px) saturate(1.2);
+    }
+
+    .clock {
+      min-width: 104px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .clock-time {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+
+    .clock-state {
+      display: block;
+      margin-top: 2px;
+      color: rgb(247 242 231 / 0.58);
+      font-size: 0.67rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #e7b15f;
+      cursor: ew-resize;
+    }
+
+    button {
+      min-width: 78px;
+      padding: 8px 12px;
+      border: 1px solid rgb(255 255 255 / 0.16);
+      border-radius: 9px;
+      background: rgb(255 255 255 / 0.08);
+      color: inherit;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: rgb(255 255 255 / 0.14);
+    }
+
+    button[aria-pressed="true"] {
+      border-color: rgb(231 177 95 / 0.45);
+      background: rgb(231 177 95 / 0.16);
+      color: #ffd796;
+    }
+
+    @media (max-width: 700px) {
+      .shell {
+        width: calc(100% - 20px);
+        margin: 10px auto;
+        padding: 52px 28px 138px;
+      }
+
+      .prose {
+        grid-template-columns: 1fr;
+        gap: 22px;
+      }
+
+      .controls {
+        right: 10px;
+        bottom: 10px;
+        left: 10px;
+        grid-template-columns: 1fr auto;
+        width: calc(100% - 20px);
+      }
+
+      .controls input {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media print {
+      #window-glow,
+      #window-shadow,
+      .controls {
+        display: none !important;
+      }
+
+      body,
+      .shell {
+        background: white;
+        color: black;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="window-glow" aria-hidden="true"></canvas>
+  <canvas id="window-shadow" aria-hidden="true"></canvas>
+
+  <main class="shell">
+    <p class="eyebrow">Dayroom · 时间原型</p>
+    <h1>让一天的光，<br><span>慢慢写进房间。</span></h1>
+    <p class="dek">
+      这不是一组按时切换的壁纸。百叶窗影安静地留在原处，光线只随时间改变亮度与温度。
+      拖动下方时间轴，观察同一扇窗如何从清晨走到夜晚。
+    </p>
+
+    <section class="prose" aria-label="排版与光影可读性样例">
+      <div>
+        <p>
+          百叶窗把一整片阳光切成了有秩序的段落。清晨的光偏暖，正午更清亮，到了下午又逐渐染上一层蜂蜜色；窗格始终维持相同的安静构图。
+        </p>
+        <p>
+          真正的变化不应打断写作。它只在余光里发生：纸张的色温偏移一点，窗边的光慢慢亮起又淡去，等你再次抬头，房间已经进入了下午。
+        </p>
+        <p>
+          夜晚不会继续伪装成白天。日光退去后，窗外的冷月光穿过百叶，在纸面上留下更轻、更柔的投影，让文字仍然是画面里最清楚的东西。
+        </p>
+      </div>
+      <aside class="note">
+        <strong>Demo 说明</strong>
+        当前使用本机时间。关闭“实时”后，可以用时间轴预览全天状态。光影渲染暂时基于 Mason Wang 的未授权 Gist，仅用于本地验证。
+      </aside>
+    </section>
+  </main>
+
+  <div class="controls" aria-label="时间预览控制器">
+    <div class="clock" aria-live="polite">
+      <span class="clock-time" id="clock-time">08:30</span>
+      <span class="clock-state" id="clock-state">清晨</span>
+    </div>
+    <input
+      id="time-slider"
+      type="range"
+      min="0"
+      max="1439"
+      step="1"
+      aria-label="预览时间"
+    >
+    <button id="auto-button" type="button" aria-pressed="true">实时</button>
+  </div>
+
+  <script>
+    (() => {
+      'use strict'
+
+      const glowCanvas = document.getElementById('window-glow')
+      const shadowCanvas = document.getElementById('window-shadow')
+      const glowContext = glowCanvas.getContext('2d')
+      const shadowContext = shadowCanvas.getContext('2d')
+      const slider = document.getElementById('time-slider')
+      const autoButton = document.getElementById('auto-button')
+      const clockTime = document.getElementById('clock-time')
+      const clockState = document.getElementById('clock-state')
+      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
+
+      const colorStops = [
+        { at: 0, room: [25, 30, 39], paper: [36, 40, 48], ink: [226, 226, 218], muted: [161, 161, 153], accent: [210, 163, 103], glow: [236, 178, 105], glowOpacity: 0.12 },
+        { at: 300, room: [34, 38, 45], paper: [45, 47, 51], ink: [230, 226, 214], muted: [166, 162, 151], accent: [214, 166, 105], glow: [238, 181, 107], glowOpacity: 0.13 },
+        { at: 390, room: [226, 213, 191], paper: [244, 235, 216], ink: [58, 52, 43], muted: [113, 103, 88], accent: [159, 103, 47], glow: [255, 195, 114], glowOpacity: 0.22 },
+        { at: 540, room: [242, 237, 224], paper: [250, 247, 237], ink: [48, 48, 42], muted: [111, 107, 96], accent: [151, 102, 48], glow: [255, 225, 175], glowOpacity: 0.08 },
+        { at: 750, room: [247, 244, 234], paper: [252, 250, 243], ink: [45, 46, 41], muted: [106, 105, 96], accent: [143, 96, 45], glow: [255, 235, 197], glowOpacity: 0.04 },
+        { at: 990, room: [241, 229, 207], paper: [250, 242, 225], ink: [56, 49, 39], muted: [113, 99, 82], accent: [164, 98, 39], glow: [255, 196, 108], glowOpacity: 0.16 },
+        { at: 1110, room: [132, 104, 82], paper: [172, 141, 110], ink: [40, 34, 30], muted: [81, 65, 54], accent: [116, 58, 29], glow: [255, 154, 76], glowOpacity: 0.26 },
+        { at: 1200, room: [29, 34, 43], paper: [40, 43, 50], ink: [229, 227, 216], muted: [164, 162, 151], accent: [215, 165, 103], glow: [236, 176, 100], glowOpacity: 0.14 },
+        { at: 1440, room: [25, 30, 39], paper: [36, 40, 48], ink: [226, 226, 218], muted: [161, 161, 153], accent: [210, 163, 103], glow: [236, 178, 105], glowOpacity: 0.12 },
+      ]
+
+      let auto = true
+      let minute = currentMinute()
+      let resizeFrame = 0
+
+      function currentMinute() {
+        const now = new Date()
+        return now.getHours() * 60 + now.getMinutes()
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value))
+      }
+
+      function lerp(a, b, amount) {
+        return a + (b - a) * amount
+      }
+
+      function smoothstep(edge0, edge1, value) {
+        const amount = clamp((value - edge0) / (edge1 - edge0), 0, 1)
+        return amount * amount * (3 - 2 * amount)
+      }
+
+      function mixColor(from, to, amount) {
+        return from.map((channel, index) => Math.round(lerp(channel, to[index], amount)))
+      }
+
+      function relativeLuminance(color) {
+        const channels = color.map(channel => {
+          const value = channel / 255
+          return value <= 0.04045
+            ? value / 12.92
+            : Math.pow((value + 0.055) / 1.055, 2.4)
+        })
+        return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2]
+      }
+
+      function contrastRatio(first, second) {
+        const lighter = Math.max(relativeLuminance(first), relativeLuminance(second))
+        const darker = Math.min(relativeLuminance(first), relativeLuminance(second))
+        return (lighter + 0.05) / (darker + 0.05)
+      }
+
+      function ensureContrast(foreground, background, target, fallback) {
+        if (contrastRatio(foreground, background) >= target) {
+          return foreground
+        }
+
+        let low = 0
+        let high = 1
+        for (let index = 0; index < 12; index += 1) {
+          const amount = (low + high) / 2
+          const candidate = mixColor(foreground, fallback, amount)
+          if (contrastRatio(candidate, background) >= target) {
+            high = amount
+          } else {
+            low = amount
+          }
+        }
+        return mixColor(foreground, fallback, high)
+      }
+
+      function readablePalette(paper) {
+        const darkInk = [0, 0, 0]
+        const lightInk = [255, 255, 255]
+        const ink = contrastRatio(darkInk, paper) >= contrastRatio(lightInk, paper)
+          ? darkInk
+          : lightInk
+        const desiredMuted = mixColor(ink, paper, 0.34)
+        const desiredAccent = ink === darkInk ? [142, 82, 35] : [232, 178, 109]
+
+        return {
+          ink,
+          muted: ensureContrast(desiredMuted, paper, 4.6, ink),
+          accent: ensureContrast(desiredAccent, paper, 3.2, ink),
+        }
+      }
+
+      function colorAt(value) {
+        const upperIndex = colorStops.findIndex(stop => stop.at >= value)
+        const upper = colorStops[Math.max(upperIndex, 1)]
+        const lower = colorStops[Math.max(upperIndex - 1, 0)]
+        const amount = smoothstep(lower.at, upper.at, value)
+
+        const paper = mixColor(lower.paper, upper.paper, amount)
+        const readable = readablePalette(paper)
+
+        return {
+          room: mixColor(lower.room, upper.room, amount),
+          paper,
+          ink: readable.ink,
+          muted: readable.muted,
+          accent: readable.accent,
+          glow: mixColor(lower.glow, upper.glow, amount),
+          glowOpacity: lerp(lower.glowOpacity, upper.glowOpacity, amount),
+        }
+      }
+
+      function lightAt(value) {
+        const sunrise = 330
+        const sunset = 1170
+        const daylight = smoothstep(sunrise, sunrise + 70, value)
+          * (1 - smoothstep(sunset - 80, sunset, value))
+        const phase = clamp((value - sunrise) / (sunset - sunrise), 0, 1)
+        const altitude = Math.sin(Math.PI * phase)
+        const horizonWarmth = 1 - Math.pow(altitude, 0.5)
+
+        return {
+          daylight,
+          phase,
+          altitude,
+          horizonWarmth,
+          slant: 0.31,
+          verticalSlant: 0.1,
+          stretch: 1.68,
+          softness: lerp(14, 9, altitude),
+          alpha: daylight * lerp(0.12, 0.17, altitude),
+        }
+      }
+
+      function moonlightAt(value) {
+        const sunset = 1170
+        const sunrise = 330
+        const duration = 1440 - sunset + sunrise
+        const elapsed = value >= sunset ? value - sunset : value + 1440 - sunset
+        const phase = clamp(elapsed / duration, 0, 1)
+        const altitude = Math.sin(Math.PI * phase)
+        const fadeIn = smoothstep(0, 0.16, phase)
+        const fadeOut = 1 - smoothstep(0.84, 1, phase)
+
+        return {
+          phase,
+          altitude,
+          intensity: fadeIn * fadeOut * lerp(0.72, 1, altitude),
+          slant: 0.31,
+          verticalSlant: 0.1,
+          stretch: 1.68,
+          softness: lerp(24, 15, altitude),
+          alpha: fadeIn * fadeOut * lerp(0.105, 0.065, altitude),
+        }
+      }
+
+      function stateAt(value) {
+        if (value < 300) return '深夜'
+        if (value < 420) return '清晨'
+        if (value < 690) return '上午'
+        if (value < 840) return '正午'
+        if (value < 1050) return '下午'
+        if (value < 1200) return '黄昏'
+        return '夜晚'
+      }
+
+      function formatTime(value) {
+        const hours = Math.floor(value / 60)
+        const minutes = value % 60
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+      }
+
+      function setTheme(value) {
+        const color = colorAt(value)
+        const root = document.documentElement.style
+
+        root.setProperty('--room-bg', color.room.join(' '))
+        root.setProperty('--paper-bg', color.paper.join(' '))
+        root.setProperty('--ink', color.ink.join(' '))
+        root.setProperty('--muted', color.muted.join(' '))
+        root.setProperty('--accent', color.accent.join(' '))
+        root.setProperty('--room-glow', color.glow.join(' '))
+        root.setProperty('--night-glow-opacity', String(color.glowOpacity))
+        root.setProperty('--daylight-opacity', '1')
+      }
+
+      function fitCanvas(canvas, context) {
+        const ratio = Math.min(devicePixelRatio || 1, 2)
+        const width = innerWidth
+        const height = innerHeight
+        canvas.width = Math.round(width * ratio)
+        canvas.height = Math.round(height * ratio)
+        canvas.style.width = `${width}px`
+        canvas.style.height = `${height}px`
+        context.setTransform(ratio, 0, 0, ratio, 0, 0)
+        return { width, height, ratio }
+      }
+
+      function drawGlow(value) {
+        const { width, height } = fitCanvas(glowCanvas, glowContext)
+        const moonlight = moonlightAt(value)
+        glowContext.clearRect(0, 0, width, height)
+
+        if (moonlight.intensity > 0.015) {
+          const sourceX = width * 0.78
+          const sourceY = height * 0.06
+          const moonGlow = glowContext.createRadialGradient(
+            sourceX,
+            sourceY,
+            0,
+            sourceX,
+            sourceY,
+            Math.max(width, height) * 0.72,
+          )
+          moonGlow.addColorStop(0, `rgb(208 220 238 / ${moonlight.intensity * 0.07})`)
+          moonGlow.addColorStop(0.42, `rgb(184 202 228 / ${moonlight.intensity * 0.025})`)
+          moonGlow.addColorStop(1, 'rgb(156 177 208 / 0)')
+          glowContext.fillStyle = moonGlow
+          glowContext.fillRect(0, 0, width, height)
+        }
+      }
+
+      /*
+       * Local prototype renderer adapted from Mason Wang's unlicensed
+       * cozy-window-shade Gist. Do not redistribute this implementation until
+       * permission or an explicit license is available.
+       * Source: https://gist.github.com/masonwang025/49edffdff399175af2262e921eaae50b
+       */
+      const offscreenCache = new Map()
+
+      function offscreenCanvas(key, width, height) {
+        const cached = offscreenCache.get(key)
+        if (cached?.width === width && cached.height === height) {
+          return cached
+        }
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+        offscreenCache.set(key, canvas)
+        return canvas
+      }
+
+      function drawShadow(value) {
+        const { width, height } = fitCanvas(shadowCanvas, shadowContext)
+        const sunlight = lightAt(value)
+        const moonlight = moonlightAt(value)
+        const isMoonlight = sunlight.daylight < 0.015 && moonlight.intensity > 0.015
+        const strength = isMoonlight ? moonlight.intensity : sunlight.daylight
+        shadowContext.clearRect(0, 0, width, height)
+
+        if (strength < 0.015) {
+          return
+        }
+
+        const altitude = isMoonlight ? moonlight.altitude : sunlight.altitude
+        const horizonWarmth = isMoonlight ? 0 : sunlight.horizonWarmth
+        const shadowTarget = mixColor([222, 203, 180], [238, 232, 218], altitude)
+        const shadowTone = mixColor([255, 255, 255], shadowTarget, strength)
+        const lightTone = mixColor([255, 207, 137], [255, 235, 200], altitude)
+        const lightAlpha = sunlight.daylight * lerp(0.28, 0.16, altitude)
+
+        if (!isMoonlight) {
+          shadowContext.fillStyle = `rgb(${shadowTone.join(' ')})`
+          shadowContext.fillRect(0, 0, width, height)
+        }
+
+        const skewX = 0.3
+        const skewY = 0.11
+        const stretch = 1.75
+        const baseSoftness = isMoonlight ? 16 : lerp(12, 8, altitude)
+        const projectionWidth = Math.min(width * 0.58, 420) * stretch
+        const projectionHeight = Math.min(height * 0.72, 500) * stretch * 0.78
+        const positionX = width * 0.035
+        const positionY = height * 0.02
+        const frameThickness = 8.5
+        const slatCount = 18
+        const innerHeight = projectionHeight - frameThickness * 2
+        const spacing = innerHeight / slatCount
+        const openAmount = 0.5
+        const slatThickness = spacing * lerp(0.88, 0.12, openAmount)
+        const gapHeight = spacing - slatThickness
+
+        shadowContext.save()
+        shadowContext.translate(positionX, positionY)
+        shadowContext.transform(1, skewY, skewX, 1, 0, 0)
+
+        const offscreenWidth = Math.ceil(projectionWidth + 80)
+        const offscreenHeight = Math.ceil(projectionHeight + 80)
+        const maskCanvas = offscreenCanvas('dayroom-mask', offscreenWidth, offscreenHeight)
+        const maskContext = maskCanvas.getContext('2d')
+        maskContext.clearRect(0, 0, offscreenWidth, offscreenHeight)
+
+        for (let index = 0; index < slatCount; index += 1) {
+          const y = frameThickness + index * spacing + slatThickness
+          const verticalPosition = index / slatCount
+          const slatSoftness = baseSoftness * (0.55 + verticalPosition)
+          const distanceFromCenter = Math.abs(index - slatCount / 2) / (slatCount / 2)
+          const slatAlpha = 1 - distanceFromCenter * 0.1
+          const padding = slatSoftness * 1.2
+          const gradient = maskContext.createLinearGradient(
+            0,
+            y - padding,
+            0,
+            y + gapHeight + padding,
+          )
+          gradient.addColorStop(0, 'rgb(255 255 255 / 0)')
+          gradient.addColorStop(padding / (gapHeight + padding * 2), `rgb(255 255 255 / ${slatAlpha})`)
+          gradient.addColorStop(1 - padding / (gapHeight + padding * 2), `rgb(255 255 255 / ${slatAlpha})`)
+          gradient.addColorStop(1, 'rgb(255 255 255 / 0)')
+          maskContext.fillStyle = gradient
+          maskContext.fillRect(
+            frameThickness,
+            y - padding,
+            projectionWidth - frameThickness * 2,
+            gapHeight + padding * 2,
+          )
+        }
+
+        maskContext.globalCompositeOperation = 'destination-in'
+        const horizontalFade = maskContext.createLinearGradient(
+          frameThickness,
+          0,
+          projectionWidth - frameThickness,
+          0,
+        )
+        horizontalFade.addColorStop(0, 'rgb(255 255 255 / 0.1)')
+        horizontalFade.addColorStop(0.06, 'rgb(255 255 255 / 0.55)')
+        horizontalFade.addColorStop(0.15, 'rgb(255 255 255 / 1)')
+        horizontalFade.addColorStop(0.5, 'rgb(255 255 255 / 1)')
+        horizontalFade.addColorStop(0.72, 'rgb(255 255 255 / 0.8)')
+        horizontalFade.addColorStop(0.85, 'rgb(255 255 255 / 0.35)')
+        horizontalFade.addColorStop(0.94, 'rgb(255 255 255 / 0.12)')
+        horizontalFade.addColorStop(1, 'rgb(255 255 255 / 0.02)')
+        maskContext.fillStyle = horizontalFade
+        maskContext.fillRect(0, 0, offscreenWidth, offscreenHeight)
+
+        const verticalFade = maskContext.createLinearGradient(
+          0,
+          frameThickness,
+          0,
+          projectionHeight - frameThickness,
+        )
+        verticalFade.addColorStop(0, 'rgb(255 255 255 / 0.08)')
+        verticalFade.addColorStop(0.05, 'rgb(255 255 255 / 0.6)')
+        verticalFade.addColorStop(0.12, 'rgb(255 255 255 / 1)')
+        verticalFade.addColorStop(0.75, 'rgb(255 255 255 / 0.85)')
+        verticalFade.addColorStop(0.88, 'rgb(255 255 255 / 0.35)')
+        verticalFade.addColorStop(0.95, 'rgb(255 255 255 / 0.1)')
+        verticalFade.addColorStop(1, 'rgb(255 255 255 / 0.02)')
+        maskContext.fillStyle = verticalFade
+        maskContext.fillRect(0, 0, offscreenWidth, offscreenHeight)
+
+        maskContext.globalCompositeOperation = 'destination-out'
+        const mullionWidth = frameThickness * 0.5
+        const mullionSoftness = baseSoftness * 0.9
+        const mullionX = projectionWidth * 0.47
+        const mullionGradient = maskContext.createLinearGradient(
+          mullionX - mullionWidth - mullionSoftness,
+          0,
+          mullionX + mullionWidth + mullionSoftness,
+          0,
+        )
+        mullionGradient.addColorStop(0, 'rgb(255 255 255 / 0)')
+        mullionGradient.addColorStop(0.15, 'rgb(255 255 255 / 1)')
+        mullionGradient.addColorStop(0.85, 'rgb(255 255 255 / 1)')
+        mullionGradient.addColorStop(1, 'rgb(255 255 255 / 0)')
+        maskContext.fillStyle = mullionGradient
+        maskContext.fillRect(
+          mullionX - mullionWidth - mullionSoftness,
+          0,
+          (mullionWidth + mullionSoftness) * 2,
+          projectionHeight,
+        )
+
+        const mullionY = projectionHeight * 0.4
+        const crossGradient = maskContext.createLinearGradient(
+          0,
+          mullionY - mullionWidth - mullionSoftness,
+          0,
+          mullionY + mullionWidth + mullionSoftness,
+        )
+        crossGradient.addColorStop(0, 'rgb(255 255 255 / 0)')
+        crossGradient.addColorStop(0.15, 'rgb(255 255 255 / 1)')
+        crossGradient.addColorStop(0.85, 'rgb(255 255 255 / 1)')
+        crossGradient.addColorStop(1, 'rgb(255 255 255 / 0)')
+        maskContext.fillStyle = crossGradient
+        maskContext.fillRect(
+          0,
+          mullionY - mullionWidth - mullionSoftness,
+          projectionWidth,
+          (mullionWidth + mullionSoftness) * 2,
+        )
+
+        const cordX = projectionWidth * 0.73
+        const cordWidth = 1.5
+        const cordSoftness = baseSoftness * 0.4
+        const cordGradient = maskContext.createLinearGradient(
+          cordX - cordWidth - cordSoftness,
+          0,
+          cordX + cordWidth + cordSoftness,
+          0,
+        )
+        cordGradient.addColorStop(0, 'rgb(255 255 255 / 0)')
+        cordGradient.addColorStop(0.25, 'rgb(255 255 255 / 0.6)')
+        cordGradient.addColorStop(0.75, 'rgb(255 255 255 / 0.6)')
+        cordGradient.addColorStop(1, 'rgb(255 255 255 / 0)')
+        maskContext.fillStyle = cordGradient
+        maskContext.fillRect(
+          cordX - cordWidth - cordSoftness,
+          frameThickness,
+          (cordWidth + cordSoftness) * 2,
+          projectionHeight - frameThickness * 2,
+        )
+        maskContext.globalCompositeOperation = 'source-over'
+
+        if (isMoonlight) {
+          const moonCanvas = offscreenCanvas('dayroom-moon-gaps', offscreenWidth, offscreenHeight)
+          const moonContext = moonCanvas.getContext('2d')
+          moonContext.clearRect(0, 0, offscreenWidth, offscreenHeight)
+          const moonGradient = moonContext.createRadialGradient(
+            projectionWidth * 0.4,
+            projectionHeight * 0.43,
+            0,
+            projectionWidth * 0.4,
+            projectionHeight * 0.43,
+            projectionWidth * 0.78,
+          )
+          const moonTone = [210, 220, 235]
+          moonGradient.addColorStop(0, `rgb(${moonTone.join(' ')} / ${moonlight.intensity * 0.24})`)
+          moonGradient.addColorStop(0.52, `rgb(${moonTone.join(' ')} / ${moonlight.intensity * 0.12})`)
+          moonGradient.addColorStop(1, `rgb(${moonTone.join(' ')} / 0)`)
+          moonContext.fillStyle = moonGradient
+          moonContext.fillRect(0, 0, offscreenWidth, offscreenHeight)
+          moonContext.globalCompositeOperation = 'destination-in'
+          moonContext.drawImage(maskCanvas, 0, 0)
+          moonContext.globalCompositeOperation = 'source-over'
+
+          glowContext.save()
+          glowContext.translate(positionX, positionY)
+          glowContext.transform(1, skewY, skewX, 1, 0, 0)
+          glowContext.drawImage(moonCanvas, 0, 0)
+          glowContext.restore()
+          shadowContext.restore()
+          return
+        }
+
+        shadowContext.globalCompositeOperation = 'destination-out'
+        shadowContext.drawImage(maskCanvas, 0, 0)
+        shadowContext.globalCompositeOperation = 'source-over'
+
+        const lightCanvas = offscreenCanvas('dayroom-light', offscreenWidth, offscreenHeight)
+        const lightContext = lightCanvas.getContext('2d')
+        lightContext.clearRect(0, 0, offscreenWidth, offscreenHeight)
+        const lightGradient = lightContext.createRadialGradient(
+          projectionWidth * 0.4,
+          projectionHeight * 0.45,
+          0,
+          projectionWidth * 0.4,
+          projectionHeight * 0.45,
+          projectionWidth * 0.8,
+        )
+        lightGradient.addColorStop(0, `rgb(${lightTone.join(' ')} / ${lightAlpha * 0.9})`)
+        lightGradient.addColorStop(0.5, `rgb(${lightTone.join(' ')} / ${lightAlpha * 0.6})`)
+        lightGradient.addColorStop(1, `rgb(${lightTone.join(' ')} / ${lightAlpha * 0.15})`)
+        lightContext.fillStyle = lightGradient
+        lightContext.fillRect(0, 0, offscreenWidth, offscreenHeight)
+        lightContext.globalCompositeOperation = 'destination-in'
+        lightContext.drawImage(maskCanvas, 0, 0)
+        lightContext.globalCompositeOperation = 'source-over'
+        shadowContext.drawImage(lightCanvas, 0, 0)
+
+        const softGlowCanvas = offscreenCanvas('dayroom-soft-glow', offscreenWidth, offscreenHeight)
+        const glow = softGlowCanvas.getContext('2d')
+        glow.clearRect(0, 0, offscreenWidth, offscreenHeight)
+        const glowGradient = glow.createRadialGradient(
+          projectionWidth * 0.38,
+          projectionHeight * 0.42,
+          0,
+          projectionWidth * 0.38,
+          projectionHeight * 0.42,
+          projectionWidth * 0.7,
+        )
+        const glowColor = [255, 222, 164]
+        glowGradient.addColorStop(0, `rgb(${glowColor.join(' ')} / ${lightAlpha * 0.35})`)
+        glowGradient.addColorStop(0.5, `rgb(${glowColor.join(' ')} / ${lightAlpha * 0.15})`)
+        glowGradient.addColorStop(1, `rgb(${glowColor.join(' ')} / 0)`)
+        glow.fillStyle = glowGradient
+        glow.fillRect(0, 0, offscreenWidth, offscreenHeight)
+        glow.globalCompositeOperation = 'destination-in'
+        glow.drawImage(maskCanvas, 0, 0)
+        glow.globalCompositeOperation = 'source-over'
+        shadowContext.drawImage(softGlowCanvas, 0, 0)
+
+        shadowContext.restore()
+      }
+
+      function drawScene(value) {
+        drawGlow(value)
+        drawShadow(value)
+      }
+
+      function render(value) {
+        minute = Math.round(Number(value))
+        setTheme(minute)
+        drawScene(minute)
+        slider.value = String(minute)
+        clockTime.textContent = formatTime(minute)
+        clockState.textContent = stateAt(minute)
+      }
+
+      Object.defineProperty(window, '__dayroomDemo', {
+        configurable: true,
+        value: Object.freeze({ colorAt, contrastRatio, lightAt, moonlightAt }),
+      })
+
+      function setAuto(enabled) {
+        auto = enabled
+        autoButton.setAttribute('aria-pressed', String(enabled))
+        autoButton.textContent = enabled ? '实时' : '预览'
+        if (enabled) {
+          render(currentMinute())
+        }
+      }
+
+      slider.addEventListener('input', event => {
+        setAuto(false)
+        render(event.currentTarget.value)
+      })
+
+      autoButton.addEventListener('click', () => setAuto(!auto))
+
+      addEventListener('resize', () => {
+        cancelAnimationFrame(resizeFrame)
+        resizeFrame = requestAnimationFrame(() => drawScene(minute))
+      })
+
+      reducedMotion.addEventListener?.('change', () => drawScene(minute))
+
+      setInterval(() => {
+        if (auto && !document.hidden) {
+          render(currentMinute())
+        }
+      }, 30_000)
+
+      render(minute)
+    })()
+  </script>
+</body>
+</html>
