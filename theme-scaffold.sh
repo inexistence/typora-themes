@@ -276,7 +276,6 @@ EOF
     if [[ "$dark" -eq 1 ]]; then
       printf -- '- `%s-dark.css`：深色版本。\n' "$id"
     fi
-    printf -- '- `%s-test.md`：Typora 人工验收文档。\n' "$id"
     printf -- '- `%s/`：安装后的主题资源目录。\n' "$id"
     if [[ "$module" -eq 1 ]]; then
       printf -- '- `%s/%s-module.js`：可选增强模块。\n' "$id" "$id"
@@ -293,71 +292,7 @@ EOF
 
 ## 验证
 
-使用同目录测试文档检查浅色、深色、源码、专注、打字机、窄窗口和打印/PDF 模式。若包含增强模块，还需检查主题切换、页面隐藏与“减少动态”状态下的挂载和清理。
-EOF
-  } > "$target"
-}
-
-write_test_document() {
-  local target="$1" id="$2" name="$3"
-  {
-    printf '%s\n' '---' 'title: Theme Test' 'tags:' '  - typora' '  - theme' '---' ''
-    printf '# %s 验收文档\n\n' "$name"
-    cat <<'EOF'
-正文包含 **粗体**、*斜体*、~~删除线~~、[链接](https://typora.io/) 和 `inline code`。
-
-## 列表与任务
-
-- 无序列表
-  - 嵌套项目
-- [x] 已完成任务
-- [ ] 未完成任务
-
-1. 有序列表
-2. 第二项
-
-> 引用块用于检查边框、缩进、文字颜色和多段内容。
-
-## 表格
-
-| 元素 | 状态 | 备注 |
-| --- | --- | --- |
-| 正文 | 完成 | 中英文混排 Typography |
-| 代码 | 完成 | `const ready = true` |
-
-## 代码
-
-```js
-function greet(name) {
-  return `Hello, ${name}!`
-}
-```
-
-## 数学公式
-
-行内公式 $E = mc^2$。
-
-$$
-\int_0^1 x^2\,dx = \frac{1}{3}
-$$
-
-## Mermaid
-
-```mermaid
-flowchart LR
-  Draft --> Review --> Published
-```
-
-## 图片
-
-EOF
-    printf '![%s 占位图](%s/assets/placeholder.svg)\n\n' "$name" "$id"
-    cat <<'EOF'
-## 脚注
-
-主题应在不启用增强模块时保持内容完整。[^fallback]
-
-[^fallback]: 检查脚注编号、悬浮提示和脚注区域样式。
+使用仓库根目录的[统一主题验收文档](../theme-test.md)检查浅色、深色、源码、专注、打字机、窄窗口和打印/PDF 模式。若包含增强模块，还需检查主题切换、页面隐藏与“减少动态”状态下的挂载和清理。
 EOF
   } > "$target"
 }
@@ -387,7 +322,6 @@ create_theme() {
 
   write_main_css "$package_dir/$id.css" "$id" "$name"
   write_readme "$package_dir/README.md" "$id" "$name" "$dark" "$module"
-  write_test_document "$package_dir/$id-test.md" "$id" "$name"
   write_placeholder_svg "$package_dir/$id/assets/placeholder.svg"
   printf '%s\n' '# Preview' '' \
     '将用于 README 的最终 1440 × 900 预览图放在此目录。' \
@@ -427,7 +361,6 @@ validate_package() {
   local id="$1" module_file="$ROOT_DIR/$1/$1/$1-module.js"
   [[ -d "$ROOT_DIR/$id" ]] || fail "找不到本地主题目录：$id"
   [[ -f "$ROOT_DIR/$id/README.md" ]] || fail "缺少主题说明：$id/README.md"
-  [[ -f "$ROOT_DIR/$id/$id-test.md" ]] || fail "缺少验收文档：$id/$id-test.md"
   [[ -d "$ROOT_DIR/$id/$id" ]] || fail "缺少资源目录：$id/$id/"
   collect_css_files "$id"
   PUBLISH_MODULE=""

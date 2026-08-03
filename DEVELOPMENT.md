@@ -21,6 +21,7 @@
 typora-themes/
 ├── README.md                       # 唯一用户安装说明
 ├── DEVELOPMENT.md                  # 本开发规范
+├── theme-test.md                   # 统一主题语法与视觉验收文档
 ├── themes.plist                    # 唯一主题与增强模块注册表
 ├── install-macos.sh                # 唯一正式安装器
 ├── runtime/                         # 共享运行时管理器和架构说明
@@ -35,7 +36,7 @@ typora-themes/
 ├── README.md                       # 设计说明、特性、素材来源、验证建议
 ├── <theme-id>.css                  # 必需，浅色或唯一主题
 ├── <theme-id>-dark.css             # 可选，深色版本
-├── <theme-id>-test.md              # 必需，Typora 人工验收文档
+├── <theme-id>-test.md              # 可选，主题专属场景或历史回归文档
 ├── <theme-id>/                     # 必需，安装到 themes/<theme-id>/
 │   ├── <theme-id>-module.js        # 可选，主题增强模块
 │   ├── assets/                     # 可选，图片、视频、SVG 等
@@ -67,11 +68,13 @@ typora-themes/
 
 优先使用根目录脚手架创建主题包：
 
+以下命令中的 `paper-note` 是自定义的主题 ID，`Paper Note` 是对应的显示名称；请替换为你的主题信息，并在后续命令中保持一致。
+
 ```bash
 ./theme-scaffold.sh create paper-note --name "Paper Note" --dark
 ```
 
-需要增强模块时增加 `--module`。脚手架会生成主样式、可选深色样式、资源占位图、增强模块模板、完整验收文档、主题 README 和预览目录。新主题默认是未进入安装包的本地草稿，可用 `./theme-scaffold.sh list` 查看状态。
+需要增强模块时增加 `--module`。脚手架会生成主样式、可选深色样式、资源占位图、增强模块模板、主题 README 和预览目录，并在主题 README 中链接根目录的统一验收文档。新主题默认是未进入安装包的本地草稿，可用 `./theme-scaffold.sh list` 查看状态。
 
 之后按以下步骤开发：
 
@@ -83,7 +86,7 @@ typora-themes/
 background-image: url("./<theme-id>/assets/background.webp");
 ```
 
-4. 创建 `<theme-id>-test.md`，至少覆盖标题、正文、链接、列表、任务项、引用、表格、代码围栏、行内代码、数学公式、Mermaid、图片、脚注和 YAML front matter。
+4. 应用主题并打开根目录 `theme-test.md`，完成文末的通用视觉验收清单。只有主题存在统一文档无法表达的专属交互或历史回归场景时，才补充 `<theme-id>-test.md`。
 5. 创建主题 README，说明设计目标、文件组成、素材来源、许可和验证建议。安装章节只保留一行链接：
 
 ```md
@@ -276,6 +279,7 @@ themes/<theme-id>/<theme-id>-module.js
 | --- | --- |
 | 用户安装、卸载、权限、备份和恢复 | 根目录 `README.md` 的“安装”章节 |
 | 主题 ID、CSS 文件名和增强模块文件名 | 根目录 `themes.plist` |
+| Markdown、Typora 扩展语法和通用视觉验收 | 根目录 `theme-test.md` |
 | 主题设计、文件说明、素材来源、许可、验证建议 | `<theme-id>/README.md` |
 | 共享运行时概览 | `runtime/README.md` |
 | 增强模块技术原理、生命周期和调试 | `runtime/ARCHITECTURE.md` |
@@ -316,7 +320,7 @@ git diff --check
 ### 新主题
 
 - [ ] 目录和 ID 符合约定。
-- [ ] CSS、资源、测试文档、README 和许可齐全。
+- [ ] CSS、资源、README 和许可齐全，并已使用根目录 `theme-test.md` 完成统一验收。
 - [ ] 已在 `themes.plist` 登记，且没有为主题修改安装器代码。
 - [ ] 统一安装器支持安装、卸载、状态、`all` 和恢复。
 - [ ] 根 README 已登记主题和手动安装内容。

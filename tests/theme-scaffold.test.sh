@@ -29,6 +29,17 @@ assert_contains() {
   grep -Fq -- "$2" "$1" || fail "$1 does not contain: $2"
 }
 
+assert_file "$ROOT_DIR/theme-test.md"
+assert_contains "$ROOT_DIR/theme-test.md" '[toc]'
+assert_contains "$ROOT_DIR/theme-test.md" '> [!NOTE]'
+assert_contains "$ROOT_DIR/theme-test.md" '```sequence'
+assert_contains "$ROOT_DIR/theme-test.md" '```flow'
+assert_contains "$ROOT_DIR/theme-test.md" 'requirementDiagram'
+assert_contains "$ROOT_DIR/theme-test.md" 'test_entity - satisfies -> test_req'
+assert_contains "$ROOT_DIR/theme-test.md" '不计入主题样式验收结果'
+assert_contains "$ROOT_DIR/theme-test.md" 'x-axis "低影响" --> "高影响"'
+assert_contains "$ROOT_DIR/theme-test.md" '<video controls'
+
 mkdir -p "$TEST_REPO"
 /usr/bin/install -m 0755 "$ROOT_DIR/theme-scaffold.sh" "$SCAFFOLD"
 /usr/bin/install -m 0644 "$ROOT_DIR/themes.plist" "$TEST_REPO/themes.plist"
@@ -36,7 +47,6 @@ mkdir -p "$TEST_REPO"
 "$SCAFFOLD" create paper-note --name 'Paper Note' --dark --module >/dev/null
 assert_file "$TEST_REPO/paper-note/paper-note.css"
 assert_file "$TEST_REPO/paper-note/paper-note-dark.css"
-assert_file "$TEST_REPO/paper-note/paper-note-test.md"
 assert_file "$TEST_REPO/paper-note/paper-note/paper-note-module.js"
 assert_file "$TEST_REPO/paper-note/paper-note/assets/placeholder.svg"
 assert_file "$TEST_REPO/paper-note/README.md"
@@ -44,7 +54,7 @@ assert_dir "$TEST_REPO/paper-note/preview"
 assert_dir "$TEST_REPO/paper-note/preview-source"
 assert_contains "$TEST_REPO/paper-note/paper-note.css" \
   '--typora-theme-id: paper-note'
-assert_contains "$TEST_REPO/paper-note/paper-note-test.md" '```mermaid'
+assert_contains "$TEST_REPO/paper-note/README.md" '../theme-test.md'
 node --check "$TEST_REPO/paper-note/paper-note/paper-note-module.js"
 
 draft_output="$("$SCAFFOLD" list)"
