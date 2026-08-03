@@ -14,15 +14,15 @@
 
 - `island.css`：可安装的完整 Typora 主题。
 - `island-test.md`：覆盖标题、引用、列表、表格、代码、数学公式、图表和打印的测试文档。
-- `island-fonts/`：与 `animal-island-ui` 对齐的 Nunito 与 Noto Sans SC 本地字体及许可证。
-- `island-assets/`：主题专属视觉资源；分割线使用 Divider 组件的 `line-yellow` 原始 SVG。
+- `island/fonts/`：与 `animal-island-ui` 对齐的 Nunito 与 Noto Sans SC 本地字体及许可证。
+- `island/assets/`：主题专属视觉资源；分割线使用 Divider 组件的 `line-yellow` 原始 SVG。
 - `preview/`：用于 README 展示的主题效果图。
 - `preview-source/`：用于在 Typora 中拍摄真实主题效果的预览文档和截图说明。
 
 ## 安装
 
 1. 在 Typora 中打开“偏好设置 → 外观 → 打开主题文件夹”。
-2. 将 `island.css`、同级 `island-fonts/` 和 `island-assets/` 目录复制到主题文件夹。
+2. 将 `island.css`、同级 `island/`  目录复制到主题文件夹。
 3. 重启 Typora，在“主题”菜单中选择 `Island`。
 
 字体栈与最初参考 `animal-island-ui` 保持一致：拉丁字符优先使用 Nunito，中文使用 Noto Sans SC，并回退到系统中文无衬线字体。
@@ -35,4 +35,4 @@
 
 本主题与 `animal-island-ui` 原作者不存在官方关联或背书关系。
 
-字体文件适用各自的 SIL Open Font License 1.1，详见 `island-fonts/OFL-1.1.txt`；视觉资源许可全文见 `island-assets/CC-BY-NC-4.0.txt`。
+字体文件适用各自的 SIL Open Font License 1.1，详见 `island/fonts/OFL-1.1.txt`；视觉资源许可全文见 `island/assets/CC-BY-NC-4.0.txt`。

@@ -10,7 +10,7 @@
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url("./island-fonts/nunito-latin-500-normal.78b3b3a4.woff2") format("woff2");
+  src: url("./island/fonts/nunito-latin-500-normal.78b3b3a4.woff2") format("woff2");
 }
 
 @font-face {
@@ -18,7 +18,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url("./island-fonts/nunito-latin-700-normal.0b62b606.woff2") format("woff2");
+  src: url("./island/fonts/nunito-latin-700-normal.0b62b606.woff2") format("woff2");
 }
 
 @font-face {
@@ -26,7 +26,7 @@
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url("./island-fonts/nunito-latin-900-normal.8b5d13b8.woff2") format("woff2");
+  src: url("./island/fonts/nunito-latin-900-normal.8b5d13b8.woff2") format("woff2");
 }
 
 @font-face {
@@ -34,7 +34,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("./island-fonts/noto-sans-sc-latin-400-normal.d0072abd.woff2") format("woff2");
+  src: url("./island/fonts/noto-sans-sc-latin-400-normal.d0072abd.woff2") format("woff2");
 }
 
 @font-face {
@@ -42,7 +42,7 @@
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url("./island-fonts/noto-sans-sc-latin-500-normal.df58f967.woff2") format("woff2");
+  src: url("./island/fonts/noto-sans-sc-latin-500-normal.df58f967.woff2") format("woff2");
 }
 
 @font-face {
@@ -50,7 +50,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url("./island-fonts/noto-sans-sc-latin-700-normal.11e48442.woff2") format("woff2");
+  src: url("./island/fonts/noto-sans-sc-latin-700-normal.11e48442.woff2") format("woff2");
 }
 
 @font-face {
@@ -58,7 +58,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("./island-fonts/noto-sans-sc-chinese-simplified-400-normal.e25467c8.woff2") format("woff2");
+  src: url("./island/fonts/noto-sans-sc-chinese-simplified-400-normal.e25467c8.woff2") format("woff2");
 }
 
 @font-face {
@@ -66,7 +66,7 @@
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url("./island-fonts/noto-sans-sc-chinese-simplified-500-normal.d3553b6f.woff2") format("woff2");
+  src: url("./island/fonts/noto-sans-sc-chinese-simplified-500-normal.d3553b6f.woff2") format("woff2");
 }
 
 @font-face {
@@ -74,7 +74,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url("./island-fonts/noto-sans-sc-chinese-simplified-700-normal.6e0a7691.woff2") format("woff2");
+  src: url("./island/fonts/noto-sans-sc-chinese-simplified-700-normal.6e0a7691.woff2") format("woff2");
 }
 
 :root {
@@ -196,7 +196,7 @@ content {
   width: 1.25em;
   height: 1.25em;
   margin-right: 0.34em;
-  background: url("./island-assets/icon-leaf.40329f03.png") center / contain
+  background: url("./island/assets/icon-leaf.40329f03.png") center / contain
     no-repeat;
   content: "";
   vertical-align: -0.3em;
@@ -364,7 +364,7 @@ content {
 #write .task-list-item input[type="checkbox"]:checked {
   border-color: #50b9ab;
   background-color: #19c8b9;
-  background-image: url("./island-assets/checkbox-check.svg");
+  background-image: url("./island/assets/checkbox-check.svg");
   animation: island-checkbox-splash 0.6s ease forwards;
 }
 
@@ -406,7 +406,7 @@ content {
   height: 0.75rem;
   margin: 2.7em auto;
   border: 0;
-  background: url("./island-assets/divider-line-yellow.838b9359.svg") center / contain
+  background: url("./island/assets/divider-line-yellow.838b9359.svg") center / contain
     no-repeat;
 }
 
