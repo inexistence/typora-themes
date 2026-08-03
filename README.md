@@ -98,6 +98,17 @@
 
 新增主题、主题资源或增强模块前，请阅读[开发规范](./DEVELOPMENT.md)。增强系统的启动、主题识别、异步加载、生命周期和调试方法见[增强模块技术原理](./runtime/ARCHITECTURE.md)。
 
+可以使用仓库内的主题脚手架快速创建标准目录，并管理安装包中的主题：
+
+```bash
+./theme-scaffold.sh create paper-note --name "Paper Note" --dark
+./theme-scaffold.sh list
+./theme-scaffold.sh publish paper-note --name "Paper Note"
+./theme-scaffold.sh unpublish paper-note
+```
+
+`create` 默认创建未上架的本地草稿；`publish` 校验必需文件后写入 `themes.plist`；`unpublish` 只移除安装包登记，不删除本地主题文件。完整选项见 `./theme-scaffold.sh --help`。
+
 ## 许可
 
 不同主题可能采用不同的来源、字体和资源许可证。使用、修改或分发前，请查看对应主题目录中的 README 和许可文件。

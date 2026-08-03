@@ -65,7 +65,17 @@ typora-themes/
 
 ### 3.1 创建主题包
 
-1. 确定唯一主题 ID，并按上面的目录模板创建文件。
+优先使用根目录脚手架创建主题包：
+
+```bash
+./theme-scaffold.sh create paper-note --name "Paper Note" --dark
+```
+
+需要增强模块时增加 `--module`。脚手架会生成主样式、可选深色样式、资源占位图、增强模块模板、完整验收文档、主题 README 和预览目录。新主题默认是未进入安装包的本地草稿，可用 `./theme-scaffold.sh list` 查看状态。
+
+之后按以下步骤开发：
+
+1. 确定唯一主题 ID，并检查脚手架生成的目录和文件。
 2. 在 `<theme-id>.css` 中完成主题样式；深色版本使用 `<theme-id>-dark.css`。
 3. CSS 中的资源地址使用安装后的相对路径：
 
@@ -94,7 +104,15 @@ background-image: url("./<theme-id>/assets/background.webp");
 
 ### 3.3 注册主题
 
-新增主题只修改根目录 `themes.plist`，不要修改安装器代码。向 `themes` 数组追加一个字典：
+开发和验收完成后，通过脚手架上架主题：
+
+```bash
+./theme-scaffold.sh publish paper-note --name "Paper Note"
+```
+
+脚手架会校验必需文件，自动识别 `<id>*.css` 和 `<id>-module.js`，再原子更新根目录 `themes.plist`。下架使用 `./theme-scaffold.sh unpublish paper-note`；下架只移除注册项，保留主题目录。不要为了上架或下架修改安装器代码。
+
+脚手架最终向 `themes` 数组追加等价于以下内容的字典：
 
 ```xml
 <dict>
@@ -271,11 +289,12 @@ themes/<theme-id>/<theme-id>-module.js
 
 ```bash
 /usr/bin/plutil -lint themes.plist
-bash -n install-macos.sh tests/install-macos-smoke.sh tests/config-driven-installer.test.sh
+bash -n theme-scaffold.sh install-macos.sh tests/theme-scaffold.test.sh tests/install-macos-smoke.sh tests/config-driven-installer.test.sh
 node --check runtime/typora-themes-runtime.js
 find . -name '*-module.js' -exec node --check {} \;
 node tests/runtime-manager.test.js
 node tests/sunlit-module.test.js
+./tests/theme-scaffold.test.sh
 ./tests/install-macos-smoke.sh
 ./tests/config-driven-installer.test.sh
 git diff --check
