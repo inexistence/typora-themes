@@ -1,0 +1,37 @@
+theme-test.md
+  s_5163310186a362::t_8b48102072b7c6 1-599
+tests/theme-scaffold.test.sh
+  s_5163310186a362::t_8870068598fd78 32-39,54
+DEVELOPMENT.md
+  s_5163310186a362::t_09af41f619b590 24,39,71-72,77,89,282,323
+theme-scaffold.sh
+  s_5163310186a362::t_58734fd7bf2bcf 295
+README.md
+  s_c3ecf27284d474::t_6576cf6780b1de 104
+  s_5163310186a362::t_a73db431c76706 91,101-102,105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "b4ab2b299f2e419e5cb5677e7169f3b3f4ece319",
+  "prompts": {},
+  "logical_commit_id": "ef7d856a7547dbede557a29a9c3a62b210b0a9d8",
+  "sessions": {
+    "s_5163310186a362": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fc6a3-b463-76f3-8ddf-109408a52224",
+        "model": "unknown"
+      },
+      "human_author": "Jianbin <inexistenceorz@gmail.com>"
+    },
+    "s_c3ecf27284d474": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fc6a8-6605-7701-9308-3e39b1fde073",
+        "model": "unknown"
+      },
+      "human_author": "Jianbin <inexistenceorz@gmail.com>"
+    }
+  }
+}
