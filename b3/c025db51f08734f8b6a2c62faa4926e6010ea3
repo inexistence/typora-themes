@@ -1,0 +1,86 @@
+DEVELOPMENT.md
+  s_936cb6a1678981::t_b3e6d406df70ff 1-313
+README.md
+  s_31962b78f3e711::t_985122e0a8e456 30,32-88,90-97,99
+folio/README.md
+  s_e87fc024dcc445::t_fe420d775b4d76 19,51,69,71,73,75
+folio/folio.css
+  s_31962b78f3e711::t_eb34368fb8badb 9
+folio/folio/folio-module.js
+  s_31962b78f3e711::t_46f23e212faa4a 1,4-5,9-11,59,239,262,443-444,446,452-454,459
+geek/README.md
+  s_31962b78f3e711::t_6d2977e13ec892 34
+install-macos.sh
+  s_936cb6a1678981::t_8d389c2bcc48d5 5-6,10-17,20-21,24-27,30,36-37,42,46,48-143,146-147,153-154,171,178-198,205-206,208-209,211-225,243-267,303,306-316,319-326,330-336,339-363,366-374,377-392,394-395,397,399-426,428,431-432,434-437,440-448,451-453,455-466,468,470-483,485-501,503-518,520,523-532,534-546,549-569,571-579,581-583,585-605,608-609,611,614-617,620-626,628,630-634,636,638-642,646,648,650,654-670,673-674,678-684,686,688-693
+island/README.md
+  s_31962b78f3e711::t_efbd75963a3213 24
+runtime/ARCHITECTURE.md
+  s_936cb6a1678981::t_3962b56befdabb 1-380
+runtime/README.md
+  s_31962b78f3e711::t_77f31587fe3a8a 1-20
+runtime/typora-themes-runtime.js
+  s_31962b78f3e711::t_8604f6314f8b54 1-243
+sunlit/README.md
+  s_e87fc024dcc445::t_0f2f336de3f299 5,9,20-22,25,27
+sunlit/sunlit.css
+  s_24fc024005aa07::t_54a0768743d006 10,151
+sunlit/sunlit/sunlit-module.js
+  s_936cb6a1678981::t_bbec2d6d003696 1,6-7,11,14,19,22,39-79,97-107,120-122,124,136
+tests/config-driven-installer.test.sh
+  s_31962b78f3e711::t_10eca943fd5c04 1-74
+tests/fixtures/paper-note-module.js
+  s_31962b78f3e711::t_0a411bfcc8b6c9 1-13
+tests/fixtures/paper-note.css
+  s_31962b78f3e711::t_9677cdd544f5a1 1-5
+tests/fixtures/typora-index.html
+  s_31962b78f3e711::t_2f6edd0a461c3d 1-10
+tests/install-macos-smoke.sh
+  s_936cb6a1678981::t_352e4ed83a1d54 5-11,13-14,16,19,23-25,27-28,31-32,35-36,39-40,43-45,47-48,50-52,54-153,156
+tests/runtime-manager.test.js
+  s_31962b78f3e711::t_5c31a3ae9cf3d8 1-213
+tests/sunlit-module.test.js
+  s_936cb6a1678981::t_7fe4eb66283a23 1-132
+themes.plist
+  s_31962b78f3e711::t_75a77bd50378f1 1-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "b3c025db51f08734f8b6a2c62faa4926e6010ea3",
+  "prompts": {},
+  "logical_commit_id": "b3c025db51f08734f8b6a2c62faa4926e6010ea3",
+  "sessions": {
+    "s_24fc024005aa07": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fc66b-a4f6-73a0-8019-8dd3b4f8fcc3",
+        "model": "unknown"
+      },
+      "human_author": "Jianbin <huangjianbin@imo.im>"
+    },
+    "s_31962b78f3e711": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fc626-ae37-7b00-a5b3-9771b2f7d1eb",
+        "model": "unknown"
+      },
+      "human_author": "Jianbin <huangjianbin@imo.im>"
+    },
+    "s_936cb6a1678981": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fc696-988a-7880-90de-5b425dcee8d3",
+        "model": "unknown"
+      },
+      "human_author": "Jianbin <huangjianbin@imo.im>"
+    },
+    "s_e87fc024dcc445": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fc684-6fb2-7711-ab3b-bfc003137b56",
+        "model": "unknown"
+      },
+      "human_author": "Jianbin <huangjianbin@imo.im>"
+    }
+  }
+}
