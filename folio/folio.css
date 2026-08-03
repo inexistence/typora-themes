@@ -6,6 +6,7 @@
 
 :root {
   color-scheme: light;
+  --typora-theme-id: folio;
   --folio-enhancer-enabled: 1;
 
   --bg-color: #fcfcfb;

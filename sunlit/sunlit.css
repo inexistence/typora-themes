@@ -7,6 +7,7 @@
 
 :root {
   color-scheme: light;
+  --typora-theme-id: sunlit;
   --sunlit-enhancer-enabled: 1;
   --folio-enhancer-enabled: 0;
 
@@ -147,7 +148,7 @@ content::after {
   inset: 0;
   content: "";
   pointer-events: none;
-  background: center top / cover no-repeat url("./sunlit/leaves-still.jpg");
+  background: center top / cover no-repeat url("./sunlit/assets/leaves-still.jpg");
   mix-blend-mode: multiply;
   opacity: var(--sunlit-static-shadow-opacity);
   transition: opacity 520ms cubic-bezier(0.16, 1, 0.3, 1);

@@ -27,13 +27,76 @@
 
 ## 安装
 
-1. 在 Typora 中打开“偏好设置 → 外观 → 打开主题文件夹”。
-2. 进入所选主题的文件夹，按照该主题 README 的说明复制 CSS、字体和资源文件。
-3. 重启 Typora，在“主题”菜单中选择对应主题。
+本节是仓库唯一的安装说明。执行安装、卸载或恢复前，请先完全退出 Typora。
+
+### macOS 统一安装器
+
+在仓库根目录运行：
+
+```bash
+./install-macos.sh list
+./install-macos.sh --dry-run install all
+./install-macos.sh install all
+```
+
+可用主题名为 `island`、`geek`、`folio`、`sunlit` 和 `all`。也可以单独管理主题：
+
+```bash
+./install-macos.sh install folio
+./install-macos.sh uninstall sunlit
+```
+
+`list` 和 `--dry-run` 不会写入文件。所有带增强模块的主题共用一个运行时入口；安装器会自动迁移旧的独立增强器标签，并在最后一个增强主题卸载后移除共享运行时。
+
+### macOS 权限
+
+若 `/Applications/Typora.app` 不可写，请在交互式 macOS Terminal 中运行。脚本只会在原子替换 Typora 的 `index.html` 时单独请求管理员密码；不要使用 `sudo ./install-macos.sh`。
+
+如果出现 `Operation not permitted`，请在“系统设置 → 隐私与安全性 → 应用管理”中允许当前终端更新其他应用，然后重新运行。
+
+### 备份与恢复
+
+每次安装、卸载和恢复前，脚本都会创建快照：
+
+```text
+~/Library/Application Support/abnerworks.Typora/typora-themes-install-backups/
+```
+
+恢复最近一次操作前的状态：
+
+```bash
+./install-macos.sh --dry-run restore latest
+./install-macos.sh restore latest
+```
+
+也可以传入操作结束时显示的快照名称。恢复会校验文件哈希；如果安装后文件又被修改，脚本会停止，只有确认覆盖这些修改时才使用 `--force`。
+
+旧版 `folio-install-backups` 和 `sunlit-install-backups` 目录不会被删除。
+
+### 手动安装
+
+如果不希望修改 Typora.app，可在 Typora 中打开“偏好设置 → 外观 → 打开主题文件夹”，从仓库复制以下文件：
+
+| 主题 | 复制内容 | 手动安装效果 |
+| --- | --- | --- |
+| Island | `island/island.css`、`island/island/` | 完整静态主题与本地资源 |
+| Geek | `geek/geek.css`、`geek/geek-dark.css`、`geek/geek/` | Geek 与 Geek Dark |
+| Folio | `folio/folio.css`、`folio/folio-dark.css` | 不启用实验性代码标签组 |
+| Sunlit | `sunlit/sunlit.css`、`sunlit/sunlit/` | 使用静态树影，不播放视频 |
+
+复制后重启 Typora，并在“主题”菜单中选择对应主题。Geek Dark 依赖同级的 `geek.css`，Folio Dark 依赖同级的 `folio.css`。
 
 ## 目录约定
 
-每个一级子目录对应一个独立主题，并包含该主题的 CSS、配套资源、测试文档、安装说明及必要的许可文件。
+每个一级子目录对应一个独立主题，并包含该主题的 CSS、配套资源、测试文档、主题说明及必要的许可文件。
+
+根目录 `themes.plist` 是唯一主题注册表；统一安装器从中生成主题列表、受管路径和增强模块映射。
+
+`runtime/` 只保存所有增强主题共用的生命周期管理器；各模块放在对应主题的资源目录。Typora 入口只注入一份 `typora-themes-runtime.js`，切换主题时由它负责挂载和销毁对应模块。
+
+## 开发
+
+新增主题、主题资源或增强模块前，请阅读[开发规范](./DEVELOPMENT.md)。增强系统的启动、主题识别、异步加载、生命周期和调试方法见[增强模块技术原理](./runtime/ARCHITECTURE.md)。
 
 ## 许可
 

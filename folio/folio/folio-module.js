@@ -1,15 +1,13 @@
-/*
- * Folio Enhancer (experimental)
- * A dependency-free, progressively enhanced code-tab controller for Typora.
- */
+/* Folio module for Typora Themes Runtime. */
 
 (() => {
-  'use strict'
-
-  const INSTANCE_KEY = Symbol.for('folio-enhancer@1')
-  if (window[INSTANCE_KEY]) {
+  const runtime = window[Symbol.for('typora-themes-runtime@1')]
+  if (!runtime?.register) {
     return
   }
+
+  runtime.register('folio', () => {
+  'use strict'
 
   const GROUP_CLASS = 'folio-code-tab-group'
   const BAR_CLASS = 'folio-code-tabs'
@@ -17,7 +15,6 @@
   const ACTIVE_CLASS = 'is-active'
   const LANGUAGE_EDIT_CLASS = 'is-editing-language'
   const SINGLE_COPY_CLASS = 'folio-code-copy'
-  const ENABLE_PROPERTY = '--folio-enhancer-enabled'
   const RECONCILE_NODE_SELECTOR = [
     'blockquote',
     '.md-fences',
@@ -59,12 +56,7 @@
 
   let nextGroupId = 0
   let scheduledFrame = 0
-
-  function isEnabled() {
-    return getComputedStyle(document.documentElement)
-      .getPropertyValue(ENABLE_PROPERTY)
-      .trim() === '1'
-  }
+  let destroyed = false
 
   function directFences(group) {
     return Array.from(group.children).filter(child =>
@@ -244,12 +236,9 @@
 
   function reconcile() {
     scheduledFrame = 0
-    if (!isEnabled()) {
-      document.querySelectorAll(`blockquote.${GROUP_CLASS}`).forEach(cleanupGroup)
-      document.querySelectorAll(`.${SINGLE_COPY_CLASS}`).forEach(button => button.remove())
+    if (destroyed) {
       return
     }
-
     document.querySelectorAll('#write blockquote').forEach(group => {
       if (!group.querySelector(`.${PANEL_CLASS}.${LANGUAGE_EDIT_CLASS}`)) {
         enhanceGroup(group)
@@ -270,7 +259,7 @@
   }
 
   function scheduleReconcile() {
-    if (!scheduledFrame) {
+    if (!scheduledFrame && !destroyed) {
       scheduledFrame = requestAnimationFrame(reconcile)
     }
   }
@@ -451,16 +440,21 @@
   document.addEventListener('keydown', onKeydown)
   scheduleReconcile()
 
-  window[INSTANCE_KEY] = {
+  return {
+    update() {},
     destroy() {
+      destroyed = true
       observer.disconnect()
       document.removeEventListener('click', onClick)
       document.removeEventListener('focusin', onFocusIn)
       document.removeEventListener('focusout', onFocusOut)
       document.removeEventListener('keydown', onKeydown)
+      if (scheduledFrame) {
+        cancelAnimationFrame(scheduledFrame)
+      }
       document.querySelectorAll(`blockquote.${GROUP_CLASS}`).forEach(cleanupGroup)
       document.querySelectorAll(`.${SINGLE_COPY_CLASS}`).forEach(button => button.remove())
-      delete window[INSTANCE_KEY]
     },
   }
+  })
 })()

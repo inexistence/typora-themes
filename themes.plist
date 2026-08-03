@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>schema</key>
+  <integer>1</integer>
+  <key>themes</key>
+  <array>
+    <dict>
+      <key>id</key>
+      <string>island</string>
+      <key>name</key>
+      <string>Island</string>
+      <key>css</key>
+      <array>
+        <string>island.css</string>
+      </array>
+      <key>module</key>
+      <string></string>
+    </dict>
+    <dict>
+      <key>id</key>
+      <string>geek</string>
+      <key>name</key>
+      <string>Geek</string>
+      <key>css</key>
+      <array>
+        <string>geek.css</string>
+        <string>geek-dark.css</string>
+      </array>
+      <key>module</key>
+      <string></string>
+    </dict>
+    <dict>
+      <key>id</key>
+      <string>folio</string>
+      <key>name</key>
+      <string>Folio</string>
+      <key>css</key>
+      <array>
+        <string>folio.css</string>
+        <string>folio-dark.css</string>
+      </array>
+      <key>module</key>
+      <string>folio-module.js</string>
+    </dict>
+    <dict>
+      <key>id</key>
+      <string>sunlit</string>
+      <key>name</key>
+      <string>Sunlit</string>
+      <key>css</key>
+      <array>
+        <string>sunlit.css</string>
+      </array>
+      <key>module</key>
+      <string>sunlit-module.js</string>
+    </dict>
+  </array>
+</dict>
+</plist>
