@@ -27,9 +27,7 @@
 
 ### 晴窗
 
-<video src="./sunlit/preview/sunlit-preview.mp4" controls autoplay muted loop playsinline preload="metadata" width="960" aria-label="晴窗 Typora 主题动态预览">
-  <a href="./sunlit/preview/sunlit-preview.mp4">观看晴窗 Typora 主题动态预览</a>
-</video>
+https://github.com/user-attachments/assets/af6ed57f-fd3c-42a7-8372-1f009121bf87
 
 ## 安装
 
