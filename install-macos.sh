@@ -375,7 +375,7 @@ finalize_snapshot() {
 }
 
 write_typora_index() {
-  local source="$1"
+  local source="$1" permission_hint=""
   local destination_dir owner group staged use_sudo=0
   destination_dir="$(dirname "$TYPORA_INDEX")"
   staged="$destination_dir/.typora-themes-index.$$.tmp"
@@ -385,14 +385,21 @@ write_typora_index() {
     use_sudo=1
     [[ -t 0 && -x /usr/bin/sudo ]] \
       || fail "需要管理员权限写入 Typora.app；请在 macOS Terminal 中运行"
-    log "请输入管理员密码，仅用于更新 Typora 的 index.html"
+    if /usr/bin/xattr -p com.apple.macl "$destination_dir" >/dev/null 2>&1; then
+      permission_hint="；若提示 Operation not permitted，请在“系统设置 → 隐私与安全性 → 应用管理”中允许当前终端后重试"
+    fi
+    log "请输入管理员密码，仅用于更新 Typora 的 index.html$permission_hint"
   fi
   if [[ "$use_sudo" -eq 1 ]]; then
-    /usr/bin/sudo /usr/bin/install -o "$owner" -g "$group" -m 0644 "$source" "$staged"
-    /usr/bin/sudo /bin/mv -f "$staged" "$TYPORA_INDEX"
+    /usr/bin/sudo /usr/bin/install -o "$owner" -g "$group" -m 0644 "$source" "$staged" \
+      || fail "无法在 Typora 资源目录创建临时文件。请在“系统设置 → 隐私与安全性 → 应用管理”中允许当前终端，然后完全退出并重新打开终端后重试"
+    /usr/bin/sudo /bin/mv -f "$staged" "$TYPORA_INDEX" \
+      || fail "无法替换 Typora 的 index.html；临时文件保留在：$staged"
   else
-    /usr/bin/install -o "$owner" -g "$group" -m 0644 "$source" "$staged"
-    /bin/mv -f "$staged" "$TYPORA_INDEX"
+    /usr/bin/install -o "$owner" -g "$group" -m 0644 "$source" "$staged" \
+      || fail "无法在 Typora 资源目录创建临时文件：$staged"
+    /bin/mv -f "$staged" "$TYPORA_INDEX" \
+      || fail "无法替换 Typora 的 index.html；临时文件保留在：$staged"
   fi
 }
 
