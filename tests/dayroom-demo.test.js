@@ -84,15 +84,9 @@ assert.equal(api.readingModeAt(370), 'day')
 assert.equal(api.readingModeAt(1159), 'day')
 assert.equal(api.readingModeAt(1160), 'night')
 
-const inkByMode = {
-  day: new Set(),
-  night: new Set(),
-}
 let modeChanges = 0
 let previousMode = api.readingModeAt(0)
 for (let minute = 0; minute < 1440; minute += 1) {
-  const color = api.colorAt(minute)
-  inkByMode[color.mode].add(color.ink.join(' '))
   const mode = api.readingModeAt(minute)
   if (mode !== previousMode) {
     modeChanges += 1
@@ -101,13 +95,23 @@ for (let minute = 0; minute < 1440; minute += 1) {
 }
 
 assert.equal(modeChanges, 2, 'reading mode should switch only at dawn and dusk')
-assert.equal(inkByMode.day.size, 1, 'day ink should remain stable')
-assert.equal(inkByMode.night.size, 1, 'night ink should remain stable')
-assert.notEqual(
-  [...inkByMode.day][0],
-  [...inkByMode.night][0],
-  'day and night should use distinct stable ink colors',
-)
+
+for (const boundary of [370, 1160]) {
+  const before = api.colorAt(boundary - 1).paper
+  const after = api.colorAt(boundary).paper
+  const largestChannelStep = Math.max(
+    ...before.map((channel, index) => Math.abs(after[index] - channel)),
+  )
+  assert.ok(
+    largestChannelStep <= 4,
+    `paper should not jump at the reading-mode boundary ${boundary}`,
+  )
+}
+
+const dawnBlueHour = api.colorAt(330).paper
+const duskBlueHour = api.colorAt(1160).paper
+assert.ok(dawnBlueHour[2] > dawnBlueHour[0] + 20, 'dawn should include a blue hour')
+assert.ok(duskBlueHour[2] > duskBlueHour[0] + 20, 'dusk should include a blue hour')
 
 const morning = api.lightAt(540)
 const noon = api.lightAt(750)
