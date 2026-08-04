@@ -7,7 +7,6 @@
   <style>
     :root {
       color-scheme: light dark;
-      --room-bg: 247 243 232;
       --paper-bg: 251 248 239;
       --ink: 48 48 42;
       --muted: 111 107 96;
@@ -36,7 +35,7 @@
           rgb(var(--room-glow) / var(--night-glow-opacity)),
           transparent 42%
         ),
-        rgb(var(--room-bg));
+        rgb(var(--paper-bg));
       color: rgb(var(--ink));
       font-family: "Avenir Next", Avenir, -apple-system, BlinkMacSystemFont,
         "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
@@ -87,17 +86,9 @@
       position: relative;
       z-index: 1;
       width: min(100% - 40px, 980px);
-      min-height: calc(100vh - 92px);
-      margin: 46px auto;
+      min-height: 100vh;
+      margin: 0 auto;
       padding: clamp(56px, 8vw, 92px) clamp(32px, 8vw, 96px) 132px;
-      overflow: hidden;
-      border: 1px solid rgb(var(--border) / 0.08);
-      border-radius: 3px;
-      background: rgb(var(--paper-bg) / 0.9);
-      box-shadow:
-        0 1px 1px rgb(49 44 34 / 0.03),
-        0 24px 70px rgb(49 44 34 / 0.09);
-      backdrop-filter: blur(1px);
     }
 
     .shell.mode-transition-clone {
@@ -260,8 +251,8 @@
 
     @media (max-width: 700px) {
       .shell {
-        width: calc(100% - 20px);
-        margin: 10px auto;
+        width: 100%;
+        margin: 0;
         padding: 52px 28px 138px;
       }
 
@@ -372,17 +363,17 @@
       const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
 
       const environmentStops = [
-        { at: 0, room: [25, 29, 37], glow: [210, 220, 235], glowOpacity: 0.045 },
-        { at: 300, room: [32, 39, 51], glow: [199, 214, 234], glowOpacity: 0.055 },
-        { at: 350, room: [70, 82, 102], glow: [190, 210, 240], glowOpacity: 0.08 },
-        { at: 390, room: [220, 201, 175], glow: [255, 212, 160], glowOpacity: 0.16 },
-        { at: 540, room: [238, 233, 222], glow: [255, 228, 184], glowOpacity: 0.08 },
-        { at: 750, room: [242, 242, 236], glow: [255, 240, 215], glowOpacity: 0.04 },
-        { at: 990, room: [237, 224, 202], glow: [255, 211, 160], glowOpacity: 0.12 },
-        { at: 1110, room: [177, 141, 107], glow: [245, 164, 95], glowOpacity: 0.22 },
-        { at: 1160, room: [83, 75, 74], glow: [235, 171, 116], glowOpacity: 0.13 },
-        { at: 1200, room: [29, 36, 48], glow: [208, 220, 238], glowOpacity: 0.06 },
-        { at: 1440, room: [25, 29, 37], glow: [210, 220, 235], glowOpacity: 0.045 },
+        { at: 0, glow: [210, 220, 235], glowOpacity: 0.045 },
+        { at: 300, glow: [199, 214, 234], glowOpacity: 0.055 },
+        { at: 350, glow: [190, 210, 240], glowOpacity: 0.08 },
+        { at: 390, glow: [255, 212, 160], glowOpacity: 0.16 },
+        { at: 540, glow: [255, 228, 184], glowOpacity: 0.08 },
+        { at: 750, glow: [255, 240, 215], glowOpacity: 0.04 },
+        { at: 990, glow: [255, 211, 160], glowOpacity: 0.12 },
+        { at: 1110, glow: [245, 164, 95], glowOpacity: 0.22 },
+        { at: 1160, glow: [235, 171, 116], glowOpacity: 0.13 },
+        { at: 1200, glow: [208, 220, 238], glowOpacity: 0.06 },
+        { at: 1440, glow: [210, 220, 235], glowOpacity: 0.045 },
       ]
 
       const daySurfaceStops = [
@@ -562,7 +553,6 @@
         const readable = readablePalette(paper, mode)
 
         return {
-          room: mixColor(lower.room, upper.room, amount),
           paper,
           mode,
           ink: readable.ink,
@@ -659,7 +649,6 @@
         const color = colorAt(value)
         const root = document.documentElement.style
 
-        root.setProperty('--room-bg', color.room.join(' '))
         root.setProperty('--paper-bg', color.paper.join(' '))
         root.setProperty('--ink', color.ink.join(' '))
         root.setProperty('--muted', color.muted.join(' '))
@@ -769,15 +758,10 @@
           ? sunlight.altitude
           : moonlight.altitude
         const shadeStrength = Math.max(sunStrength, twilightStrength * 0.72)
-        const shadowTarget = mixColor([180, 154, 130], [238, 232, 218], altitude)
-        const shadowTone = mixColor([255, 255, 255], shadowTarget, shadeStrength)
+        const shadowTone = mixColor([76, 66, 56], [124, 112, 99], altitude)
+        const shadowAlpha = shadeStrength * lerp(0.4, 0.28, altitude)
         const lightTone = mixColor([255, 207, 137], [255, 235, 200], altitude)
         const lightAlpha = sunStrength * lerp(0.22, 0.16, altitude)
-
-        if (shadeStrength > 0.015) {
-          shadowContext.fillStyle = `rgb(${shadowTone.join(' ')})`
-          shadowContext.fillRect(0, 0, width, height)
-        }
 
         const skewX = 0.3
         const skewY = 0.11
@@ -1010,9 +994,52 @@
         }
 
         if (shadeStrength > 0.015) {
-          shadowContext.globalCompositeOperation = 'destination-out'
-          shadowContext.drawImage(maskCanvas, 0, 0)
-          shadowContext.globalCompositeOperation = 'source-over'
+          const shadeCanvas = offscreenCanvas(
+            'dayroom-shade-stripes',
+            offscreenWidth,
+            offscreenHeight,
+          )
+          const shadeContext = shadeCanvas.getContext('2d')
+          shadeContext.clearRect(0, 0, offscreenWidth, offscreenHeight)
+          shadeContext.fillStyle = `rgb(${shadowTone.join(' ')} / ${shadowAlpha})`
+          shadeContext.fillRect(0, 0, projectionWidth, projectionHeight)
+          shadeContext.globalCompositeOperation = 'destination-out'
+          shadeContext.drawImage(maskCanvas, 0, 0)
+
+          shadeContext.globalCompositeOperation = 'destination-in'
+          const shadeHorizontalFade = shadeContext.createLinearGradient(
+            0,
+            0,
+            projectionWidth,
+            0,
+          )
+          shadeHorizontalFade.addColorStop(0, 'rgb(255 255 255 / 0)')
+          shadeHorizontalFade.addColorStop(0.08, 'rgb(255 255 255 / 0.18)')
+          shadeHorizontalFade.addColorStop(0.22, 'rgb(255 255 255 / 0.9)')
+          shadeHorizontalFade.addColorStop(0.52, 'rgb(255 255 255 / 1)')
+          shadeHorizontalFade.addColorStop(0.76, 'rgb(255 255 255 / 0.76)')
+          shadeHorizontalFade.addColorStop(0.93, 'rgb(255 255 255 / 0.14)')
+          shadeHorizontalFade.addColorStop(1, 'rgb(255 255 255 / 0)')
+          shadeContext.fillStyle = shadeHorizontalFade
+          shadeContext.fillRect(0, 0, projectionWidth, projectionHeight)
+
+          const shadeVerticalFade = shadeContext.createLinearGradient(
+            0,
+            0,
+            0,
+            projectionHeight,
+          )
+          shadeVerticalFade.addColorStop(0, 'rgb(255 255 255 / 0)')
+          shadeVerticalFade.addColorStop(0.09, 'rgb(255 255 255 / 0.22)')
+          shadeVerticalFade.addColorStop(0.22, 'rgb(255 255 255 / 0.9)')
+          shadeVerticalFade.addColorStop(0.58, 'rgb(255 255 255 / 1)')
+          shadeVerticalFade.addColorStop(0.8, 'rgb(255 255 255 / 0.58)')
+          shadeVerticalFade.addColorStop(0.96, 'rgb(255 255 255 / 0.08)')
+          shadeVerticalFade.addColorStop(1, 'rgb(255 255 255 / 0)')
+          shadeContext.fillStyle = shadeVerticalFade
+          shadeContext.fillRect(0, 0, projectionWidth, projectionHeight)
+          shadeContext.globalCompositeOperation = 'source-over'
+          shadowContext.drawImage(shadeCanvas, 0, 0)
         }
 
         if (sunStrength > 0.015) {
@@ -1035,8 +1062,6 @@
           lightContext.globalCompositeOperation = 'destination-in'
           lightContext.drawImage(maskCanvas, 0, 0)
           lightContext.globalCompositeOperation = 'source-over'
-          shadowContext.drawImage(lightCanvas, 0, 0)
-
           const softGlowCanvas = offscreenCanvas('dayroom-soft-glow', offscreenWidth, offscreenHeight)
           const glow = softGlowCanvas.getContext('2d')
           glow.clearRect(0, 0, offscreenWidth, offscreenHeight)
@@ -1057,6 +1082,7 @@
           glow.globalCompositeOperation = 'destination-in'
           glow.drawImage(maskCanvas, 0, 0)
           glow.globalCompositeOperation = 'source-over'
+          shadowContext.drawImage(lightCanvas, 0, 0)
           shadowContext.drawImage(softGlowCanvas, 0, 0)
         }
 
