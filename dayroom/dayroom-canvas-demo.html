@@ -335,7 +335,7 @@
       </div>
       <aside class="note">
         <strong>Demo 说明</strong>
-        当前使用本机时间。关闭“实时”后，可以用时间轴预览全天状态。光影渲染暂时基于 Mason Wang 的未授权 Gist，仅用于本地验证。
+        当前使用本机时间。关闭“实时”后，可以用时间轴预览全天状态。
       </aside>
     </section>
   </main>
@@ -736,12 +736,6 @@
         }
       }
 
-      /*
-       * Local prototype renderer adapted from Mason Wang's unlicensed
-       * cozy-window-shade Gist. Do not redistribute this implementation until
-       * permission or an explicit license is available.
-       * Source: https://gist.github.com/masonwang025/49edffdff399175af2262e921eaae50b
-       */
       const offscreenCache = new Map()
 
       function offscreenCanvas(key, width, height) {
