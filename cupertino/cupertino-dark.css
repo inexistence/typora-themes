@@ -1,0 +1,200 @@
+/* Cupertino Dark — dark companion to cupertino.css. */
+
+@import url("./cupertino.css");
+
+:root {
+  color-scheme: dark;
+
+  --bg-color: #000000;
+  --text-color: #f5f5f7;
+  --heading-color: #f5f5f7;
+  --muted-text-color: #98989d;
+  --md-char-color: #636366;
+  --meta-content-color: #98989d;
+  --primary-color: #0a84ff;
+  --primary-hover-color: #409cff;
+  --primary-tint-color: rgba(10, 132, 255, 0.24);
+  --primary-btn-border-color: #0a84ff;
+  --primary-btn-text-color: #ffffff;
+
+  --surface-color: #1c1c1e;
+  --surface-muted-color: #2c2c2e;
+  --surface-strong-color: #3a3a3c;
+  --surface-raised-color: #1c1c1e;
+  --border-color: rgba(235, 235, 245, 0.3);
+  --border-soft-color: rgba(235, 235, 245, 0.18);
+  --border-strong-color: rgba(235, 235, 245, 0.36);
+  --divider-color: rgba(235, 235, 245, 0.18);
+
+  --code-bg-color: #2c2c2e;
+  --code-text-color: #f5f5f7;
+  --code-fence-bg-color: #1c1c1e;
+  --code-fence-text-color: #f5f5f7;
+  --code-control-color: #aeaeb2;
+  --code-control-hover-bg-color: #3a3a3c;
+  --code-border-color: rgba(235, 235, 245, 0.2);
+  --code-gutter-color: #8e8e93;
+  --code-cursor-color: #0a84ff;
+  --code-active-line-color: rgba(10, 132, 255, 0.16);
+  --code-selection-color: rgba(10, 132, 255, 0.28);
+
+  --math-editor-bg-color: #2c2c2e;
+  --math-editor-text-color: #f5f5f7;
+  --math-command-color: #64d2ff;
+  --math-parameter-color: #bf5af2;
+  --math-meta-color: #98989d;
+  --math-cursor-color: #0a84ff;
+  --math-selection-color: rgba(10, 132, 255, 0.28);
+
+  --diagram-bg-color: #1c1c1e;
+  --diagram-node-bg-color: #2c2c2e;
+  --diagram-node-border-color: #636366;
+  --diagram-line-color: #aeaeb2;
+  --diagram-label-bg-color: #1c1c1e;
+
+  --syntax-comment: #98989d;
+  --syntax-keyword: #ff7ab2;
+  --syntax-string: #ff9d77;
+  --syntax-number: #a9dc76;
+  --syntax-variable: #78dce8;
+  --syntax-operator: #f8f8f2;
+  --syntax-tag: #ab9df2;
+  --syntax-error: #ff6961;
+
+  --selection-color: rgba(10, 132, 255, 0.36);
+  --shadow-color: rgba(0, 0, 0, 0.35);
+  --shadow-strong-color: rgba(0, 0, 0, 0.6);
+  --mark-bg-color: #725a00;
+  --mark-text-color: #fff2b8;
+  --table-header-text-color: #f5f5f7;
+
+  --quote-bg-color: #2c2c2e;
+  --alert-note-bg-color: rgba(10, 132, 255, 0.18);
+  --alert-note-border-color: #0a84ff;
+  --alert-note-text-color: #64d2ff;
+  --alert-tip-bg-color: rgba(48, 209, 88, 0.17);
+  --alert-tip-border-color: #30d158;
+  --alert-tip-text-color: #6ee7a0;
+  --alert-important-bg-color: rgba(191, 90, 242, 0.18);
+  --alert-important-border-color: #bf5af2;
+  --alert-important-text-color: #dcb4ff;
+  --alert-warning-bg-color: rgba(255, 159, 10, 0.18);
+  --alert-warning-border-color: #ff9f0a;
+  --alert-warning-text-color: #ffd08a;
+  --alert-caution-bg-color: rgba(255, 69, 58, 0.18);
+  --alert-caution-border-color: #ff453a;
+  --alert-caution-text-color: #ff9d97;
+
+  --side-bar-bg-color: #1c1c1e;
+  --active-file-bg-color: rgba(10, 132, 255, 0.27);
+  --active-file-text-color: #64d2ff;
+  --active-file-border-color: #0a84ff;
+  --item-hover-bg-color: rgba(235, 235, 245, 0.1);
+  --item-hover-text-color: #f5f5f7;
+  --blur-text-color: #636366;
+}
+
+#write a {
+  color: var(--primary-color);
+}
+
+#write a:hover {
+  color: var(--primary-hover-color);
+}
+
+.btn-default:hover {
+  background: rgba(10, 132, 255, 0.34);
+}
+
+/* Keep Typora's mixed HTML-block editor on a dark, readable surface. */
+#write .md-htmlblock .md-htmlblock-panel {
+  border-color: #48484a !important;
+  background: #2c2c2e !important;
+  color: #f5f5f7 !important;
+}
+
+#write .md-htmlblock .md-htmlblock-panel > :not(.CodeMirror) {
+  color: inherit !important;
+}
+
+#write .md-htmlblock .md-rawblock-control,
+#write .md-htmlblock .md-rawblock-tooltip {
+  border-color: #48484a !important;
+  background: #2c2c2e !important;
+  color: #aeaeb2 !important;
+}
+
+/*
+ * Mermaid Timeline uses its own cScale palette. Replace its bright pastel
+ * defaults with dark section cards so the light labels remain readable.
+ */
+#write .md-diagram-panel svg .timeline-node .node-bkg {
+  fill: #323238 !important;
+  stroke: #707078 !important;
+  stroke-width: 1.25px !important;
+}
+
+#write .md-diagram-panel svg .timeline-node .node-line--1,
+#write .md-diagram-panel svg .timeline-node .node-line-0,
+#write .md-diagram-panel svg .timeline-node .node-line-1 {
+  stroke: #707078 !important;
+  stroke-width: 2px !important;
+}
+
+#write .md-diagram-panel svg .timeline-node.section--1 .node-bkg {
+  fill: #42416f !important;
+  stroke: #a7a4ff !important;
+}
+
+#write .md-diagram-panel svg .timeline-node.section--1 .node-line--1 {
+  stroke: #a7a4ff !important;
+}
+
+#write .md-diagram-panel svg .timeline-node.section-0 .node-bkg {
+  fill: #604d16 !important;
+  stroke: #ffd15b !important;
+}
+
+#write .md-diagram-panel svg .timeline-node.section-0 .node-line-0 {
+  stroke: #ffd15b !important;
+}
+
+#write .md-diagram-panel svg .timeline-node.section-1 .node-bkg {
+  fill: #20543a !important;
+  stroke: #74e3a2 !important;
+}
+
+#write .md-diagram-panel svg .timeline-node.section-1 .node-line-1 {
+  stroke: #74e3a2 !important;
+}
+
+#write .md-diagram-panel svg .timeline-node text,
+#write .md-diagram-panel svg .timeline-node text * {
+  fill: #ffffff !important;
+}
+
+#write .md-diagram-panel svg .lineWrapper line {
+  stroke: #a9a9b0 !important;
+}
+
+#write .md-diagram-panel svg .lineWrapper path {
+  fill: #a9a9b0 !important;
+  stroke: #a9a9b0 !important;
+}
+
+@media print {
+  :root {
+    color-scheme: light;
+    --bg-color: #ffffff;
+    --text-color: #111111;
+    --heading-color: #000000;
+    --muted-text-color: #555555;
+    --surface-color: #ffffff;
+    --surface-muted-color: #f4f4f4;
+    --code-bg-color: #f4f4f4;
+    --code-fence-bg-color: #f8f8f8;
+    --border-color: #cfcfcf;
+    --border-soft-color: #dedede;
+    --divider-color: #d5d5d5;
+  }
+}

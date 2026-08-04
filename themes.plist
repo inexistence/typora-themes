@@ -56,6 +56,19 @@
       <key>module</key>
       <string>sunlit-module.js</string>
     </dict>
+    <dict>
+      <key>id</key>
+      <string>cupertino</string>
+      <key>name</key>
+      <string>Cupertino</string>
+      <key>css</key>
+      <array>
+        <string>cupertino.css</string>
+        <string>cupertino-dark.css</string>
+      </array>
+      <key>module</key>
+      <string></string>
+    </dict>
   </array>
 </dict>
 </plist>

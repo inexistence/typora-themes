@@ -10,6 +10,7 @@
 | [极客（Geek）](./geek/) | 可用 | 参考 Cursor Docs、同时提供浅色与深色版本的工程文档风格。 |
 | [书页（Folio）](./folio/) | 可用 | 参考 Claude Platform Docs 的浅色与深色编辑刊物风格，含实验性的轻量代码标签组增强器。 |
 | [晴窗（Sunlit）](./sunlit/) | 原型 | 暖象牙纸面与动态枝叶投影；当前视频素材仅供本地效果验证。 |
+| [Cupertino](./cupertino/) | 可用 | 参考 Apple 人机界面指南按钮层级的系统化文档主题，提供浅色与深色版本。 |
 
 ## 预览
 
@@ -43,7 +44,7 @@ https://github.com/user-attachments/assets/af6ed57f-fd3c-42a7-8372-1f009121bf87
 ./install-macos.sh install all
 ```
 
-可用主题名为 `island`、`geek`、`folio`、`sunlit` 和 `all`。也可以单独管理主题：
+可用主题名为 `island`、`geek`、`folio`、`sunlit`、`cupertino` 和 `all`。也可以单独管理主题：
 
 ```bash
 ./install-macos.sh install folio
@@ -87,8 +88,9 @@ https://github.com/user-attachments/assets/af6ed57f-fd3c-42a7-8372-1f009121bf87
 | Geek | `geek/geek.css`、`geek/geek-dark.css`、`geek/geek/` | Geek 与 Geek Dark |
 | Folio | `folio/folio.css`、`folio/folio-dark.css` | 不启用实验性代码标签组 |
 | Sunlit | `sunlit/sunlit.css`、`sunlit/sunlit/` | 使用静态树影，不播放视频 |
+| Cupertino | `cupertino/cupertino.css`、`cupertino/cupertino-dark.css`、`cupertino/cupertino/` | Cupertino 与 Cupertino Dark |
 
-复制后重启 Typora，并在“主题”菜单中选择对应主题。Geek Dark 依赖同级的 `geek.css`，Folio Dark 依赖同级的 `folio.css`。
+复制后重启 Typora，并在“主题”菜单中选择对应主题。Geek Dark、Folio Dark 和 Cupertino Dark 分别依赖同级的浅色 CSS 文件。
 
 ## 目录约定
 
