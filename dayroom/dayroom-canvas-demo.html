@@ -8,9 +8,13 @@
     :root {
       color-scheme: light dark;
       --paper-bg: 251 248 239;
-      --ink: 48 48 42;
-      --muted: 111 107 96;
-      --accent: 154 103 45;
+      --ink: 45 45 51;
+      --heading: 35 35 42;
+      --muted: 116 115 123;
+      --md-char: 163 162 170;
+      --accent: 111 118 152;
+      --mark-text: 45 45 51;
+      --mark-bg: 236 222 211;
       --border: 75 70 58;
       --room-glow: 255 222 164;
       --night-glow-opacity: 0;
@@ -122,10 +126,12 @@
     h1,
     h2 {
       margin: 0;
+      color: rgb(var(--heading));
       font-family: "Iowan Old Style", "Palatino Linotype", "Songti SC",
         "Noto Serif SC", serif;
       font-weight: 500;
       text-wrap: balance;
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
     }
 
     h1 {
@@ -138,6 +144,21 @@
     h1 span {
       color: rgb(var(--accent));
       transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
+    }
+
+    .markdown-marker {
+      color: rgb(var(--md-char));
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
+    }
+
+    mark {
+      padding: 0.08em 0.18em;
+      border-radius: 0.18em;
+      background: rgb(var(--mark-bg));
+      color: rgb(var(--mark-text));
+      transition:
+        background-color 760ms cubic-bezier(0.42, 0, 0.2, 1),
+        color 760ms cubic-bezier(0.42, 0, 0.2, 1);
     }
 
     .dek {
@@ -414,14 +435,22 @@
 
       const readingPalettes = {
         day: {
-          ink: [48, 48, 42],
-          muted: [111, 107, 96],
-          accent: [151, 102, 48],
+          ink: [45, 45, 51],
+          heading: [35, 35, 42],
+          muted: [116, 115, 123],
+          marker: [163, 162, 170],
+          accent: [111, 118, 152],
+          markText: [45, 45, 51],
+          markBg: [236, 222, 211],
         },
         night: {
-          ink: [232, 230, 222],
-          muted: [170, 168, 159],
-          accent: [224, 216, 215],
+          ink: [240, 239, 242],
+          heading: [247, 246, 248],
+          muted: [184, 183, 191],
+          marker: [137, 138, 148],
+          accent: [196, 201, 229],
+          markText: [240, 239, 242],
+          markBg: [82, 75, 84],
         },
       }
 
@@ -571,8 +600,12 @@
         const ink = ensureContrast(palette.ink, paper, 4.6, fallback)
         return {
           ink,
-          muted: ensureContrast(palette.muted, paper, 4.6, ink),
+          heading: ensureContrast(palette.heading, paper, 4.8, ink),
+          muted: ensureContrast(palette.muted, paper, 3.2, ink),
+          marker: ensureContrast(palette.marker, paper, 1.9, ink),
           accent: ensureContrast(palette.accent, paper, 3.2, ink),
+          markText: ink,
+          markBg: palette.markBg,
         }
       }
 
@@ -589,8 +622,12 @@
           paper,
           mode,
           ink: readable.ink,
+          heading: readable.heading,
           muted: readable.muted,
+          marker: readable.marker,
           accent: readable.accent,
+          markText: readable.markText,
+          markBg: readable.markBg,
           glow: mixColor(lower.glow, upper.glow, amount),
           glowOpacity: lerp(lower.glowOpacity, upper.glowOpacity, amount),
         }
@@ -684,8 +721,12 @@
 
         root.setProperty('--paper-bg', color.paper.join(' '))
         root.setProperty('--ink', color.ink.join(' '))
+        root.setProperty('--heading', color.heading.join(' '))
         root.setProperty('--muted', color.muted.join(' '))
+        root.setProperty('--md-char', color.marker.join(' '))
         root.setProperty('--accent', color.accent.join(' '))
+        root.setProperty('--mark-text', color.markText.join(' '))
+        root.setProperty('--mark-bg', color.markBg.join(' '))
         root.setProperty('--room-glow', color.glow.join(' '))
         root.setProperty('--night-glow-opacity', String(color.glowOpacity))
         root.setProperty('--daylight-opacity', '1')
@@ -1153,8 +1194,12 @@
         const preservedProperties = [
           '--paper-bg',
           '--ink',
+          '--heading',
           '--muted',
+          '--md-char',
           '--accent',
+          '--mark-text',
+          '--mark-bg',
           '--border',
         ]
 
