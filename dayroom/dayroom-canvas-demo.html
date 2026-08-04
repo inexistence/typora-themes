@@ -368,35 +368,48 @@
       const shell = document.getElementById('dayroom-shell')
       const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
 
+      // Reference card, sampled left to right from the supplied 16-band image.
+      const dayroomColorCard = Object.freeze([
+        [178, 196, 201], [181, 191, 190], [185, 188, 179], [187, 186, 175],
+        [197, 190, 173], [208, 192, 171], [196, 183, 170], [186, 168, 161],
+        [183, 161, 164], [159, 145, 161], [136, 134, 159], [107, 113, 137],
+        [87, 92, 112], [73, 77, 92], [55, 54, 60], [44, 40, 43],
+      ])
+
       const environmentStops = [
-        { at: 0, glow: [101, 119, 153], glowOpacity: 0.045 },
-        { at: 300, glow: [137, 166, 197], glowOpacity: 0.055 },
-        { at: 350, glow: [174, 201, 220], glowOpacity: 0.08 },
-        { at: 390, glow: [224, 216, 209], glowOpacity: 0.16 },
-        { at: 540, glow: [238, 225, 196], glowOpacity: 0.08 },
-        { at: 750, glow: [242, 239, 226], glowOpacity: 0.04 },
-        { at: 990, glow: [224, 202, 202], glowOpacity: 0.12 },
-        { at: 1110, glow: [195, 168, 186], glowOpacity: 0.22 },
-        { at: 1160, glow: [144, 147, 174], glowOpacity: 0.13 },
-        { at: 1200, glow: [84, 101, 135], glowOpacity: 0.06 },
-        { at: 1440, glow: [101, 119, 153], glowOpacity: 0.045 },
+        { at: 0, glow: card(16), glowOpacity: 0.045 },
+        { at: 270, glow: card(14), glowOpacity: 0.05 },
+        { at: 330, glow: card(12), glowOpacity: 0.065 },
+        { at: 350, glow: card(1), glowOpacity: 0.09 },
+        { at: 390, glow: card(2), glowOpacity: 0.14 },
+        { at: 480, glow: card(3), glowOpacity: 0.1 },
+        { at: 540, glow: card(5), glowOpacity: 0.075 },
+        { at: 750, glow: card(6), glowOpacity: 0.04 },
+        { at: 990, glow: card(7), glowOpacity: 0.1 },
+        { at: 1050, glow: card(8), glowOpacity: 0.15 },
+        { at: 1110, glow: card(9), glowOpacity: 0.22 },
+        { at: 1160, glow: card(10), glowOpacity: 0.15 },
+        { at: 1200, glow: card(12), glowOpacity: 0.075 },
+        { at: 1260, glow: card(14), glowOpacity: 0.05 },
+        { at: 1440, glow: card(16), glowOpacity: 0.045 },
       ]
 
       const paperSurfaceStops = [
-        { at: 0, paper: [37, 41, 50] },
-        { at: 270, paper: [45, 53, 69] },
-        { at: 330, paper: [67, 82, 108] },
-        { at: 360, paper: [103, 120, 145] },
-        { at: 390, paper: [185, 188, 191] },
-        { at: 540, paper: [248, 245, 236] },
-        { at: 750, paper: [250, 250, 246] },
-        { at: 990, paper: [247, 239, 223] },
-        { at: 1050, paper: [235, 216, 215] },
-        { at: 1110, paper: [194, 177, 193] },
-        { at: 1160, paper: [119, 126, 151] },
-        { at: 1200, paper: [69, 81, 108] },
-        { at: 1260, paper: [47, 53, 67] },
-        { at: 1440, paper: [37, 41, 50] },
+        { at: 0, paper: card(16) },
+        { at: 270, paper: card(14) },
+        { at: 330, paper: card(13) },
+        { at: 360, paper: card(12) },
+        { at: 390, paper: card(1) },
+        { at: 480, paper: paperTint(2, 0.18) },
+        { at: 540, paper: paperTint(5, 0.42) },
+        { at: 750, paper: paperTint(4, 0.62) },
+        { at: 990, paper: paperTint(7, 0.45) },
+        { at: 1050, paper: paperTint(8, 0.3) },
+        { at: 1110, paper: paperTint(9, 0.12) },
+        { at: 1160, paper: card(11) },
+        { at: 1200, paper: card(13) },
+        { at: 1260, paper: card(14) },
+        { at: 1440, paper: card(16) },
       ]
 
       const readingPalettes = {
@@ -484,6 +497,14 @@
         const fromLab = rgbToOklab(from)
         const toLab = rgbToOklab(to)
         return oklabToRgb(fromLab.map((channel, index) => lerp(channel, toLab[index], amount)))
+      }
+
+      function card(index) {
+        return dayroomColorCard[index - 1]
+      }
+
+      function paperTint(index, whiteAmount) {
+        return mixOklabColor(card(index), [255, 255, 255], whiteAmount)
       }
 
       function relativeLuminance(color) {
@@ -693,8 +714,8 @@
           const sourceX = width * 0.26
           const sourceY = height * 0.16
           const twilightTone = mixColor(
-            [160, 190, 220],
-            [225, 174, 186],
+            card(1),
+            card(9),
             twilight.warmth,
           )
           const twilightGlow = glowContext.createRadialGradient(
@@ -729,9 +750,9 @@
             sourceY,
             Math.max(width, height) * 0.72,
           )
-          moonGlow.addColorStop(0, `rgb(177 198 226 / ${moonlight.intensity * 0.07})`)
-          moonGlow.addColorStop(0.42, `rgb(136 155 195 / ${moonlight.intensity * 0.025})`)
-          moonGlow.addColorStop(1, 'rgb(103 119 154 / 0)')
+          moonGlow.addColorStop(0, `rgb(${card(11).join(' ')} / ${moonlight.intensity * 0.07})`)
+          moonGlow.addColorStop(0.42, `rgb(${card(12).join(' ')} / ${moonlight.intensity * 0.025})`)
+          moonGlow.addColorStop(1, `rgb(${card(13).join(' ')} / 0)`)
           glowContext.fillStyle = moonGlow
           glowContext.fillRect(0, 0, width, height)
         }
@@ -770,9 +791,9 @@
           ? sunlight.altitude
           : moonlight.altitude
         const shadeStrength = Math.max(sunStrength, twilightStrength * 0.72)
-        const shadowTone = mixColor([48, 56, 77], [112, 117, 142], altitude)
+        const shadowTone = mixColor(card(14), card(11), altitude)
         const shadowAlpha = shadeStrength * lerp(0.4, 0.28, altitude)
-        const lightTone = mixColor([232, 183, 188], [242, 227, 204], altitude)
+        const lightTone = mixColor(card(9), card(6), altitude)
         const lightAlpha = sunStrength * lerp(0.22, 0.16, altitude)
 
         const skewX = 0.3
@@ -979,8 +1000,8 @@
             projectionWidth * 0.82,
           )
           const twilightTone = mixColor(
-            [160, 190, 220],
-            [225, 174, 186],
+            card(1),
+            card(9),
             twilight.warmth,
           )
           twilightGradient.addColorStop(
@@ -1085,7 +1106,7 @@
             projectionHeight * 0.42,
             projectionWidth * 0.7,
           )
-          const glowColor = [224, 190, 196]
+          const glowColor = card(8)
           glowGradient.addColorStop(0, `rgb(${glowColor.join(' ')} / ${lightAlpha * 0.35})`)
           glowGradient.addColorStop(0.5, `rgb(${glowColor.join(' ')} / ${lightAlpha * 0.15})`)
           glowGradient.addColorStop(1, `rgb(${glowColor.join(' ')} / 0)`)
