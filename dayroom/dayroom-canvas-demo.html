@@ -39,6 +39,7 @@
       color: rgb(var(--ink));
       font-family: "Avenir Next", Avenir, -apple-system, BlinkMacSystemFont,
         "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
     }
 
     body::before {
@@ -108,6 +109,7 @@
       font-weight: 650;
       letter-spacing: 0.16em;
       text-transform: uppercase;
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
     }
 
     .eyebrow::before {
@@ -135,6 +137,7 @@
 
     h1 span {
       color: rgb(var(--accent));
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
     }
 
     .dek {
@@ -145,6 +148,7 @@
         "Noto Serif SC", serif;
       font-size: clamp(1.05rem, 2vw, 1.28rem);
       line-height: 1.75;
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
     }
 
     .prose {
@@ -167,6 +171,7 @@
       color: rgb(var(--muted));
       font-size: 0.76rem;
       line-height: 1.75;
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
     }
 
     .note strong {
@@ -176,6 +181,7 @@
       font-size: 0.7rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
     }
 
     .controls {
@@ -363,33 +369,34 @@
       const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
 
       const environmentStops = [
-        { at: 0, glow: [210, 220, 235], glowOpacity: 0.045 },
-        { at: 300, glow: [199, 214, 234], glowOpacity: 0.055 },
-        { at: 350, glow: [190, 210, 240], glowOpacity: 0.08 },
-        { at: 390, glow: [255, 212, 160], glowOpacity: 0.16 },
-        { at: 540, glow: [255, 228, 184], glowOpacity: 0.08 },
-        { at: 750, glow: [255, 240, 215], glowOpacity: 0.04 },
-        { at: 990, glow: [255, 211, 160], glowOpacity: 0.12 },
-        { at: 1110, glow: [245, 164, 95], glowOpacity: 0.22 },
-        { at: 1160, glow: [235, 171, 116], glowOpacity: 0.13 },
-        { at: 1200, glow: [208, 220, 238], glowOpacity: 0.06 },
-        { at: 1440, glow: [210, 220, 235], glowOpacity: 0.045 },
+        { at: 0, glow: [101, 119, 153], glowOpacity: 0.045 },
+        { at: 300, glow: [137, 166, 197], glowOpacity: 0.055 },
+        { at: 350, glow: [174, 201, 220], glowOpacity: 0.08 },
+        { at: 390, glow: [224, 216, 209], glowOpacity: 0.16 },
+        { at: 540, glow: [238, 225, 196], glowOpacity: 0.08 },
+        { at: 750, glow: [242, 239, 226], glowOpacity: 0.04 },
+        { at: 990, glow: [224, 202, 202], glowOpacity: 0.12 },
+        { at: 1110, glow: [195, 168, 186], glowOpacity: 0.22 },
+        { at: 1160, glow: [144, 147, 174], glowOpacity: 0.13 },
+        { at: 1200, glow: [84, 101, 135], glowOpacity: 0.06 },
+        { at: 1440, glow: [101, 119, 153], glowOpacity: 0.045 },
       ]
 
-      const daySurfaceStops = [
-        { at: 370, paper: [241, 231, 214] },
+      const paperSurfaceStops = [
+        { at: 0, paper: [37, 41, 50] },
+        { at: 270, paper: [45, 53, 69] },
+        { at: 330, paper: [67, 82, 108] },
+        { at: 360, paper: [103, 120, 145] },
+        { at: 390, paper: [185, 188, 191] },
         { at: 540, paper: [248, 245, 236] },
         { at: 750, paper: [250, 250, 246] },
         { at: 990, paper: [247, 239, 223] },
-        { at: 1160, paper: [232, 218, 197] },
-      ]
-
-      const nightSurfaceStops = [
-        { at: 1160, paper: [48, 51, 58] },
-        { at: 1230, paper: [41, 46, 56] },
+        { at: 1050, paper: [235, 216, 215] },
+        { at: 1110, paper: [194, 177, 193] },
+        { at: 1160, paper: [119, 126, 151] },
+        { at: 1200, paper: [69, 81, 108] },
+        { at: 1260, paper: [47, 53, 67] },
         { at: 1440, paper: [37, 41, 50] },
-        { at: 1740, paper: [48, 54, 64] },
-        { at: 1810, paper: [50, 56, 66] },
       ]
 
       const readingPalettes = {
@@ -401,7 +408,7 @@
         night: {
           ink: [232, 230, 222],
           muted: [170, 168, 159],
-          accent: [210, 166, 109],
+          accent: [224, 216, 215],
         },
       }
 
@@ -526,20 +533,25 @@
         return value >= 370 && value < 1160 ? 'day' : 'night'
       }
 
-      function paperAt(value, mode = readingModeAt(value)) {
-        if (mode === 'day') {
-          return valueFromStops(daySurfaceStops, value, 'paper', mixOklabColor)
-        }
-        const nightValue = value < 370 ? value + 1440 : value
-        return valueFromStops(nightSurfaceStops, nightValue, 'paper', mixOklabColor)
+      function paperAt(value) {
+        return valueFromStops(paperSurfaceStops, value, 'paper', mixOklabColor)
       }
 
-      function readablePalette(paper, mode) {
-        const palette = readingPalettes[mode]
+      function readablePalette(paper) {
+        const palette = relativeLuminance(paper) >= 0.18
+          ? readingPalettes.day
+          : readingPalettes.night
+        const darkFallback = [0, 0, 0]
+        const lightFallback = [255, 255, 255]
+        const fallback = contrastRatio(lightFallback, paper)
+          >= contrastRatio(darkFallback, paper)
+          ? lightFallback
+          : darkFallback
+        const ink = ensureContrast(palette.ink, paper, 4.6, fallback)
         return {
-          ink: palette.ink,
-          muted: ensureContrast(palette.muted, paper, 4.6, palette.ink),
-          accent: ensureContrast(palette.accent, paper, 3.2, palette.ink),
+          ink,
+          muted: ensureContrast(palette.muted, paper, 4.6, ink),
+          accent: ensureContrast(palette.accent, paper, 3.2, ink),
         }
       }
 
@@ -549,8 +561,8 @@
         const lower = environmentStops[Math.max(upperIndex - 1, 0)]
         const amount = smoothstep(lower.at, upper.at, value)
         const mode = readingModeAt(value)
-        const paper = paperAt(value, mode)
-        const readable = readablePalette(paper, mode)
+        const paper = paperAt(value)
+        const readable = readablePalette(paper)
 
         return {
           paper,
@@ -681,8 +693,8 @@
           const sourceX = width * 0.26
           const sourceY = height * 0.16
           const twilightTone = mixColor(
-            [190, 211, 238],
-            [255, 193, 132],
+            [160, 190, 220],
+            [225, 174, 186],
             twilight.warmth,
           )
           const twilightGlow = glowContext.createRadialGradient(
@@ -717,9 +729,9 @@
             sourceY,
             Math.max(width, height) * 0.72,
           )
-          moonGlow.addColorStop(0, `rgb(208 220 238 / ${moonlight.intensity * 0.07})`)
-          moonGlow.addColorStop(0.42, `rgb(184 202 228 / ${moonlight.intensity * 0.025})`)
-          moonGlow.addColorStop(1, 'rgb(156 177 208 / 0)')
+          moonGlow.addColorStop(0, `rgb(177 198 226 / ${moonlight.intensity * 0.07})`)
+          moonGlow.addColorStop(0.42, `rgb(136 155 195 / ${moonlight.intensity * 0.025})`)
+          moonGlow.addColorStop(1, 'rgb(103 119 154 / 0)')
           glowContext.fillStyle = moonGlow
           glowContext.fillRect(0, 0, width, height)
         }
@@ -758,9 +770,9 @@
           ? sunlight.altitude
           : moonlight.altitude
         const shadeStrength = Math.max(sunStrength, twilightStrength * 0.72)
-        const shadowTone = mixColor([76, 66, 56], [124, 112, 99], altitude)
+        const shadowTone = mixColor([48, 56, 77], [112, 117, 142], altitude)
         const shadowAlpha = shadeStrength * lerp(0.4, 0.28, altitude)
-        const lightTone = mixColor([255, 207, 137], [255, 235, 200], altitude)
+        const lightTone = mixColor([232, 183, 188], [242, 227, 204], altitude)
         const lightAlpha = sunStrength * lerp(0.22, 0.16, altitude)
 
         const skewX = 0.3
@@ -967,8 +979,8 @@
             projectionWidth * 0.82,
           )
           const twilightTone = mixColor(
-            [190, 211, 238],
-            [255, 194, 135],
+            [160, 190, 220],
+            [225, 174, 186],
             twilight.warmth,
           )
           twilightGradient.addColorStop(
@@ -1073,7 +1085,7 @@
             projectionHeight * 0.42,
             projectionWidth * 0.7,
           )
-          const glowColor = [255, 222, 164]
+          const glowColor = [224, 190, 196]
           glowGradient.addColorStop(0, `rgb(${glowColor.join(' ')} / ${lightAlpha * 0.35})`)
           glowGradient.addColorStop(0.5, `rgb(${glowColor.join(' ')} / ${lightAlpha * 0.15})`)
           glowGradient.addColorStop(1, `rgb(${glowColor.join(' ')} / 0)`)
