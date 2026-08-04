@@ -72,12 +72,24 @@ for (let minute = 0; minute < 1440; minute += 1) {
 }
 
 for (const [key, result] of Object.entries(minimum)) {
-  const expected = key === 'accent' ? 3.2 : 4.5
+  const expected = key === 'ink' ? 4.5 : 3.2
   assert.ok(
     result.ratio >= expected,
     `${key} contrast fell below ${expected} at minute ${result.minute}: ${result.ratio}`,
   )
 }
+
+const noonPalette = api.colorAt(750)
+assert.equal(noonPalette.ink.join(' '), '45 45 51', 'day ink should use graphite')
+assert.equal(noonPalette.heading.join(' '), '35 35 42', 'day heading should be distinct')
+assert.equal(noonPalette.muted.join(' '), '116 115 123', 'day muted should use neutral gray')
+assert.equal(noonPalette.marker.join(' '), '163 162 170', 'day markers should recede')
+assert.equal(noonPalette.accent.join(' '), '111 118 152', 'day accent should use mist violet')
+
+const midnightPalette = api.colorAt(0)
+assert.equal(midnightPalette.ink.join(' '), '240 239 242', 'night ink should use soft white')
+assert.equal(midnightPalette.muted.join(' '), '184 183 191', 'night muted should use fog gray')
+assert.equal(midnightPalette.accent.join(' '), '196 201 229', 'night accent should use pale violet blue')
 
 assert.equal(api.readingModeAt(369), 'night')
 assert.equal(api.readingModeAt(370), 'day')
