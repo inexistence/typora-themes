@@ -1,0 +1,23 @@
+dayroom/dayroom-engine.js
+  s_a6832e5a421508::t_daf98dd926a485 430-431,440,466,514,960-961,968
+  s_a6832e5a421508::t_126eb500aefcac 930-931
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "a66f30faf0618c038e86a0effa462144ddd9439b",
+  "prompts": {},
+  "logical_commit_id": "a66f30faf0618c038e86a0effa462144ddd9439b",
+  "sessions": {
+    "s_a6832e5a421508": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fd142-cc93-7a63-a016-357ee3673f04",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Jianbin <inexistenceorz@gmail.com>",
+      "total_additions": 10,
+      "total_deletions": 51
+    }
+  }
+}
