@@ -112,6 +112,10 @@
     return oklabToRgb([lab[0], lab[1] * chromaScale, lab[2] * chromaScale])
   }
 
+  const HYBRID_SKY_CARD = Object.freeze(
+    SEASCAPE_SKY_CARD.map(color => Object.freeze(reduceChromaOklab(color, 0.42))),
+  )
+
   function relativeLuminance(color) {
     const channels = color.map(channel => {
       const value = channel / 255
@@ -199,6 +203,17 @@
       stretch: 1.68,
       softness: 22,
     }
+  }
+
+  function horizonEmphasisAt(value) {
+    const sunlight = lightAt(value)
+    const twilight = twilightAt(value)
+    const presence = clamp(
+      Math.max(sunlight.horizonWarmth * sunlight.daylight, twilight.intensity * 1.8),
+      0,
+      1,
+    )
+    return smoothstep(0.08, 0.72, presence)
   }
 
   function moonlightAt(value) {
@@ -348,6 +363,45 @@
     }
   }
 
+  function buildHybridPalette(skyCard) {
+    const interior = buildInteriorPalette(INTERIOR_SKY_CARD)
+    const seascape = buildSeascapePalette(skyCard)
+
+    function materialPaperAt(value) {
+      const interiorPaper = reduceChromaOklab(interior.paperAt(value), 0.08)
+      const dayMaterial = mixOklabColor(interiorPaper, [248, 245, 237], 0.64)
+      const nightMaterial = mixOklabColor(interiorPaper, [43, 43, 48], 0.5)
+      const surfaceDaylight = smoothstep(345, 390, value)
+        * (1 - smoothstep(1100, 1170, value))
+      return mixOklabColor(nightMaterial, dayMaterial, surfaceDaylight)
+    }
+
+    return {
+      card(index) {
+        return reduceChromaOklab(seascape.card(index), 0.42)
+      },
+      environmentStops: null,
+      paperAt(value) {
+        return materialPaperAt(value)
+      },
+      glowAt(value) {
+        const glow = seascape.glowAt(value)
+        const horizonEmphasis = horizonEmphasisAt(value)
+        return {
+          glow: reduceChromaOklab(glow.glow, lerp(0.2, 0.68, horizonEmphasis)),
+          glowOpacity: glow.glowOpacity * lerp(0.45, 1.15, horizonEmphasis),
+        }
+      },
+      accentAt(value, paper, fallback) {
+        const sky = skyAtChronological(value, skyCard)
+        const seaAccent = reduceChromaOklab(sky, 0.5)
+        const amount = lerp(0.28, 0.42, lightAt(value).daylight)
+        const candidate = mixOklabColor(fallback, seaAccent, amount)
+        return ensureContrast(candidate, paper, 3.2, fallback)
+      },
+    }
+  }
+
   function readablePalette(paper) {
     const palette = relativeLuminance(paper) >= 0.18
       ? READING_PALETTES.day
@@ -371,10 +425,12 @@
   }
 
   function createPaletteModel(paletteId) {
-    const skyCard = paletteId === 'seascape' ? SEASCAPE_SKY_CARD : INTERIOR_SKY_CARD
+    const skyCard = paletteId === 'interior' ? INTERIOR_SKY_CARD : SEASCAPE_SKY_CARD
     const builder = paletteId === 'seascape'
       ? buildSeascapePalette
-      : buildInteriorPalette
+      : paletteId === 'hybrid'
+        ? buildHybridPalette
+        : buildInteriorPalette
     const model = builder(skyCard)
 
     function colorAt(value) {
@@ -388,7 +444,9 @@
         heading: readable.heading,
         muted: readable.muted,
         marker: readable.marker,
-        accent: readable.accent,
+        accent: model.accentAt
+          ? model.accentAt(value, paper, readable.accent)
+          : readable.accent,
         markText: readable.markText,
         markBg: readable.markBg,
         glow: glow.glow,
@@ -440,6 +498,7 @@
       container.style.setProperty('--room-glow', color.glow.join(' '))
       container.style.setProperty('--night-glow-opacity', String(color.glowOpacity))
       container.style.setProperty('--daylight-opacity', '1')
+      container.style.setProperty('--glow-blend-mode', paletteId === 'hybrid' ? 'normal' : 'screen')
       activeReadingMode = color.mode
     }
 
@@ -472,6 +531,8 @@
       const { width, height } = fitCanvas(glowCanvas, glowContext)
       const moonlight = moonlightAt(value)
       const twilight = twilightAt(value)
+      const horizonEmphasis = paletteId === 'hybrid' ? horizonEmphasisAt(value) : 0
+      const horizonBoost = lerp(1, 1.65, horizonEmphasis)
       glowContext.clearRect(0, 0, width, height)
 
       if (twilight.intensity > 0.015) {
@@ -481,8 +542,8 @@
         const twilightGlow = glowContext.createRadialGradient(
           sourceX, sourceY, 0, sourceX, sourceY, Math.max(width, height) * 0.78,
         )
-        twilightGlow.addColorStop(0, `rgb(${twilightTone.join(' ')} / ${twilight.intensity * 0.075})`)
-        twilightGlow.addColorStop(0.48, `rgb(${twilightTone.join(' ')} / ${twilight.intensity * 0.026})`)
+        twilightGlow.addColorStop(0, `rgb(${twilightTone.join(' ')} / ${twilight.intensity * 0.075 * horizonBoost})`)
+        twilightGlow.addColorStop(0.48, `rgb(${twilightTone.join(' ')} / ${twilight.intensity * 0.026 * horizonBoost})`)
         twilightGlow.addColorStop(1, `rgb(${twilightTone.join(' ')} / 0)`)
         glowContext.fillStyle = twilightGlow
         glowContext.fillRect(0, 0, width, height)
@@ -510,6 +571,8 @@
       const sunStrength = perceptualStrength(sunlight.daylight)
       const moonStrength = perceptualStrength(moonlight.intensity)
       const twilightStrength = twilight.intensity
+      const horizonEmphasis = paletteId === 'hybrid' ? horizonEmphasisAt(value) : 0
+      const horizonBoost = lerp(1, 1.65, horizonEmphasis)
       const strength = Math.max(sunStrength, moonStrength, twilightStrength)
       shadowContext.clearRect(0, 0, width, height)
 
@@ -519,21 +582,27 @@
 
       const altitude = sunStrength >= moonStrength ? sunlight.altitude : moonlight.altitude
       const shadeStrength = Math.max(sunStrength, twilightStrength * 0.72)
-      const currentSky = paletteId === 'seascape'
+      const currentSky = paletteId === 'seascape' || paletteId === 'hybrid'
         ? skyAtChronological(value, palette.skyCard)
         : null
       const shadowTone = currentSky
         ? mixOklabColor(
-            reduceChromaOklab(currentSky, 0.12),
+            reduceChromaOklab(currentSky, paletteId === 'hybrid' ? 0.06 : 0.12),
             [48, 53, 66],
             lerp(0.68, 0.52, altitude),
           )
         : mixColor(card(14), card(11), altitude)
       const shadowAlpha = shadeStrength * lerp(0.4, 0.28, altitude)
       const lightTone = currentSky
-        ? reduceChromaOklab(currentSky, 0.58)
+        ? reduceChromaOklab(
+            currentSky,
+            paletteId === 'hybrid'
+              ? lerp(0.28, 0.78, horizonEmphasis)
+              : 0.58,
+          )
         : mixColor(card(9), card(6), altitude)
       const lightAlpha = sunStrength * lerp(0.22, 0.16, altitude)
+        * (paletteId === 'hybrid' ? lerp(1, 1.45, horizonEmphasis) : 1)
       const skewX = 0.3
       const skewY = 0.11
       const stretch = 1.75
@@ -678,8 +747,8 @@
           projectionWidth * 0.39, projectionHeight * 0.44, projectionWidth * 0.82,
         )
         const twilightTone = mixColor(card(1), card(9), twilight.warmth)
-        twilightGradient.addColorStop(0, `rgb(${twilightTone.join(' ')} / ${twilightStrength * 0.15})`)
-        twilightGradient.addColorStop(0.55, `rgb(${twilightTone.join(' ')} / ${twilightStrength * 0.07})`)
+        twilightGradient.addColorStop(0, `rgb(${twilightTone.join(' ')} / ${twilightStrength * 0.15 * horizonBoost})`)
+        twilightGradient.addColorStop(0.55, `rgb(${twilightTone.join(' ')} / ${twilightStrength * 0.07 * horizonBoost})`)
         twilightGradient.addColorStop(1, `rgb(${twilightTone.join(' ')} / 0)`)
         twilightContext.fillStyle = twilightGradient
         twilightContext.fillRect(0, 0, offscreenWidth, offscreenHeight)
@@ -751,7 +820,12 @@
           projectionWidth * 0.38, projectionHeight * 0.42, projectionWidth * 0.7,
         )
         const glowColor = currentSky
-          ? reduceChromaOklab(currentSky, 0.42)
+          ? reduceChromaOklab(
+              currentSky,
+              paletteId === 'hybrid'
+                ? lerp(0.18, 0.6, horizonEmphasis)
+                : 0.42,
+            )
           : card(8)
         glowGradient.addColorStop(0, `rgb(${glowColor.join(' ')} / ${lightAlpha * 0.35})`)
         glowGradient.addColorStop(0.5, `rgb(${glowColor.join(' ')} / ${lightAlpha * 0.15})`)
@@ -761,8 +835,17 @@
         glow.globalCompositeOperation = 'destination-in'
         glow.drawImage(maskCanvas, 0, 0)
         glow.globalCompositeOperation = 'source-over'
-        shadowContext.drawImage(lightCanvas, 0, 0)
-        shadowContext.drawImage(softGlowCanvas, 0, 0)
+        if (paletteId === 'hybrid') {
+          glowContext.save()
+          glowContext.translate(positionX, positionY)
+          glowContext.transform(1, skewY, skewX, 1, 0, 0)
+          glowContext.drawImage(lightCanvas, 0, 0)
+          glowContext.drawImage(softGlowCanvas, 0, 0)
+          glowContext.restore()
+        } else {
+          shadowContext.drawImage(lightCanvas, 0, 0)
+          shadowContext.drawImage(softGlowCanvas, 0, 0)
+        }
       }
 
       shadowContext.restore()
@@ -917,6 +1000,7 @@
       PALETTES: Object.freeze({
         interior: INTERIOR_SKY_CARD,
         seascape: SEASCAPE_SKY_CARD,
+        hybrid: HYBRID_SKY_CARD,
       }),
       contrastRatio,
       lightAt,

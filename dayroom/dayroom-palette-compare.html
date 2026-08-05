@@ -173,7 +173,7 @@
 
     .window-glow {
       z-index: 2;
-      mix-blend-mode: screen;
+      mix-blend-mode: var(--glow-blend-mode, screen);
     }
 
     .window-shadow {
@@ -463,7 +463,7 @@
     <button id="auto-button" type="button" aria-pressed="true">实时</button>
   </div>
 
-  <script src="dayroom-engine.js?v=24-hour-card-shadow"></script>
+  <script src="dayroom-engine.js?v=hybrid-horizon-emphasis"></script>
   <script>
     (() => {
       'use strict'
@@ -473,6 +473,9 @@
       const autoButton = document.getElementById('auto-button')
       const clockTime = document.getElementById('clock-time')
       const clockState = document.getElementById('clock-state')
+      const comparisonPaletteId = new URLSearchParams(window.location.search).get('palette') === 'hybrid'
+        ? 'hybrid'
+        : 'seascape'
 
       const interiorPanel = DayroomEngine.createDayroomPanel({
         container: document.getElementById('panel-interior'),
@@ -482,8 +485,8 @@
 
       const seascapePanel = DayroomEngine.createDayroomPanel({
         container: document.getElementById('panel-seascape'),
-        paletteId: 'seascape',
-        prefix: 'seascape',
+        paletteId: comparisonPaletteId,
+        prefix: comparisonPaletteId,
       })
 
       function currentMinute() {
@@ -502,7 +505,7 @@
       }
 
       renderSwatches(document.getElementById('swatch-interior'), 'interior')
-      renderSwatches(document.getElementById('swatch-seascape'), 'seascape')
+      renderSwatches(document.getElementById('swatch-seascape'), comparisonPaletteId)
 
       let auto = true
       let minute = currentMinute()
