@@ -9,10 +9,12 @@
   ])
 
   const SEASCAPE_SKY_CARD = Object.freeze([
-    [26, 36, 39], [50, 50, 44], [95, 72, 67], [114, 89, 67],
-    [89, 104, 113], [87, 118, 150], [109, 158, 196], [140, 186, 219],
-    [146, 189, 220], [116, 162, 198], [94, 122, 151], [95, 107, 115],
-    [119, 92, 67], [99, 74, 66], [53, 51, 46], [26, 36, 39],
+    [1, 2, 15], [2, 8, 42], [4, 18, 75], [12, 39, 116],
+    [28, 76, 162], [101, 121, 193], [201, 151, 184], [254, 204, 160],
+    [244, 227, 193], [219, 223, 221], [184, 207, 231], [135, 179, 230],
+    [101, 157, 225], [128, 174, 227], [181, 203, 227], [223, 220, 207],
+    [251, 221, 164], [254, 188, 93], [254, 127, 57], [223, 96, 113],
+    [137, 98, 165], [73, 84, 165], [23, 51, 130], [5, 19, 77],
   ])
 
   const READING_PALETTES = Object.freeze({
@@ -239,10 +241,11 @@
   }
 
   function skyAtChronological(minute, skyCard) {
-    const amount = (minute / 1440) * (skyCard.length - 1)
-    const lower = Math.floor(amount)
-    const upper = Math.min(lower + 1, skyCard.length - 1)
-    const t = amount - lower
+    const amount = (minute / 1440) * skyCard.length
+    const rawLower = Math.floor(amount)
+    const lower = rawLower % skyCard.length
+    const upper = (lower + 1) % skyCard.length
+    const t = amount - rawLower
     return mixColor(skyCard[lower], skyCard[upper], t)
   }
 
@@ -516,9 +519,20 @@
 
       const altitude = sunStrength >= moonStrength ? sunlight.altitude : moonlight.altitude
       const shadeStrength = Math.max(sunStrength, twilightStrength * 0.72)
-      const shadowTone = mixColor(card(14), card(11), altitude)
+      const currentSky = paletteId === 'seascape'
+        ? skyAtChronological(value, palette.skyCard)
+        : null
+      const shadowTone = currentSky
+        ? mixOklabColor(
+            reduceChromaOklab(currentSky, 0.12),
+            [48, 53, 66],
+            lerp(0.68, 0.52, altitude),
+          )
+        : mixColor(card(14), card(11), altitude)
       const shadowAlpha = shadeStrength * lerp(0.4, 0.28, altitude)
-      const lightTone = mixColor(card(9), card(6), altitude)
+      const lightTone = currentSky
+        ? reduceChromaOklab(currentSky, 0.58)
+        : mixColor(card(9), card(6), altitude)
       const lightAlpha = sunStrength * lerp(0.22, 0.16, altitude)
       const skewX = 0.3
       const skewY = 0.11
@@ -736,7 +750,9 @@
           projectionWidth * 0.38, projectionHeight * 0.42, 0,
           projectionWidth * 0.38, projectionHeight * 0.42, projectionWidth * 0.7,
         )
-        const glowColor = card(8)
+        const glowColor = currentSky
+          ? reduceChromaOklab(currentSky, 0.42)
+          : card(8)
         glowGradient.addColorStop(0, `rgb(${glowColor.join(' ')} / ${lightAlpha * 0.35})`)
         glowGradient.addColorStop(0.5, `rgb(${glowColor.join(' ')} / ${lightAlpha * 0.15})`)
         glowGradient.addColorStop(1, `rgb(${glowColor.join(' ')} / 0)`)
