@@ -216,6 +216,27 @@
     return smoothstep(0.08, 0.72, presence)
   }
 
+  function lightCoherenceAt(value) {
+    const sunlight = lightAt(value)
+    const twilight = twilightAt(value)
+    const horizonEmphasis = horizonEmphasisAt(value)
+    const lightPresence = smoothstep(
+      0.02,
+      0.42,
+      Math.max(sunlight.daylight, twilight.intensity),
+    )
+    const diffusion = horizonEmphasis * lightPresence
+
+    return {
+      diffusion,
+      ambientOpacity: lerp(0.035, 0.087, diffusion),
+      shadowContrast: lerp(1, 0.86, diffusion),
+      shadowChroma: lerp(0.06, 0.12, diffusion),
+      slatSoftness: lerp(1, 1.16, diffusion),
+      edgeFeather: diffusion * 0.9,
+    }
+  }
+
   function moonlightAt(value) {
     const sunset = 1170
     const sunrise = 330
@@ -387,11 +408,12 @@
       glowAt(value) {
         const glow = seascape.glowAt(value)
         const horizonEmphasis = horizonEmphasisAt(value)
+        const coherence = lightCoherenceAt(value)
         return {
           glow: reduceChromaOklab(glow.glow, lerp(0.2, 0.68, horizonEmphasis)),
           glowOpacity: glow.glowOpacity * lerp(0.45, 1.15, horizonEmphasis),
-          ambient: reduceChromaOklab(glow.glow, lerp(0.12, 0.3, horizonEmphasis)),
-          ambientOpacity: lerp(0.035, 0.075, horizonEmphasis),
+          ambient: reduceChromaOklab(glow.glow, lerp(0.12, 0.28, horizonEmphasis)),
+          ambientOpacity: coherence.ambientOpacity,
         }
       },
       accentAt(value, paper, fallback) {
@@ -578,6 +600,15 @@
       const moonStrength = perceptualStrength(moonlight.intensity)
       const twilightStrength = twilight.intensity
       const horizonEmphasis = paletteId === 'hybrid' ? horizonEmphasisAt(value) : 0
+      const coherence = paletteId === 'hybrid'
+        ? lightCoherenceAt(value)
+        : {
+            diffusion: 0,
+            shadowContrast: 1,
+            shadowChroma: 0.12,
+            slatSoftness: 1,
+            edgeFeather: 0,
+          }
       const horizonBoost = lerp(1, 1.65, horizonEmphasis)
       const strength = Math.max(sunStrength, moonStrength, twilightStrength)
       shadowContext.clearRect(0, 0, width, height)
@@ -593,12 +624,17 @@
         : null
       const shadowTone = currentSky
         ? mixOklabColor(
-            reduceChromaOklab(currentSky, paletteId === 'hybrid' ? 0.06 : 0.12),
+            reduceChromaOklab(
+              currentSky,
+              paletteId === 'hybrid' ? coherence.shadowChroma : 0.12,
+            ),
             [48, 53, 66],
-            lerp(0.68, 0.52, altitude),
+            lerp(0.68, 0.52, altitude)
+              * (paletteId === 'hybrid' ? lerp(1, 0.9, coherence.diffusion) : 1),
           )
         : mixColor(card(14), card(11), altitude)
       const shadowAlpha = shadeStrength * lerp(0.4, 0.28, altitude)
+        * coherence.shadowContrast
       const lightTone = currentSky
         ? reduceChromaOklab(
             currentSky,
@@ -615,7 +651,11 @@
       const sourceSoftness = sunStrength >= moonStrength ? sunlight.softness : moonlight.softness
       const twilightWeight = twilightStrength
         / Math.max(sunStrength + moonStrength + twilightStrength, 0.001)
-      const baseSoftness = lerp(sourceSoftness, twilight.softness, clamp(twilightWeight * 1.25, 0, 1))
+      const baseSoftness = lerp(
+        sourceSoftness,
+        twilight.softness,
+        clamp(twilightWeight * 1.25, 0, 1),
+      ) * coherence.slatSoftness
       const projectionWidth = Math.min(width * 0.58, 420) * stretch
       const projectionHeight = Math.min(height * 0.72, 500) * stretch * 0.78
       const positionX = width * 0.035
@@ -658,11 +698,11 @@
       const horizontalFade = maskContext.createLinearGradient(frameThickness, 0, projectionWidth - frameThickness, 0)
       horizontalFade.addColorStop(0, 'rgb(255 255 255 / 0.1)')
       horizontalFade.addColorStop(0.06, 'rgb(255 255 255 / 0.55)')
-      horizontalFade.addColorStop(0.15, 'rgb(255 255 255 / 1)')
+      horizontalFade.addColorStop(lerp(0.15, 0.22, coherence.edgeFeather), 'rgb(255 255 255 / 1)')
       horizontalFade.addColorStop(0.5, 'rgb(255 255 255 / 1)')
-      horizontalFade.addColorStop(0.72, 'rgb(255 255 255 / 0.8)')
-      horizontalFade.addColorStop(0.85, 'rgb(255 255 255 / 0.35)')
-      horizontalFade.addColorStop(0.94, 'rgb(255 255 255 / 0.12)')
+      horizontalFade.addColorStop(lerp(0.72, 0.64, coherence.edgeFeather), 'rgb(255 255 255 / 0.8)')
+      horizontalFade.addColorStop(lerp(0.85, 0.78, coherence.edgeFeather), 'rgb(255 255 255 / 0.35)')
+      horizontalFade.addColorStop(lerp(0.94, 0.88, coherence.edgeFeather), 'rgb(255 255 255 / 0.12)')
       horizontalFade.addColorStop(1, 'rgb(255 255 255 / 0.02)')
       maskContext.fillStyle = horizontalFade
       maskContext.fillRect(0, 0, offscreenWidth, offscreenHeight)
@@ -670,10 +710,10 @@
       const verticalFade = maskContext.createLinearGradient(0, frameThickness, 0, projectionHeight - frameThickness)
       verticalFade.addColorStop(0, 'rgb(255 255 255 / 0.08)')
       verticalFade.addColorStop(0.05, 'rgb(255 255 255 / 0.6)')
-      verticalFade.addColorStop(0.12, 'rgb(255 255 255 / 1)')
-      verticalFade.addColorStop(0.75, 'rgb(255 255 255 / 0.85)')
-      verticalFade.addColorStop(0.88, 'rgb(255 255 255 / 0.35)')
-      verticalFade.addColorStop(0.95, 'rgb(255 255 255 / 0.1)')
+      verticalFade.addColorStop(lerp(0.12, 0.18, coherence.edgeFeather), 'rgb(255 255 255 / 1)')
+      verticalFade.addColorStop(lerp(0.75, 0.68, coherence.edgeFeather), 'rgb(255 255 255 / 0.85)')
+      verticalFade.addColorStop(lerp(0.88, 0.8, coherence.edgeFeather), 'rgb(255 255 255 / 0.35)')
+      verticalFade.addColorStop(lerp(0.95, 0.88, coherence.edgeFeather), 'rgb(255 255 255 / 0.1)')
       verticalFade.addColorStop(1, 'rgb(255 255 255 / 0.02)')
       maskContext.fillStyle = verticalFade
       maskContext.fillRect(0, 0, offscreenWidth, offscreenHeight)
@@ -780,20 +820,20 @@
         const shadeHorizontalFade = shadeContext.createLinearGradient(0, 0, projectionWidth, 0)
         shadeHorizontalFade.addColorStop(0, 'rgb(255 255 255 / 0)')
         shadeHorizontalFade.addColorStop(0.08, 'rgb(255 255 255 / 0.18)')
-        shadeHorizontalFade.addColorStop(0.22, 'rgb(255 255 255 / 0.9)')
+        shadeHorizontalFade.addColorStop(lerp(0.22, 0.28, coherence.edgeFeather), 'rgb(255 255 255 / 0.9)')
         shadeHorizontalFade.addColorStop(0.52, 'rgb(255 255 255 / 1)')
-        shadeHorizontalFade.addColorStop(0.76, 'rgb(255 255 255 / 0.76)')
-        shadeHorizontalFade.addColorStop(0.93, 'rgb(255 255 255 / 0.14)')
+        shadeHorizontalFade.addColorStop(lerp(0.76, 0.68, coherence.edgeFeather), 'rgb(255 255 255 / 0.76)')
+        shadeHorizontalFade.addColorStop(lerp(0.93, 0.86, coherence.edgeFeather), 'rgb(255 255 255 / 0.14)')
         shadeHorizontalFade.addColorStop(1, 'rgb(255 255 255 / 0)')
         shadeContext.fillStyle = shadeHorizontalFade
         shadeContext.fillRect(0, 0, projectionWidth, projectionHeight)
         const shadeVerticalFade = shadeContext.createLinearGradient(0, 0, 0, projectionHeight)
         shadeVerticalFade.addColorStop(0, 'rgb(255 255 255 / 0)')
         shadeVerticalFade.addColorStop(0.09, 'rgb(255 255 255 / 0.22)')
-        shadeVerticalFade.addColorStop(0.22, 'rgb(255 255 255 / 0.9)')
-        shadeVerticalFade.addColorStop(0.58, 'rgb(255 255 255 / 1)')
-        shadeVerticalFade.addColorStop(0.8, 'rgb(255 255 255 / 0.58)')
-        shadeVerticalFade.addColorStop(0.96, 'rgb(255 255 255 / 0.08)')
+        shadeVerticalFade.addColorStop(lerp(0.22, 0.28, coherence.edgeFeather), 'rgb(255 255 255 / 0.9)')
+        shadeVerticalFade.addColorStop(lerp(0.58, 0.54, coherence.edgeFeather), 'rgb(255 255 255 / 1)')
+        shadeVerticalFade.addColorStop(lerp(0.8, 0.72, coherence.edgeFeather), 'rgb(255 255 255 / 0.58)')
+        shadeVerticalFade.addColorStop(lerp(0.96, 0.88, coherence.edgeFeather), 'rgb(255 255 255 / 0.08)')
         shadeVerticalFade.addColorStop(1, 'rgb(255 255 255 / 0)')
         shadeContext.fillStyle = shadeVerticalFade
         shadeContext.fillRect(0, 0, projectionWidth, projectionHeight)
