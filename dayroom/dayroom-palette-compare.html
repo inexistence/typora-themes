@@ -400,14 +400,14 @@
   <header class="page-header">
     <h1>Dayroom 色板对比</h1>
     <p>
-      左侧为现有室内低饱和色板；右侧为从你的 24 小时海景色板采样的 skyCard，
+      左侧为现有室内低饱和色板；右侧为从新的 24 小时自然光色卡逐小时采样的 skyCard，
       纸张色经 OKLab 降饱和 + 混白派生。拖动下方时间轴，观察同一时刻的光影与可读性差异。
     </p>
   </header>
 
   <figure class="reference">
-    <img src="assets/seascape-palette.png" alt="24 小时海景色板参考图" width="1024" height="576">
-    <figcaption>参考色板 · 01:00 → 24:00</figcaption>
+    <img src="assets/seascape-palette.png" alt="24 小时自然光连续渐变色谱参考图" width="1536" height="1024">
+    <figcaption>参考色卡 · 00:00 → 24:00 · 每个整点采样</figcaption>
   </figure>
 
   <div class="compare">
@@ -436,14 +436,14 @@
       <div class="dayroom-panel" id="panel-seascape">
         <div class="panel-label">
           <strong>海景色板</strong>
-          Seascape · sky + 派生纸张
+          Natural Light · 24 点 + 派生纸张
         </div>
         <canvas class="window-layer window-glow" data-layer="glow" aria-hidden="true"></canvas>
         <canvas class="window-layer window-shadow" data-layer="shadow" aria-hidden="true"></canvas>
         <main class="shell" data-shell>
           <p class="eyebrow">Seascape Palette</p>
           <h2>真实的昼夜<br><span>光从窗外进来。</span></h2>
-          <p class="dek">窗外光直接来自 24 小时图；纸张混白降饱和，保留可读性。</p>
+          <p class="dek">窗外光按 24 个整点采样并连续插值；纸张混白降饱和，保留可读性。</p>
           <section class="prose">
             <p>清晨和黄昏会明显更<strong>金橙</strong>，正午百叶缝里透出<strong>天蓝色</strong>。</p>
             <p>纸张<mark>仍保持可读</mark>，但你能感到窗外是一条完整的昼夜弧线。</p>
@@ -463,7 +463,7 @@
     <button id="auto-button" type="button" aria-pressed="true">实时</button>
   </div>
 
-  <script src="dayroom-engine.js"></script>
+  <script src="dayroom-engine.js?v=24-hour-card-shadow"></script>
   <script>
     (() => {
       'use strict'
