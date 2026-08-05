@@ -390,6 +390,8 @@
         return {
           glow: reduceChromaOklab(glow.glow, lerp(0.2, 0.68, horizonEmphasis)),
           glowOpacity: glow.glowOpacity * lerp(0.45, 1.15, horizonEmphasis),
+          ambient: reduceChromaOklab(glow.glow, lerp(0.12, 0.3, horizonEmphasis)),
+          ambientOpacity: lerp(0.035, 0.075, horizonEmphasis),
         }
       },
       accentAt(value, paper, fallback) {
@@ -451,6 +453,8 @@
         markBg: readable.markBg,
         glow: glow.glow,
         glowOpacity: glow.glowOpacity,
+        ambient: glow.ambient ?? glow.glow,
+        ambientOpacity: glow.ambientOpacity ?? 0,
       }
     }
 
@@ -497,6 +501,8 @@
       container.style.setProperty('--mark-bg', color.markBg.join(' '))
       container.style.setProperty('--room-glow', color.glow.join(' '))
       container.style.setProperty('--night-glow-opacity', String(color.glowOpacity))
+      container.style.setProperty('--ambient-wash', color.ambient.join(' '))
+      container.style.setProperty('--ambient-wash-opacity', String(color.ambientOpacity))
       container.style.setProperty('--daylight-opacity', '1')
       container.style.setProperty('--glow-blend-mode', paletteId === 'hybrid' ? 'normal' : 'screen')
       activeReadingMode = color.mode
@@ -879,6 +885,7 @@
       const preservedProperties = [
         '--paper-bg', '--ink', '--heading', '--muted', '--md-char',
         '--accent', '--mark-text', '--mark-bg', '--border',
+        '--ambient-wash', '--ambient-wash-opacity',
       ]
 
       clone.removeAttribute('id')

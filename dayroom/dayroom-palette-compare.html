@@ -101,6 +101,8 @@
       --border: 75 70 58;
       --room-glow: 255 222 164;
       --night-glow-opacity: 0;
+      --ambient-wash: 255 255 255;
+      --ambient-wash-opacity: 0;
       --daylight-opacity: 0.72;
 
       position: relative;
@@ -111,6 +113,10 @@
           circle at 16% 12%,
           rgb(var(--room-glow) / var(--night-glow-opacity)),
           transparent 42%
+        ),
+        linear-gradient(
+          rgb(var(--ambient-wash) / var(--ambient-wash-opacity)),
+          rgb(var(--ambient-wash) / var(--ambient-wash-opacity))
         ),
         rgb(var(--paper-bg));
       color: rgb(var(--ink));
@@ -463,7 +469,7 @@
     <button id="auto-button" type="button" aria-pressed="true">实时</button>
   </div>
 
-  <script src="dayroom-engine.js?v=hybrid-horizon-emphasis"></script>
+  <script src="dayroom-engine.js?v=hybrid-ambient-wash"></script>
   <script>
     (() => {
       'use strict'
