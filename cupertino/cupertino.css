@@ -990,10 +990,9 @@ pre.md-meta-block .cm-number {
 
 #write .toc {
   margin: 1.75rem 0;
-  padding: 0.1rem 0 0.1rem 1.1rem;
-  border-left: 3px solid var(--border-soft-color);
-  border-radius: 0;
-  background: transparent;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-medium);
+  background: var(--surface-muted-color);
 }
 
 #write .toc-content {
@@ -1090,11 +1089,6 @@ button {
   background: var(--primary-hover-color);
 }
 
-.btn-primary:active {
-  transform: scale(0.97);
-  transition: transform 100ms ease-out;
-}
-
 .btn-default,
 .btn-default:hover {
   border-color: transparent;
@@ -1107,11 +1101,8 @@ button {
   background: rgba(0, 122, 255, 0.18);
 }
 
-.btn-default:active {
-  transform: scale(0.97);
-  transition: transform 100ms ease-out;
-}
-
+.btn-primary:active,
+.btn-default:active,
 .ty-side-sort-btn:active,
 .ty-side-toggle:active,
 .sidebar-tabs .tab-btn:active,
