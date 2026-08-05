@@ -21,6 +21,8 @@
   --surface-muted-color: #2c2c2e;
   --surface-strong-color: #3a3a3c;
   --surface-raised-color: #1c1c1e;
+  --sidebar-material-color: rgba(28, 28, 30, 0.82);
+  --floating-material-color: rgba(44, 44, 46, 0.78);
   --border-color: rgba(235, 235, 245, 0.3);
   --border-soft-color: rgba(235, 235, 245, 0.18);
   --border-strong-color: rgba(235, 235, 245, 0.36);
@@ -180,6 +182,16 @@
 #write .md-diagram-panel svg .lineWrapper path {
   fill: #a9a9b0 !important;
   stroke: #a9a9b0 !important;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --border-color: rgba(235, 235, 245, 0.55);
+    --border-soft-color: rgba(235, 235, 245, 0.42);
+    --border-strong-color: rgba(235, 235, 245, 0.68);
+    --divider-color: rgba(235, 235, 245, 0.42);
+    --code-border-color: rgba(235, 235, 245, 0.42);
+  }
 }
 
 @media print {

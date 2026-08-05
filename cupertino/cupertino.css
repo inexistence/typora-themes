@@ -78,6 +78,8 @@
   --surface-muted-color: #f2f2f7;
   --surface-strong-color: #e5e5ea;
   --surface-raised-color: #ffffff;
+  --sidebar-material-color: rgba(242, 242, 247, 0.82);
+  --floating-material-color: rgba(255, 255, 255, 0.78);
   --border-color: rgba(60, 60, 67, 0.29);
   --border-soft-color: rgba(60, 60, 67, 0.18);
   --border-strong-color: rgba(60, 60, 67, 0.36);
@@ -178,6 +180,7 @@ content {
 
 html {
   font-size: 16px;
+  font-optical-sizing: auto;
 }
 
 ::selection {
@@ -202,7 +205,7 @@ html {
 #write p {
   margin: 0 0 1.1rem;
   color: var(--text-color);
-  letter-spacing: -0.011em;
+  letter-spacing: 0;
   line-height: 1.55;
 }
 
@@ -223,6 +226,8 @@ html {
   margin: 0 0 2.25rem;
   font-size: clamp(2.25rem, 8vw, 3.1rem);
   font-weight: 700;
+  font-optical-sizing: auto;
+  letter-spacing: -0.028em;
   line-height: 1.1;
 }
 
@@ -230,6 +235,7 @@ html {
   margin: 3.5rem 0 1rem;
   font-size: 1.75rem;
   font-weight: 700;
+  letter-spacing: -0.022em;
   line-height: 1.18;
 }
 
@@ -237,6 +243,7 @@ html {
   margin: 2.25rem 0 0.8rem;
   font-size: 1.35rem;
   font-weight: 700;
+  letter-spacing: -0.017em;
   line-height: 1.25;
 }
 
@@ -244,6 +251,7 @@ html {
   margin: 1.75rem 0 0.65rem;
   font-size: 1.1rem;
   font-weight: 700;
+  letter-spacing: -0.012em;
   line-height: 1.32;
 }
 
@@ -253,9 +261,8 @@ html {
   color: var(--muted-text-color);
   font-size: 0.8125rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   line-height: 1.35;
-  text-transform: uppercase;
 }
 
 #write > h1:first-child,
@@ -374,7 +381,7 @@ html {
   height: 1.15rem;
   margin: 0;
   border: 1px solid var(--border-color);
-  border-radius: 0.35rem;
+  border-radius: 50%;
   background: var(--surface-raised-color);
   cursor: pointer;
   transition:
@@ -496,7 +503,7 @@ html {
   font-variant-ligatures: none;
 }
 
-/* Filled-button emphasis: fenced code is a decisive, elevated component. */
+/* Fenced code uses a quiet rounded container with familiar macOS window controls. */
 .md-fences {
   position: relative;
   margin: 1.6rem 0;
@@ -512,12 +519,20 @@ html {
     var(--code-fence-bg-color) 100%
   );
   color: var(--code-fence-text-color);
-  box-shadow: 0 0.3rem 1rem var(--shadow-color);
+  box-shadow: 0 0.2rem 0.8rem var(--shadow-color);
   font-family: var(--monospace);
   font-size: 0.84rem;
   font-variant-ligatures: none;
   line-height: 1.65;
   tab-size: 4;
+}
+
+#write .md-fences code {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
 }
 
 .md-fences::before {
@@ -646,6 +661,11 @@ pre.md-fences-advanced.md-focus .CodeMirror-scroll {
   color: var(--code-fence-text-color);
 }
 
+.cm-s-inner .CodeMirror-lines,
+.cm-s-inner .CodeMirror-line {
+  color: var(--code-fence-text-color);
+}
+
 .cm-s-inner .CodeMirror-gutters {
   border-right-color: var(--code-border-color);
 }
@@ -675,14 +695,50 @@ pre.md-fences-advanced.md-focus .CodeMirror-scroll {
   background: var(--code-active-line-color);
 }
 
-.cm-s-inner .cm-comment { color: var(--syntax-comment); font-style: italic; }
-.cm-s-inner .cm-keyword { color: var(--syntax-keyword); }
-.cm-s-inner .cm-string, .cm-s-inner .cm-string-2 { color: var(--syntax-string); }
-.cm-s-inner .cm-number, .cm-s-inner .cm-atom { color: var(--syntax-number); }
-.cm-s-inner .cm-variable-2, .cm-s-inner .cm-variable-3 { color: var(--syntax-variable); }
-.cm-s-inner .cm-operator, .cm-s-inner .cm-meta { color: var(--syntax-operator); }
-.cm-s-inner .cm-tag, .cm-s-inner .cm-attribute { color: var(--syntax-tag); }
-.cm-s-inner .cm-error { color: var(--syntax-error); }
+.cm-s-inner .cm-comment {
+  color: var(--syntax-comment);
+  font-style: italic;
+}
+
+.cm-s-inner .cm-keyword,
+.cm-s-inner .cm-builtin {
+  color: var(--syntax-keyword);
+}
+
+.cm-s-inner .cm-string,
+.cm-s-inner .cm-string-2 {
+  color: var(--syntax-string);
+}
+
+.cm-s-inner .cm-number,
+.cm-s-inner .cm-atom {
+  color: var(--syntax-number);
+}
+
+.cm-s-inner .cm-def,
+.cm-s-inner .cm-variable,
+.cm-s-inner .cm-variable-2,
+.cm-s-inner .cm-variable-3,
+.cm-s-inner .cm-property {
+  color: var(--syntax-variable);
+}
+
+.cm-s-inner .cm-operator,
+.cm-s-inner .cm-meta,
+.cm-s-inner .cm-type,
+.cm-s-inner .cm-bracket {
+  color: var(--syntax-operator);
+}
+
+.cm-s-inner .cm-tag,
+.cm-s-inner .cm-attribute,
+.cm-s-inner .cm-qualifier {
+  color: var(--syntax-tag);
+}
+
+.cm-s-inner .cm-error {
+  color: var(--syntax-error);
+}
 
 /* YAML front matter is document metadata, not a full-width code fence. */
 pre.md-meta-block {
@@ -815,10 +871,15 @@ pre.md-meta-block .cm-number {
 .md-diagram-panel svg .labelBox,
 .md-diagram-panel svg .task,
 .md-diagram-panel svg .section,
-.md-diagram-panel svg .quadrant,
-.md-diagram-panel svg .pieCircle {
+.md-diagram-panel svg .quadrant {
   fill: var(--diagram-node-bg-color) !important;
   stroke: var(--diagram-node-border-color) !important;
+}
+
+/* Pie slices keep Mermaid's per-section palette; only separate them visually. */
+.md-diagram-panel svg .pieCircle {
+  stroke: var(--diagram-bg-color);
+  stroke-width: 1.5px;
 }
 
 .md-diagram-panel svg .edgePath path,
@@ -926,9 +987,10 @@ pre.md-meta-block .cm-number {
 
 #write .toc {
   margin: 1.75rem 0;
-  padding: 1rem 1.2rem;
-  border-radius: var(--radius-medium);
-  background: var(--surface-muted-color);
+  padding: 0.1rem 0 0.1rem 1.1rem;
+  border-left: 3px solid var(--border-soft-color);
+  border-radius: 0;
+  background: transparent;
 }
 
 #write .toc-content {
@@ -989,6 +1051,29 @@ button {
   box-shadow: 0 0.75rem 2rem var(--shadow-strong-color);
 }
 
+/* Materials belong to floating chrome, never the document canvas. */
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  #typora-sidebar,
+  .sidebar-tabs,
+  .file-library-node,
+  .outline-content {
+    background: var(--sidebar-material-color);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+  }
+
+  .modal-content,
+  .popover,
+  .context-menu,
+  .auto-suggest-container,
+  .megamenu-content,
+  #md-searchpanel {
+    background: var(--floating-material-color);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+  }
+}
+
 .btn-primary,
 .btn-primary:focus,
 .btn-primary:hover {
@@ -1002,6 +1087,11 @@ button {
   background: var(--primary-hover-color);
 }
 
+.btn-primary:active {
+  transform: scale(0.97);
+  transition: transform 100ms ease-out;
+}
+
 .btn-default,
 .btn-default:hover {
   border-color: transparent;
@@ -1012,6 +1102,19 @@ button {
 
 .btn-default:hover {
   background: rgba(0, 122, 255, 0.18);
+}
+
+.btn-default:active {
+  transform: scale(0.97);
+  transition: transform 100ms ease-out;
+}
+
+.ty-side-sort-btn:active,
+.ty-side-toggle:active,
+.sidebar-tabs .tab-btn:active,
+button:not(:disabled):active {
+  transform: scale(0.97);
+  transition: transform 100ms ease-out;
 }
 
 .form-control,
@@ -1121,6 +1224,38 @@ textarea:focus {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  #typora-sidebar,
+  .sidebar-tabs,
+  .file-library-node,
+  .outline-content {
+    background: var(--side-bar-bg-color);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .modal-content,
+  .popover,
+  .context-menu,
+  .auto-suggest-container,
+  .megamenu-content,
+  #md-searchpanel {
+    background: var(--surface-raised-color);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --border-color: rgba(60, 60, 67, 0.55);
+    --border-soft-color: rgba(60, 60, 67, 0.42);
+    --border-strong-color: rgba(60, 60, 67, 0.68);
+    --divider-color: rgba(60, 60, 67, 0.42);
+    --code-border-color: rgba(60, 60, 67, 0.42);
   }
 }
 
