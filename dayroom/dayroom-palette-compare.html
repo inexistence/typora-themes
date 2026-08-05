@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dayroom — 色板对比</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: 45 45 51;
+      --muted: 116 115 123;
+      --page-bg: 242 239 232;
+      --divider: 75 70 58;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: rgb(var(--page-bg));
+      color: rgb(var(--ink));
+      font-family: "Avenir Next", Avenir, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+
+    .page-header {
+      padding: 28px clamp(20px, 4vw, 48px) 18px;
+      border-bottom: 1px solid rgb(var(--divider) / 0.12);
+    }
+
+    .page-header h1 {
+      margin: 0 0 8px;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Songti SC",
+        "Noto Serif SC", serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .page-header p {
+      max-width: 720px;
+      margin: 0;
+      color: rgb(var(--muted));
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    .reference {
+      padding: 16px clamp(20px, 4vw, 48px) 0;
+    }
+
+    .reference img {
+      display: block;
+      width: 100%;
+      max-width: 960px;
+      border-radius: 10px;
+      box-shadow: 0 8px 28px rgb(12 11 9 / 0.1);
+    }
+
+    .reference figcaption {
+      margin-top: 8px;
+      color: rgb(var(--muted));
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 220px);
+      border-top: 1px solid rgb(var(--divider) / 0.12);
+      margin-top: 18px;
+    }
+
+    .panel-wrap {
+      position: relative;
+      min-height: 72vh;
+      overflow: hidden;
+    }
+
+    .panel-wrap + .panel-wrap {
+      border-left: 1px solid rgb(var(--divider) / 0.16);
+    }
+
+    .dayroom-panel {
+      --paper-bg: 251 248 239;
+      --ink: 45 45 51;
+      --heading: 35 35 42;
+      --muted: 116 115 123;
+      --md-char: 163 162 170;
+      --accent: 111 118 152;
+      --mark-text: 45 45 51;
+      --mark-bg: 236 222 211;
+      --border: 75 70 58;
+      --room-glow: 255 222 164;
+      --night-glow-opacity: 0;
+      --daylight-opacity: 0.72;
+
+      position: relative;
+      height: 100%;
+      min-height: 72vh;
+      background:
+        radial-gradient(
+          circle at 16% 12%,
+          rgb(var(--room-glow) / var(--night-glow-opacity)),
+          transparent 42%
+        ),
+        rgb(var(--paper-bg));
+      color: rgb(var(--ink));
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
+    }
+
+    .dayroom-panel::before {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background:
+        linear-gradient(115deg, rgb(255 255 255 / 0.17), transparent 40%),
+        repeating-linear-gradient(
+          90deg,
+          rgb(70 62 48 / 0.012) 0,
+          rgb(70 62 48 / 0.012) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+      opacity: 0.7;
+    }
+
+    .panel-label {
+      position: absolute;
+      z-index: 4;
+      top: 14px;
+      left: 16px;
+      padding: 6px 10px;
+      border: 1px solid rgb(var(--border) / 0.14);
+      border-radius: 8px;
+      background: rgb(var(--paper-bg) / 0.82);
+      backdrop-filter: blur(10px);
+      color: rgb(var(--muted));
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition:
+        background-color 760ms cubic-bezier(0.42, 0, 0.2, 1),
+        color 760ms cubic-bezier(0.42, 0, 0.2, 1);
+    }
+
+    .panel-label strong {
+      display: block;
+      margin-bottom: 2px;
+      color: rgb(var(--heading));
+      font-size: 0.72rem;
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
+    }
+
+    .window-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .window-glow {
+      z-index: 2;
+      mix-blend-mode: screen;
+    }
+
+    .window-shadow {
+      z-index: 3;
+      mix-blend-mode: multiply;
+      opacity: var(--daylight-opacity);
+    }
+
+    .mode-transition-light-clone {
+      pointer-events: none;
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      padding: clamp(72px, 10vw, 96px) clamp(20px, 4vw, 36px) 120px;
+    }
+
+    .shell.mode-transition-clone {
+      position: absolute;
+      margin: 0;
+      pointer-events: none;
+      color: rgb(var(--ink));
+    }
+
+    .eyebrow {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin: 0 0 18px;
+      color: rgb(var(--muted));
+      font-size: 0.65rem;
+      font-weight: 650;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
+    }
+
+    .eyebrow::before {
+      width: 18px;
+      height: 1px;
+      content: "";
+      background: rgb(var(--accent));
+    }
+
+    h2 {
+      margin: 0;
+      color: rgb(var(--heading));
+      font-family: "Iowan Old Style", "Palatino Linotype", "Songti SC",
+        "Noto Serif SC", serif;
+      font-size: clamp(1.35rem, 2.8vw, 2rem);
+      font-weight: 500;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
+    }
+
+    h2 span {
+      color: rgb(var(--accent));
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
+    }
+
+    .dek {
+      max-width: 100%;
+      margin: 16px 0 0;
+      color: rgb(var(--muted));
+      font-family: "Iowan Old Style", "Palatino Linotype", "Songti SC",
+        "Noto Serif SC", serif;
+      font-size: clamp(0.88rem, 1.6vw, 1rem);
+      line-height: 1.7;
+      transition: color 760ms cubic-bezier(0.42, 0, 0.2, 1);
+    }
+
+    .prose {
+      max-width: 100%;
+      margin-top: 28px;
+      border-top: 1px solid rgb(var(--border) / 0.12);
+      padding-top: 22px;
+    }
+
+    .prose p {
+      margin: 0 0 1.2em;
+      font-size: 0.88rem;
+      line-height: 1.8;
+    }
+
+    mark {
+      padding: 0.08em 0.18em;
+      border-radius: 0.18em;
+      background: rgb(var(--mark-bg));
+      color: rgb(var(--mark-text));
+      transition:
+        background-color 760ms cubic-bezier(0.42, 0, 0.2, 1),
+        color 760ms cubic-bezier(0.42, 0, 0.2, 1);
+    }
+
+    .swatch-row {
+      display: flex;
+      gap: 2px;
+      margin-top: 24px;
+      border-radius: 6px;
+      overflow: hidden;
+      opacity: 0.85;
+    }
+
+    .swatch {
+      flex: 1;
+      height: 14px;
+    }
+
+    .controls {
+      position: fixed;
+      z-index: 10;
+      right: 22px;
+      bottom: 22px;
+      left: 22px;
+      display: grid;
+      grid-template-columns: auto minmax(180px, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      width: min(760px, calc(100% - 44px));
+      margin: 0 auto;
+      padding: 13px 15px;
+      border: 1px solid rgb(255 255 255 / 0.23);
+      border-radius: 14px;
+      background: rgb(30 29 25 / 0.82);
+      color: rgb(247 242 231);
+      box-shadow: 0 15px 45px rgb(12 11 9 / 0.23);
+      backdrop-filter: blur(18px) saturate(1.2);
+    }
+
+    .clock {
+      min-width: 104px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .clock-time {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+
+    .clock-state {
+      display: block;
+      margin-top: 2px;
+      color: rgb(247 242 231 / 0.58);
+      font-size: 0.67rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #e7b15f;
+      cursor: ew-resize;
+    }
+
+    button {
+      min-width: 78px;
+      padding: 8px 12px;
+      border: 1px solid rgb(255 255 255 / 0.16);
+      border-radius: 9px;
+      background: rgb(255 255 255 / 0.08);
+      color: inherit;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: rgb(255 255 255 / 0.14);
+    }
+
+    button[aria-pressed="true"] {
+      border-color: rgb(231 177 95 / 0.45);
+      background: rgb(231 177 95 / 0.16);
+      color: #ffd796;
+    }
+
+    @media (max-width: 900px) {
+      .compare {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-wrap + .panel-wrap {
+        border-left: none;
+        border-top: 1px solid rgb(var(--divider) / 0.16);
+      }
+
+      .dayroom-panel,
+      .panel-wrap {
+        min-height: 58vh;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .controls {
+        right: 10px;
+        bottom: 10px;
+        left: 10px;
+        grid-template-columns: 1fr auto;
+        width: calc(100% - 20px);
+      }
+
+      .controls input {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Dayroom 色板对比</h1>
+    <p>
+      左侧为现有室内低饱和色板；右侧为从你的 24 小时海景色板采样的 skyCard，
+      纸张色经 OKLab 降饱和 + 混白派生。拖动下方时间轴，观察同一时刻的光影与可读性差异。
+    </p>
+  </header>
+
+  <figure class="reference">
+    <img src="assets/seascape-palette.png" alt="24 小时海景色板参考图" width="1024" height="576">
+    <figcaption>参考色板 · 01:00 → 24:00</figcaption>
+  </figure>
+
+  <div class="compare">
+    <div class="panel-wrap">
+      <div class="dayroom-panel" id="panel-interior">
+        <div class="panel-label">
+          <strong>室内色板</strong>
+          Interior · 低饱和纸张
+        </div>
+        <canvas class="window-layer window-glow" data-layer="glow" aria-hidden="true"></canvas>
+        <canvas class="window-layer window-shadow" data-layer="shadow" aria-hidden="true"></canvas>
+        <main class="shell" data-shell>
+          <p class="eyebrow">Interior Palette</p>
+          <h2>安静的书房<br><span>光在余光里变。</span></h2>
+          <p class="dek">色温偏移克制，纸张始终像纸。晨昏变化柔和，正午也不抢文字。</p>
+          <section class="prose">
+            <p>百叶窗把阳光切成有秩序的段落。这里的色彩偏向<strong>室内反射光</strong>，而不是直接引用天空。</p>
+            <p>高亮<mark>像这样</mark>仍然清楚，因为纸张没有跟着窗外天蓝走得太远。</p>
+          </section>
+          <div class="swatch-row" id="swatch-interior" aria-hidden="true"></div>
+        </main>
+      </div>
+    </div>
+
+    <div class="panel-wrap">
+      <div class="dayroom-panel" id="panel-seascape">
+        <div class="panel-label">
+          <strong>海景色板</strong>
+          Seascape · sky + 派生纸张
+        </div>
+        <canvas class="window-layer window-glow" data-layer="glow" aria-hidden="true"></canvas>
+        <canvas class="window-layer window-shadow" data-layer="shadow" aria-hidden="true"></canvas>
+        <main class="shell" data-shell>
+          <p class="eyebrow">Seascape Palette</p>
+          <h2>真实的昼夜<br><span>光从窗外进来。</span></h2>
+          <p class="dek">窗外光直接来自 24 小时图；纸张混白降饱和，保留可读性。</p>
+          <section class="prose">
+            <p>清晨和黄昏会明显更<strong>金橙</strong>，正午百叶缝里透出<strong>天蓝色</strong>。</p>
+            <p>纸张<mark>仍保持可读</mark>，但你能感到窗外是一条完整的昼夜弧线。</p>
+          </section>
+          <div class="swatch-row" id="swatch-seascape" aria-hidden="true"></div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls" aria-label="时间预览控制器">
+    <div class="clock" aria-live="polite">
+      <span class="clock-time" id="clock-time">08:30</span>
+      <span class="clock-state" id="clock-state">清晨</span>
+    </div>
+    <input id="time-slider" type="range" min="0" max="1439" step="1" aria-label="预览时间">
+    <button id="auto-button" type="button" aria-pressed="true">实时</button>
+  </div>
+
+  <script src="dayroom-engine.js"></script>
+  <script>
+    (() => {
+      'use strict'
+
+      const { DayroomEngine } = window
+      const slider = document.getElementById('time-slider')
+      const autoButton = document.getElementById('auto-button')
+      const clockTime = document.getElementById('clock-time')
+      const clockState = document.getElementById('clock-state')
+
+      const interiorPanel = DayroomEngine.createDayroomPanel({
+        container: document.getElementById('panel-interior'),
+        paletteId: 'interior',
+        prefix: 'interior',
+      })
+
+      const seascapePanel = DayroomEngine.createDayroomPanel({
+        container: document.getElementById('panel-seascape'),
+        paletteId: 'seascape',
+        prefix: 'seascape',
+      })
+
+      function currentMinute() {
+        const now = new Date()
+        return now.getHours() * 60 + now.getMinutes()
+      }
+
+      function renderSwatches(container, paletteId) {
+        const colors = DayroomEngine.PALETTES[paletteId]
+        container.replaceChildren(...colors.map(color => {
+          const swatch = document.createElement('span')
+          swatch.className = 'swatch'
+          swatch.style.background = `rgb(${color.join(', ')})`
+          return swatch
+        }))
+      }
+
+      renderSwatches(document.getElementById('swatch-interior'), 'interior')
+      renderSwatches(document.getElementById('swatch-seascape'), 'seascape')
+
+      let auto = true
+      let minute = currentMinute()
+
+      function render(value) {
+        minute = Math.round(Number(value))
+        interiorPanel.render(minute)
+        seascapePanel.render(minute)
+        slider.value = String(minute)
+        clockTime.textContent = DayroomEngine.formatTime(minute)
+        clockState.textContent = DayroomEngine.stateAt(minute)
+      }
+
+      function setAuto(enabled) {
+        auto = enabled
+        autoButton.setAttribute('aria-pressed', String(enabled))
+        autoButton.textContent = enabled ? '实时' : '预览'
+        if (enabled) {
+          render(currentMinute())
+        }
+      }
+
+      slider.addEventListener('input', event => {
+        setAuto(false)
+        render(event.currentTarget.value)
+      })
+
+      autoButton.addEventListener('click', () => setAuto(!auto))
+
+      setInterval(() => {
+        if (auto && !document.hidden) {
+          render(currentMinute())
+        }
+      }, 30_000)
+
+      Object.defineProperty(window, '__dayroomCompare', {
+        configurable: true,
+        value: Object.freeze({
+          interior: interiorPanel,
+          seascape: seascapePanel,
+          render,
+        }),
+      })
+
+      render(minute)
+    })()
+  </script>
+</body>
+</html>
