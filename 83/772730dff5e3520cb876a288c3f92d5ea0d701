@@ -1,0 +1,35 @@
+dayroom/dayroom-engine.js
+  s_a6832e5a421508::t_87dc881ce44c10 597-599,601-602,823-825,827-828
+  s_a6832e5a421508::t_770efeaca6a41d 115-118,206,361-369,379-384,386-388,390,394-400,404,428,431-433,447-449,585,1003
+  s_a6832e5a421508::t_ac28168cf6d75c 370-378,385,590
+  s_a6832e5a421508::t_8e75b2b23c0b0c 501
+  s_a6832e5a421508::t_ac973f6e0bcd92 838-848
+  s_a6832e5a421508::t_99552ae6c620ac 208-216,218,389,391-392,534-535,545-546,574-575,600,605,750-751,826
+  s_a6832e5a421508::t_d19235a244ae61 207
+dayroom/dayroom-palette-compare.html
+  s_a6832e5a421508::t_8e75b2b23c0b0c 176
+  s_a6832e5a421508::t_770efeaca6a41d 476-478,488
+  s_a6832e5a421508::t_006741acdba4b2 489
+  s_a6832e5a421508::t_b7b10511d76271 466,508
+dayroom/dayroom-palette-hybrid.html
+  s_a6832e5a421508::t_770efeaca6a41d 1-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "83772730dff5e3520cb876a288c3f92d5ea0d701",
+  "prompts": {},
+  "logical_commit_id": "83772730dff5e3520cb876a288c3f92d5ea0d701",
+  "sessions": {
+    "s_a6832e5a421508": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fd142-cc93-7a63-a016-357ee3673f04",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Jianbin <inexistenceorz@gmail.com>",
+      "total_additions": 155,
+      "total_deletions": 40
+    }
+  }
+}
