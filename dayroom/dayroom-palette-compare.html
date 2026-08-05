@@ -479,9 +479,6 @@
       const autoButton = document.getElementById('auto-button')
       const clockTime = document.getElementById('clock-time')
       const clockState = document.getElementById('clock-state')
-      const comparisonPaletteId = new URLSearchParams(window.location.search).get('palette') === 'hybrid'
-        ? 'hybrid'
-        : 'seascape'
 
       const interiorPanel = DayroomEngine.createDayroomPanel({
         container: document.getElementById('panel-interior'),
@@ -491,8 +488,8 @@
 
       const seascapePanel = DayroomEngine.createDayroomPanel({
         container: document.getElementById('panel-seascape'),
-        paletteId: comparisonPaletteId,
-        prefix: comparisonPaletteId,
+        paletteId: 'seascape',
+        prefix: 'seascape',
       })
 
       function currentMinute() {
@@ -511,7 +508,7 @@
       }
 
       renderSwatches(document.getElementById('swatch-interior'), 'interior')
-      renderSwatches(document.getElementById('swatch-seascape'), comparisonPaletteId)
+      renderSwatches(document.getElementById('swatch-seascape'), 'seascape')
 
       let auto = true
       let minute = currentMinute()
