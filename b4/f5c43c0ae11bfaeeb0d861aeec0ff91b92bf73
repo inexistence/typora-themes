@@ -1,0 +1,55 @@
+cupertino/cupertino-dark.css
+  s_e4c94bf71a5ac5::t_bcc07a8d781587 24-25
+  s_15de9930228d68::t_3a197dd092b7c4 187-194,196
+  s_15de9930228d68::t_5344e787c885e1 185-186
+cupertino/cupertino.css
+  s_15de9930228d68::t_da719de03f87a5 183
+  s_15de9930228d68::t_b5d72f61af073e 530-535,537
+  s_15de9930228d68::t_29a7b198a0d91f 229
+  s_15de9930228d68::t_2f8596d1ed69d8 384
+  s_15de9930228d68::t_b4599fafd9a45f 698-700,702-741
+  s_e4c94bf71a5ac5::t_bcc07a8d781587 81-82,208,230,238,246,254,264,522,990-993,1052-1068,1071-1074,1227-1243,1246-1248
+  s_15de9930228d68::t_5ea316a649fe99 506,528-529
+  s_15de9930228d68::t_e330c7ff1e488b 874,877-882
+  s_15de9930228d68::t_28f6ab765ead35 1090-1094
+  s_15de9930228d68::t_ef963407beda8f 1107-1117,1119
+  s_15de9930228d68::t_db79bef0d9cb75 662,696,1105,1244-1245,1249-1258
+  s_15de9930228d68::t_7d7f051b771105 1069-1070
+  s_15de9930228d68::t_0046f53b2c5a02 665
+  s_15de9930228d68::t_15c47a7067c95c 664,668
+  s_15de9930228d68::t_b530c3a613f156 661
+  s_15de9930228d68::t_c34b03841678aa 663
+  s_15de9930228d68::t_3fe9107ff151a8 697
+  s_15de9930228d68::t_45cd1ace847f9f 1106
+cupertino/README.md
+  s_15de9930228d68::t_2958c248bab296 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "b4f5c43c0ae11bfaeeb0d861aeec0ff91b92bf73",
+  "prompts": {},
+  "logical_commit_id": "b4f5c43c0ae11bfaeeb0d861aeec0ff91b92bf73",
+  "sessions": {
+    "s_15de9930228d68": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "0f9e1dda-5a25-4ad6-9c1f-918b747bde57",
+        "model": "composer-2.5"
+      },
+      "human_author": "Jianbin <inexistenceorz@gmail.com>",
+      "total_additions": 133,
+      "total_deletions": 24
+    },
+    "s_e4c94bf71a5ac5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fd0b9-b1d8-7d23-a557-6b1db3a6f150",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Jianbin <inexistenceorz@gmail.com>",
+      "total_additions": 67,
+      "total_deletions": 29
+    }
+  }
+}
