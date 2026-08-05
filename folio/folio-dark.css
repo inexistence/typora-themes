@@ -127,6 +127,105 @@ pre.md-fences-advanced:not(.md-focus)::after {
   .megamenu-content {
     box-shadow: 0 0.7rem 1.7rem var(--shadow-strong-color);
   }
+
+  /* Keep Typora's mixed HTML-block editor on a dark, readable surface. */
+  #write .md-htmlblock .md-htmlblock-panel {
+    border-color: var(--border-strong-color) !important;
+    background: var(--surface-muted-color) !important;
+    color: var(--text-color) !important;
+  }
+
+  #write .md-htmlblock .md-htmlblock-panel > :not(.CodeMirror) {
+    color: inherit !important;
+  }
+
+  #write .md-htmlblock .md-rawblock-control,
+  #write .md-htmlblock .md-rawblock-tooltip {
+    border-color: var(--border-strong-color) !important;
+    background: var(--surface-muted-color) !important;
+    color: var(--muted-text-color) !important;
+  }
+
+  /*
+   * Mermaid Timeline uses its own cScale palette. Replace its bright pastel
+   * defaults with dark section cards so the light labels remain readable.
+   */
+  #write .md-diagram-panel svg .timeline-node .node-bkg {
+    fill: #30302e !important;
+    stroke: #74726c !important;
+    stroke-width: 1.25px !important;
+  }
+
+  #write .md-diagram-panel svg .timeline-node .node-line--1,
+  #write .md-diagram-panel svg .timeline-node .node-line-0,
+  #write .md-diagram-panel svg .timeline-node .node-line-1 {
+    stroke: #74726c !important;
+    stroke-width: 2px !important;
+  }
+
+  #write .md-diagram-panel svg .timeline-node.section--1 .node-bkg {
+    fill: #3a3548 !important;
+    stroke: #b8a8d8 !important;
+  }
+
+  #write .md-diagram-panel svg .timeline-node.section--1 .node-line--1 {
+    stroke: #b8a8d8 !important;
+  }
+
+  #write .md-diagram-panel svg .timeline-node.section-0 .node-bkg {
+    fill: #4a3820 !important;
+    stroke: #d97757 !important;
+  }
+
+  #write .md-diagram-panel svg .timeline-node.section-0 .node-line-0 {
+    stroke: #d97757 !important;
+  }
+
+  #write .md-diagram-panel svg .timeline-node.section-1 .node-bkg {
+    fill: #1f3d30 !important;
+    stroke: #7ec8a0 !important;
+  }
+
+  #write .md-diagram-panel svg .timeline-node.section-1 .node-line-1 {
+    stroke: #7ec8a0 !important;
+  }
+
+  #write .md-diagram-panel svg .timeline-node text,
+  #write .md-diagram-panel svg .timeline-node text * {
+    fill: #faf9f5 !important;
+  }
+
+  #write .md-diagram-panel svg .lineWrapper line {
+    stroke: #9c9a92 !important;
+  }
+
+  #write .md-diagram-panel svg .lineWrapper path {
+    fill: #9c9a92 !important;
+    stroke: #9c9a92 !important;
+  }
+
+  /*
+   * XY Chart ships its own background rect and axis labels with Mermaid's
+   * default light-theme colors, which clash with the dark diagram panel.
+   */
+  #write .md-diagram-panel svg[aria-roledescription="xychart"] g.main rect.background {
+    fill: var(--diagram-bg-color) !important;
+  }
+
+  #write .md-diagram-panel svg[aria-roledescription="xychart"] g.bottom-axis text,
+  #write .md-diagram-panel svg[aria-roledescription="xychart"] g.left-axis text,
+  #write .md-diagram-panel svg[aria-roledescription="xychart"] g.title text,
+  #write .md-diagram-panel svg[aria-roledescription="xychart"] g.label text,
+  #write .md-diagram-panel svg[aria-roledescription="xychart"] g.plot text {
+    fill: var(--text-color) !important;
+  }
+
+  #write .md-diagram-panel svg[aria-roledescription="xychart"] g.bottom-axis path,
+  #write .md-diagram-panel svg[aria-roledescription="xychart"] g.left-axis path,
+  #write .md-diagram-panel svg[aria-roledescription="xychart"] g.grid line,
+  #write .md-diagram-panel svg[aria-roledescription="xychart"] g.grid path {
+    stroke: var(--diagram-line-color) !important;
+  }
 }
 
 @media print {

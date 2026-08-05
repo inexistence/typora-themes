@@ -1196,7 +1196,17 @@ pre.md-meta-block {
   background: var(--diagram-bg-color);
 }
 
-.md-diagram-panel svg text {
+/* Mermaid emits a mixture of SVG text and HTML foreignObject labels. */
+.md-diagram-panel svg text,
+.md-diagram-panel svg .classTitleText,
+.md-diagram-panel svg .classText,
+.md-diagram-panel svg .messageText,
+.md-diagram-panel svg .noteText,
+.md-diagram-panel svg .labelText,
+.md-diagram-panel svg .taskText,
+.md-diagram-panel svg .taskTextOutsideRight,
+.md-diagram-panel svg .titleText,
+.md-diagram-panel svg .sectionTitle {
   fill: var(--text-color) !important;
 }
 
@@ -1206,7 +1216,11 @@ pre.md-meta-block {
 .md-diagram-panel svg .edgeLabel,
 .md-diagram-panel svg .edgeLabel div,
 .md-diagram-panel svg .edgeLabel p,
-.md-diagram-panel svg .edgeLabel span {
+.md-diagram-panel svg .edgeLabel span,
+.md-diagram-panel svg foreignObject,
+.md-diagram-panel svg foreignObject div,
+.md-diagram-panel svg foreignObject p,
+.md-diagram-panel svg foreignObject span {
   color: var(--text-color) !important;
 }
 
@@ -1218,11 +1232,30 @@ pre.md-meta-block {
   background: var(--diagram-label-bg-color) !important;
 }
 
+/* Mermaid sequence participants apply an actor-specific text fill. */
+.md-diagram-panel svg text.actor,
+.md-diagram-panel svg text.actor-bottom,
+.md-diagram-panel svg .actor text,
+.md-diagram-panel svg .actor-bottom text,
+.md-diagram-panel svg .actorLabel,
+.md-diagram-panel svg .actorLabel *,
+.md-diagram-panel svg .actorText,
+.md-diagram-panel svg .actorText *,
+.md-diagram-panel svg foreignObject.actor,
+.md-diagram-panel svg foreignObject.actor *,
+.md-diagram-panel svg foreignObject.actor-bottom,
+.md-diagram-panel svg foreignObject.actor-bottom * {
+  color: var(--text-color) !important;
+  fill: var(--text-color) !important;
+  stroke: none !important;
+}
+
 .md-diagram-panel svg .node rect,
 .md-diagram-panel svg .node circle,
 .md-diagram-panel svg .node ellipse,
 .md-diagram-panel svg .node polygon,
-.md-diagram-panel svg .node path {
+.md-diagram-panel svg .node path,
+.md-diagram-panel svg .cluster rect {
   fill: var(--diagram-node-bg-color) !important;
   stroke: var(--diagram-node-border-color) !important;
   stroke-width: 1.25px !important;
@@ -1233,15 +1266,68 @@ pre.md-meta-block {
   ry: var(--radius-small);
 }
 
+.md-diagram-panel svg .classGroup rect,
+.md-diagram-panel svg .classGroup .classTitle,
+.md-diagram-panel svg .classGroup .classMembers,
+.md-diagram-panel svg .classGroup .classMethods {
+  fill: var(--diagram-node-bg-color) !important;
+  stroke: var(--diagram-node-border-color) !important;
+  stroke-width: 1.25px !important;
+}
+
+/* Sequence, gantt, timeline and quadrant diagrams have their own containers. */
+.md-diagram-panel svg .actor rect,
+.md-diagram-panel svg .actor-bottom rect,
+.md-diagram-panel svg .note rect,
+.md-diagram-panel svg rect.actor,
+.md-diagram-panel svg rect.actor-bottom,
+.md-diagram-panel svg rect.note,
+.md-diagram-panel svg .labelBox,
+.md-diagram-panel svg .task,
+.md-diagram-panel svg .section,
+.md-diagram-panel svg .quadrant,
+.md-diagram-panel svg rect.activation0,
+.md-diagram-panel svg rect.activation1,
+.md-diagram-panel svg rect.activation2 {
+  fill: var(--diagram-node-bg-color) !important;
+  stroke: var(--diagram-node-border-color) !important;
+}
+
+.md-diagram-panel svg rect.activation0,
+.md-diagram-panel svg rect.activation1,
+.md-diagram-panel svg rect.activation2 {
+  fill: var(--surface-muted-color) !important;
+  stroke: var(--primary-color) !important;
+}
+
+.md-diagram-panel svg .note rect,
+.md-diagram-panel svg rect.note {
+  fill: var(--mark-bg-color) !important;
+  stroke: var(--border-strong-color) !important;
+}
+
+.md-diagram-panel svg .noteText {
+  fill: var(--mark-text-color) !important;
+}
+
 .md-diagram-panel svg .edgePath path,
 .md-diagram-panel svg path.flowchart-link,
-.md-diagram-panel svg .relationshipLine {
+.md-diagram-panel svg .relationshipLine,
+.md-diagram-panel svg .relation,
+.md-diagram-panel svg .transition,
+.md-diagram-panel svg .messageLine0,
+.md-diagram-panel svg .messageLine1,
+.md-diagram-panel svg .actor-line,
+.md-diagram-panel svg .loopLine,
+.md-diagram-panel svg .grid path,
+.md-diagram-panel svg .grid line {
   stroke: var(--diagram-line-color) !important;
   stroke-width: 1.4px !important;
 }
 
 .md-diagram-panel svg marker path,
-.md-diagram-panel svg .arrowheadPath {
+.md-diagram-panel svg .arrowheadPath,
+.md-diagram-panel svg .marker {
   fill: var(--diagram-line-color) !important;
   stroke: var(--diagram-line-color) !important;
 }
@@ -1252,10 +1338,74 @@ pre.md-meta-block {
   opacity: 1 !important;
 }
 
-.md-diagram-panel svg .cluster rect {
-  fill: var(--surface-muted-color) !important;
-  stroke: var(--border-color) !important;
-  stroke-width: 1px !important;
+/*
+ * Mermaid assigns explicit fills to nested tspans (notably sequence actors and
+ * gantt task labels). Apply the final text pass at the editor scope so those
+ * inline diagram rules cannot leave individual labels black in dark mode.
+ */
+#write .md-diagram-panel svg text,
+#write .md-diagram-panel svg text *,
+#write .md-diagram-panel svg foreignObject,
+#write .md-diagram-panel svg foreignObject *,
+#write .md-diagram-panel svg text.actor,
+#write .md-diagram-panel svg text.actor *,
+#write .md-diagram-panel svg text.actor-bottom,
+#write .md-diagram-panel svg text.actor-bottom *,
+#write .md-diagram-panel svg .actor text,
+#write .md-diagram-panel svg .actor text *,
+#write .md-diagram-panel svg .actor-bottom text,
+#write .md-diagram-panel svg .actor-bottom text *,
+#write .md-diagram-panel svg .taskText,
+#write .md-diagram-panel svg .taskText *,
+#write .md-diagram-panel svg .taskTextOutsideRight,
+#write .md-diagram-panel svg .taskTextOutsideRight *,
+#write .md-diagram-panel svg .sectionTitle,
+#write .md-diagram-panel svg .sectionTitle * {
+  color: var(--text-color) !important;
+  fill: var(--text-color) !important;
+}
+
+/*
+ * HTML blocks use a hybrid editor: Typora keeps the markup visible while also
+ * rendering its child elements. Give that shared surface a theme-owned
+ * background so the rendered content never falls back to Typora's light canvas.
+ */
+#write .md-htmlblock {
+  margin: 1.5rem 0;
+  color: var(--text-color);
+}
+
+#write .md-htmlblock .md-htmlblock-container {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+
+#write .md-htmlblock .md-htmlblock-panel {
+  box-sizing: border-box;
+  margin: 1.25rem 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-medium);
+  background: var(--surface-muted-color);
+  color: var(--text-color);
+}
+
+#write .md-htmlblock .md-rawblock-control,
+#write .md-htmlblock .md-rawblock-tooltip {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-small) var(--radius-small) 0 0;
+  background: var(--surface-raised-color);
+  color: var(--muted-text-color);
+  box-shadow: none;
+}
+
+#write .md-htmlblock .md-htmlblock-panel > :not(.CodeMirror) {
+  color: inherit;
 }
 
 .footnotes {

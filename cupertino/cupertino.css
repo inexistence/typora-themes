@@ -790,7 +790,8 @@ pre.md-meta-block .cm-number {
 .md-diagram-panel svg .labelText,
 .md-diagram-panel svg .taskText,
 .md-diagram-panel svg .taskTextOutsideRight,
-.md-diagram-panel svg .titleText {
+.md-diagram-panel svg .titleText,
+.md-diagram-panel svg .sectionTitle {
   fill: var(--text-color) !important;
 }
 
@@ -930,7 +931,9 @@ pre.md-meta-block .cm-number {
 #write .md-diagram-panel svg .taskText,
 #write .md-diagram-panel svg .taskText *,
 #write .md-diagram-panel svg .taskTextOutsideRight,
-#write .md-diagram-panel svg .taskTextOutsideRight * {
+#write .md-diagram-panel svg .taskTextOutsideRight *,
+#write .md-diagram-panel svg .sectionTitle,
+#write .md-diagram-panel svg .sectionTitle * {
   color: var(--text-color) !important;
   fill: var(--text-color) !important;
 }

@@ -184,6 +184,29 @@
   stroke: #a9a9b0 !important;
 }
 
+/*
+ * XY Chart ships its own background rect and axis labels with Mermaid's
+ * default light-theme colors, which clash with the dark diagram panel.
+ */
+#write .md-diagram-panel svg[aria-roledescription="xychart"] g.main rect.background {
+  fill: var(--diagram-bg-color) !important;
+}
+
+#write .md-diagram-panel svg[aria-roledescription="xychart"] g.bottom-axis text,
+#write .md-diagram-panel svg[aria-roledescription="xychart"] g.left-axis text,
+#write .md-diagram-panel svg[aria-roledescription="xychart"] g.title text,
+#write .md-diagram-panel svg[aria-roledescription="xychart"] g.label text,
+#write .md-diagram-panel svg[aria-roledescription="xychart"] g.plot text {
+  fill: var(--text-color) !important;
+}
+
+#write .md-diagram-panel svg[aria-roledescription="xychart"] g.bottom-axis path,
+#write .md-diagram-panel svg[aria-roledescription="xychart"] g.left-axis path,
+#write .md-diagram-panel svg[aria-roledescription="xychart"] g.grid line,
+#write .md-diagram-panel svg[aria-roledescription="xychart"] g.grid path {
+  stroke: var(--diagram-line-color) !important;
+}
+
 @media (prefers-contrast: more) {
   :root {
     --border-color: rgba(235, 235, 245, 0.55);
