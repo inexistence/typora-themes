@@ -427,9 +427,8 @@
   }
 
   function readablePalette(paper) {
-    const palette = relativeLuminance(paper) >= 0.18
-      ? READING_PALETTES.day
-      : READING_PALETTES.night
+    const mode = relativeLuminance(paper) >= 0.18 ? 'day' : 'night'
+    const palette = READING_PALETTES[mode]
     const darkFallback = [0, 0, 0]
     const lightFallback = [255, 255, 255]
     const fallback = contrastRatio(lightFallback, paper)
@@ -438,6 +437,7 @@
       : darkFallback
     const ink = ensureContrast(palette.ink, paper, 4.6, fallback)
     return {
+      mode,
       ink,
       heading: ensureContrast(palette.heading, paper, 4.8, ink),
       muted: ensureContrast(palette.muted, paper, 3.2, ink),
@@ -463,7 +463,7 @@
       const glow = model.glowAt(value)
       return {
         paper,
-        mode: readingModeAt(value),
+        mode: readable.mode,
         ink: readable.ink,
         heading: readable.heading,
         muted: readable.muted,
@@ -511,8 +511,7 @@
     let fallbackModeTransition = null
     const offscreenCache = new Map()
 
-    function setTheme(value) {
-      const color = palette.colorAt(value)
+    function setTheme(value, color = palette.colorAt(value)) {
       container.style.setProperty('--paper-bg', color.paper.join(' '))
       container.style.setProperty('--ink', color.ink.join(' '))
       container.style.setProperty('--heading', color.heading.join(' '))
@@ -907,25 +906,9 @@
 
       const rect = shell.getBoundingClientRect()
       const clone = shell.cloneNode(true)
-      const lightLayers = [glowCanvas, shadowCanvas]
-      const lightSnapshots = lightLayers.map(layer => {
-        const snapshot = document.createElement('canvas')
-        snapshot.width = layer.width
-        snapshot.height = layer.height
-        snapshot.className = layer.className
-        snapshot.classList.add('mode-transition-light-clone')
-        snapshot.setAttribute('aria-hidden', 'true')
-        snapshot.style.width = layer.style.width
-        snapshot.style.height = layer.style.height
-        snapshot.style.opacity = getComputedStyle(layer).opacity
-        snapshot.getContext('2d').drawImage(layer, 0, 0)
-        return snapshot
-      })
-      const lightTargetOpacities = lightLayers.map(layer => getComputedStyle(layer).opacity)
       const preservedProperties = [
         '--paper-bg', '--ink', '--heading', '--muted', '--md-char',
         '--accent', '--mark-text', '--mark-bg', '--border',
-        '--ambient-wash', '--ambient-wash-opacity',
       ]
 
       clone.removeAttribute('id')
@@ -941,53 +924,28 @@
       clone.style.minHeight = '0'
 
       document.body.append(clone)
-      for (const snapshot of lightSnapshots) {
-        document.body.append(snapshot)
-      }
       shell.style.opacity = '0'
-      for (const layer of lightLayers) {
-        layer.style.opacity = '0'
-      }
       apply()
 
-      const duration = 900
-      const easing = 'cubic-bezier(0.42, 0, 0.2, 1)'
+      const duration = 480
+      const easing = 'cubic-bezier(0.25, 1, 0.5, 1)'
       const cssTransition = `opacity ${duration}ms ${easing}`
       let cleanupTimer = 0
       const transition = {
         cancel() {
           clearTimeout(cleanupTimer)
           clone.remove()
-          for (const snapshot of lightSnapshots) {
-            snapshot.remove()
-          }
           shell.style.removeProperty('opacity')
           shell.style.removeProperty('transition')
-          for (const layer of lightLayers) {
-            layer.style.removeProperty('opacity')
-            layer.style.removeProperty('transition')
-          }
         },
       }
       fallbackModeTransition = transition
 
       clone.style.transition = cssTransition
       shell.style.transition = cssTransition
-      for (const snapshot of lightSnapshots) {
-        snapshot.style.transition = cssTransition
-      }
-      for (const layer of lightLayers) {
-        layer.style.transition = cssTransition
-      }
       clone.getBoundingClientRect()
       clone.style.opacity = '0'
       shell.style.opacity = '1'
-      lightSnapshots.forEach(snapshot => {
-        snapshot.style.opacity = '0'
-      })
-      lightLayers.forEach((layer, index) => {
-        layer.style.opacity = lightTargetOpacities[index]
-      })
 
       cleanupTimer = setTimeout(() => {
         if (fallbackModeTransition === transition) {
@@ -999,14 +957,15 @@
 
     function render(value) {
       const nextMinute = Math.round(Number(value))
-      const nextMode = readingModeAt(nextMinute)
+      const nextColor = palette.colorAt(nextMinute)
+      const nextMode = nextColor.mode
       const shouldTransition = activeReadingMode !== null
         && nextMode !== activeReadingMode
         && !reducedMotion.matches
 
       const apply = () => {
         minute = nextMinute
-        setTheme(minute)
+        setTheme(minute, nextColor)
         drawScene(minute)
       }
 
