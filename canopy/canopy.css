@@ -12,7 +12,6 @@
 
   --canopy-shadow-opacity: 0.78;
   --canopy-static-shadow-opacity: 0.34;
-  --canopy-scene-transition: 12s;
   --canopy-text-edge-color: 18 18 22;
   --canopy-text-edge-radius: 0px;
   --canopy-text-edge-opacity: 0;
@@ -254,17 +253,13 @@ html.canopy-starting #canopy-leaves-overlay {
   transition: none !important;
 }
 
-/*
- * The runtime maintains two copies of the CSS light field. It paints the next
- * date/time scene into the hidden copy and crossfades opacity, so complex
- * gradients never jump even though no canvas is used.
- */
+/* The runtime continuously updates one seasonal field and one ambient field. */
 .canopy-atmosphere-layer {
   position: fixed;
   inset: 0;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--canopy-scene-transition) linear;
+  transition: opacity 1200ms cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .canopy-atmosphere-layer.is-active {
@@ -353,10 +348,6 @@ html.canopy-video-active content::after {
     hue-rotate(var(--canopy-video-hue, 0deg));
 }
 
-html.canopy-debug-playing {
-  --canopy-scene-transition: 180ms;
-}
-
 html.canopy-debug-playing,
 html.canopy-debug-playing body,
 html.canopy-debug-playing content,
@@ -366,7 +357,7 @@ html.canopy-debug-playing #typora-sidebar,
 html.canopy-debug-playing content::after,
 html.canopy-debug-playing #canopy-video-layer,
 html.canopy-debug-playing #canopy-leaves-overlay {
-  transition-duration: 180ms;
+  transition: none !important;
 }
 
 .canopy-debug-hud {

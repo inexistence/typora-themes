@@ -419,7 +419,10 @@ async function main() {
   assert.match(cssSource, /\.canopy-season-color\s*{\s*z-index:\s*86;/)
   assert.match(cssSource, /\.canopy-ambient-wash\s*{\s*z-index:\s*87;/)
   assert.doesNotMatch(cssSource, /#write,\s*#typora-source\s*{[^}]*z-index:/)
-  assert.match(cssSource, /html\.canopy-debug-playing\s*{\s*--canopy-scene-transition:\s*180ms;/)
+  assert.match(
+    cssSource,
+    /html\.canopy-debug-playing,[^}]*#canopy-leaves-overlay\s*{\s*transition:\s*none\s*!important;/,
+  )
   assertSceneContrast({ theme: rootThemeTokens() }, 'CSS fallback')
   vm.runInNewContext(moduleSource, context)
   assert.equal(typeof factory, 'function')
@@ -514,7 +517,8 @@ async function main() {
     context: visibleContext,
     themesBaseUrl: 'file:///tmp/user/themes/',
   })
-  assert.equal(atmosphereLayerCount(), 4)
+  assert.equal(timers.at(-1).delay, 60_050)
+  assert.equal(atmosphereLayerCount(), 2)
   assert.notEqual(root.style.getPropertyValue('--bg-color'), '')
   assert.equal(typeof window.__canopyDebug, 'object')
   const cachedPrepaint = JSON.parse(storedValues.get('typora-themes-prepaint:canopy'))
@@ -563,6 +567,7 @@ async function main() {
   assert.equal(root.classList.contains('canopy-contrast-flip'), false)
   debug.show()
   assert.equal(connected('canopy-debug-hud').length, 1)
+  const debugPlay = connected().find(element => element.className === 'canopy-debug-play')
   const debugSpeed = connected().find(element => element.className === 'canopy-debug-speed')
   const minuteSpeed = debugSpeed.children.find(option => option.value === '1440')
   assert.equal(minuteSpeed.textContent, '1440 秒/天（1 秒 = 1 分钟）')
@@ -575,26 +580,26 @@ async function main() {
       && element.classList.contains('is-active')
   )).id
   fakeNow += 1000
-  const previewTick = timers.find(timer => !timer.cleared && timer.delay === 250)
-  assert.ok(previewTick)
-  previewTick.callback()
+  const previewFrame = frames.shift()
+  assert.ok(previewFrame)
+  previewFrame.callback()
   assert.equal(debug.getState().timestamp - previewStart, 24 * 60_000)
   const nextPreviewBundleId = connected().find(element => (
     element.className.includes('canopy-season-color')
       && element.classList.contains('is-active')
   )).id
-  assert.notEqual(nextPreviewBundleId, previewBundleId)
+  assert.equal(nextPreviewBundleId, previewBundleId)
   assert.equal(root.classList.contains('canopy-scene-instant'), false)
-  debug.pause()
+  debugPlay.dispatch('click')
   assert.equal(debug.getState().playing, false)
   assert.equal(root.classList.contains('canopy-debug-playing'), false)
   debug.play({ dayDurationSeconds: 1440 })
   assert.equal(debug.getState().dayDurationSeconds, 1440)
   const minutePreviewStart = debug.getState().timestamp
   fakeNow += 1000
-  const minutePreviewTick = timers.find(timer => !timer.cleared && timer.delay === 250)
-  assert.ok(minutePreviewTick)
-  minutePreviewTick.callback()
+  const minutePreviewFrame = frames.shift()
+  assert.ok(minutePreviewFrame)
+  minutePreviewFrame.callback()
   assert.equal(debug.getState().timestamp - minutePreviewStart, 60_000)
   debug.pause()
   debug.preset('winter-midnight')
@@ -612,7 +617,7 @@ async function main() {
   first.update(visibleContext)
   first.update(visibleContext)
   flushFrames()
-  assert.equal(atmosphereLayerCount(), 4)
+  assert.equal(atmosphereLayerCount(), 2)
   assert.equal(connected(VIDEO_ID).length, 1)
 
   first.update({ hidden: false, reducedMotion: true })

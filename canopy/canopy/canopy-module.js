@@ -23,7 +23,8 @@
   const SHANGHAI_LATITUDE = 31.23
   const SHANGHAI_LONGITUDE = 121.47
   const SHANGHAI_UTC_OFFSET_MINUTES = 8 * 60
-  const LIVE_TICK_INTERVAL_MS = 5_000
+  const LIVE_TICK_INTERVAL_MS = 60_000
+  const PREVIEW_FRAME_INTERVAL_MS = 50
   const FULL_CIRCLE = Math.PI * 2
   const DARK_INK_POLE = Object.freeze([18, 18, 22])
   const LIGHT_INK_POLE = Object.freeze([247, 244, 231])
@@ -961,9 +962,8 @@
     let startupFrame = 0
     let videoActivationFrame = 0
     let tickTimer = 0
-    let previewTimer = 0
+    let previewFrame = 0
     let destroyed = false
-    let activeBundle = 0
     let renderedKey = ''
     let debugTimestamp = null
     let previewPlaying = false
@@ -988,10 +988,10 @@
       return layer
     }
 
-    const bundles = ['a', 'b'].map(name => ({
-      color: createLayer(`canopy-season-${name}`, 'canopy-season-color'),
-      wash: createLayer(`canopy-wash-${name}`, 'canopy-ambient-wash'),
-    }))
+    const bundle = {
+      color: createLayer('canopy-season', 'canopy-season-color'),
+      wash: createLayer('canopy-wash', 'canopy-ambient-wash'),
+    }
 
     function bundleElements(bundle) {
       return [bundle.color, bundle.wash]
@@ -1005,27 +1005,7 @@
       })
     }
 
-    function activateBundle(index, immediate) {
-      bundles.forEach((bundle, bundleIndex) => {
-        bundleElements(bundle).forEach(element => {
-          if (immediate) {
-            element.style.transition = 'none'
-          } else {
-            element.style.removeProperty('transition')
-          }
-          element.classList.toggle('is-active', bundleIndex === index)
-        })
-      })
-      if (immediate) {
-        requestAnimationFrame(() => {
-          if (!destroyed) {
-            bundles.forEach(bundle => bundleElements(bundle).forEach(element => {
-              element.style.removeProperty('transition')
-            }))
-          }
-        })
-      }
-    }
+    bundleElements(bundle).forEach(element => element.classList.add('is-active'))
 
     function beginContrastFlip() {
       if (contrastFrame) {
@@ -1090,7 +1070,7 @@
       }
     }
 
-    function render(value = Date.now(), force = false, immediate = false) {
+    function render(value = Date.now(), force = false) {
       if (destroyed) {
         return currentScene
       }
@@ -1098,12 +1078,8 @@
       if (!force && nextScene.key === renderedKey) {
         return currentScene
       }
-      const crossfade = previewPlaying && renderedKey && !immediate && !currentContext.reducedMotion
-      const nextBundle = crossfade ? 1 - activeBundle : activeBundle
-      setBundleScene(bundles[nextBundle], nextScene)
+      setBundleScene(bundle, nextScene)
       applyRootScene(nextScene)
-      activateBundle(nextBundle, !crossfade)
-      activeBundle = nextBundle
       renderedKey = nextScene.key
       currentScene = nextScene
       return nextScene
@@ -1125,9 +1101,9 @@
     function pausePreview() {
       previewPlaying = false
       root.classList.remove(DEBUG_PLAYING_CLASS)
-      if (previewTimer) {
-        clearTimeout(previewTimer)
-        previewTimer = 0
+      if (previewFrame) {
+        cancelAnimationFrame(previewFrame)
+        previewFrame = 0
       }
       updateDebugHud()
     }
@@ -1144,7 +1120,7 @@
       pausePreview()
       debugTimestamp = timestamp
       beginInstantScene()
-      const scene = render(debugTimestamp, true, true)
+      const scene = render(debugTimestamp, true)
       updateDebugHud(scene)
       return scene
     }
@@ -1166,7 +1142,7 @@
       pausePreview()
       debugTimestamp = null
       beginInstantScene()
-      const scene = render(Date.now(), true, true)
+      const scene = render(Date.now(), true)
       updateDebugHud(scene)
       return scene
     }
@@ -1176,36 +1152,29 @@
       return setDebugTime(base + Number(amount) * 60_000)
     }
 
-    function schedulePreviewTick() {
-      if (!previewTimer && previewPlaying && !destroyed) {
-        previewTimer = setTimeout(runPreviewTick, 250)
+    function schedulePreviewFrame() {
+      if (!previewFrame && previewPlaying && !destroyed) {
+        previewFrame = requestAnimationFrame(runPreviewFrame)
       }
     }
 
-    function runPreviewTick() {
-      previewTimer = 0
+    function runPreviewFrame() {
+      previewFrame = 0
       if (!previewPlaying || destroyed) {
         return
       }
       const realNow = Date.now()
-      if (!currentContext.hidden) {
-        const elapsedSeconds = Math.max(0, realNow - previewLastTick) / 1000
-        const sceneTime = shanghaiParts(debugTimestamp ?? realNow)
-        const nextMinute = sceneTime.minute
-          + elapsedSeconds * 1440 / previewDayDurationSeconds
-        debugTimestamp = shanghaiTimestamp(
-          sceneTime.year,
-          sceneTime.month,
-          sceneTime.day,
-          nextMinute,
-        )
-        /* With direct light removed, preview playback can crossfade the two
-         * remaining color fields without the screen-blended brightness pulse.
-         * Slider input remains immediate for precise scene selection. */
+      const elapsedMilliseconds = Math.max(0, realNow - previewLastTick)
+      if (currentContext.hidden) {
+        previewLastTick = realNow
+      } else if (elapsedMilliseconds >= PREVIEW_FRAME_INTERVAL_MS) {
+        const elapsedSeconds = elapsedMilliseconds / 1000
+        debugTimestamp = (debugTimestamp ?? realNow)
+          + elapsedSeconds * 86_400_000 / previewDayDurationSeconds
         updateDebugHud(render(debugTimestamp))
+        previewLastTick = realNow
       }
-      previewLastTick = realNow
-      schedulePreviewTick()
+      schedulePreviewFrame()
     }
 
     function playPreview(options = {}) {
@@ -1227,7 +1196,7 @@
       previewLastTick = Date.now()
       root.classList.add(DEBUG_PLAYING_CLASS)
       updateDebugHud()
-      schedulePreviewTick()
+      schedulePreviewFrame()
       return getDebugState()
     }
 
@@ -1561,7 +1530,7 @@
       }, delay)
     }
 
-    render(clockNow(), true, true)
+    render(clockNow(), true)
     scheduleTick()
     scheduleReconcile()
 
@@ -1592,8 +1561,8 @@
         if (tickTimer) {
           clearTimeout(tickTimer)
         }
-        if (previewTimer) {
-          clearTimeout(previewTimer)
+        if (previewFrame) {
+          cancelAnimationFrame(previewFrame)
         }
         previewPlaying = false
         setVideoActive(false)
@@ -1604,7 +1573,7 @@
         debugHud?.remove()
         debugHud = null
         debugControls = null
-        bundles.forEach(bundle => bundleElements(bundle).forEach(element => element.remove()))
+        bundleElements(bundle).forEach(element => element.remove())
         ROOT_PROPERTIES.forEach(property => root.style.removeProperty(property))
         root.classList.remove(
           ACTIVE_CLASS,
