@@ -305,29 +305,6 @@ html.canopy-starting #canopy-leaves-overlay {
   mix-blend-mode: soft-light;
 }
 
-.canopy-direct-light {
-  z-index: 88;
-  background:
-    radial-gradient(
-      ellipse at var(--canopy-sun-x, 22%) var(--canopy-sun-y, 18%),
-      rgb(var(--canopy-direct-color, 255 225 170) / var(--canopy-direct-opacity, 0.62)) 0,
-      rgb(var(--canopy-direct-color, 255 225 170) / var(--canopy-direct-soft-opacity, 0.174)) 28%,
-      transparent var(--canopy-direct-radius, 63%)
-    ),
-    linear-gradient(
-      var(--canopy-beam-angle, 118deg),
-      transparent 13%,
-      rgb(var(--canopy-beam-color, 255 209 142) / var(--canopy-beam-opacity, 0.22)) 42%,
-      transparent 68%
-    ),
-    radial-gradient(
-      ellipse at var(--canopy-horizon-x, 12%) var(--canopy-horizon-y, 78%),
-      rgb(var(--canopy-horizon-color, 238 133 102) / var(--canopy-horizon-opacity, 0.18)),
-      transparent 58%
-    );
-  mix-blend-mode: screen;
-}
-
 /*
  * The still frame is a CSS-only fallback. The enhancer crossfades it out only
  * after the video is actually playing, so a failed or blocked video never

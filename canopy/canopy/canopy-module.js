@@ -867,10 +867,10 @@
     const sunY = mode === 'day'
       ? 76 - daylightAltitude * 66
       : 68 - moonAltitude * 56
-    const directColor = mode === 'day'
+    const ambientHighlightColor = mode === 'day'
       ? mixColor(sky, season.highlight, lerp(0.62, 0.28, daylightAltitude))
       : mixColor([151, 181, 224], season.sky, 0.22)
-    const directOpacity = mode === 'day'
+    const ambientHighlightIntensity = mode === 'day'
       ? clamp(daylight * lerp(0.75, 0.46, daylightAltitude) + twilight * 0.3, 0, 0.75)
       : lerp(0.06, 0.15, moonAltitude)
     const baseShadowOpacity = mode === 'day'
@@ -923,7 +923,7 @@
         '--canopy-wash-angle': `${(132 + solarPhase * 28).toFixed(2)}deg`,
         '--canopy-ambient-top': colorChannels(mixColor(sky, season.sky, 0.36)),
         '--canopy-ambient-bottom': colorChannels(mixColor(season.shadow, sky, 0.28)),
-        '--canopy-ambient-highlight': colorChannels(directColor),
+        '--canopy-ambient-highlight': colorChannels(ambientHighlightColor),
         '--canopy-ambient-opacity': (
           (mode === 'day' ? lerp(0.36, 0.52, twilight) : 0.25) * lightGuard
         ).toFixed(3),
@@ -931,22 +931,9 @@
           (mode === 'day' ? 0.22 : 0.24) * lightGuard
         ).toFixed(3),
         '--canopy-ambient-highlight-opacity': (
-          directOpacity * (mode === 'day' ? 0.72 : 0.35) * lightGuard
+          ambientHighlightIntensity * (mode === 'day' ? 0.72 : 0.35) * lightGuard
         ).toFixed(3),
         '--canopy-ambient-radius': `${lerp(72, 52, daylightAltitude).toFixed(2)}%`,
-        '--canopy-direct-color': colorChannels(directColor),
-        '--canopy-direct-opacity': (directOpacity * lightGuard).toFixed(3),
-        '--canopy-direct-soft-opacity': (directOpacity * 0.28 * lightGuard).toFixed(3),
-        '--canopy-direct-radius': `${lerp(74, 56, daylightAltitude || moonAltitude).toFixed(2)}%`,
-        '--canopy-beam-angle': `${lerp(108, 132, solarPhase).toFixed(2)}deg`,
-        '--canopy-beam-color': colorChannels(mixColor(season.highlight, season.horizon, horizonWarmth)),
-        '--canopy-beam-opacity': ((mode === 'day'
-          ? daylight * lerp(0.34, 0.12, daylightAltitude)
-          : 0.02) * lightGuard).toFixed(3),
-        '--canopy-horizon-x': dusk > dawn ? '88%' : '12%',
-        '--canopy-horizon-y': '82%',
-        '--canopy-horizon-color': colorChannels(season.horizon),
-        '--canopy-horizon-opacity': (twilight * 0.52 * lightGuard).toFixed(3),
       },
       video: {
         '--canopy-shadow-opacity': shadowOpacity.toFixed(3),
@@ -1004,11 +991,10 @@
     const bundles = ['a', 'b'].map(name => ({
       color: createLayer(`canopy-season-${name}`, 'canopy-season-color'),
       wash: createLayer(`canopy-wash-${name}`, 'canopy-ambient-wash'),
-      direct: createLayer(`canopy-light-${name}`, 'canopy-direct-light'),
     }))
 
     function bundleElements(bundle) {
-      return [bundle.color, bundle.wash, bundle.direct]
+      return [bundle.color, bundle.wash]
     }
 
     function setBundleScene(bundle, scene) {
@@ -1213,13 +1199,10 @@
           sceneTime.day,
           nextMinute,
         )
-        /*
-         * Playback follows the slider's single-layer, transition-free path.
-         * Crossfading two translucent blend layers changes their combined
-         * luminance mid-fade, which reads as a pulse at every preview tick.
-         */
-        beginInstantScene()
-        updateDebugHud(render(debugTimestamp, false, true))
+        /* With direct light removed, preview playback can crossfade the two
+         * remaining color fields without the screen-blended brightness pulse.
+         * Slider input remains immediate for precise scene selection. */
+        updateDebugHud(render(debugTimestamp))
       }
       previewLastTick = realNow
       schedulePreviewTick()
