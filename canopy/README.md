@@ -4,6 +4,8 @@ Canopy 是一个概念性 Typora 动态主题：四季天光、日出日落与�
 
 排版和 Typora 组件基础沿用本仓库的 Sunlit/Folio 系统。增强模块以 `Asia/Shanghai`、北纬 31.23°、东经 121.47°计算每日太阳时间，并在春分、夏至、秋分和冬至色板之间连续插值。日落后纸面会进入深灰紫夜色，树影继续播放。
 
+文字明暗与环境昼夜独立计算：正文和标题优先保持 `7:1` 对比度，信息文字至少保持 WCAG AA 的 `4.5:1`。晨昏光源重叠、最终合成风险升高时，模块会同步收窄季节色、发光层与树影，并加强信息文字的基础对比和细微边缘。`window.__canopyDebug.getScene()` 返回的 `phase`、`contrastMode` 和 `contrastGuard` 可用于检查晨昏阶段、文字极性与保护强度。
+
 ## 原型素材说明
 
 `canopy/assets/leaves.mp4` 暂时复用 Sunlit 的验证视频，原始素材取自 [dany.works](https://dany.works/leaves.mp4)。仓库没有获得该素材的再分发许可；它只能用于本地设计验证。公开发布、打包或商业使用 Canopy 前，必须替换为自行制作或具有明确授权的素材。
@@ -34,9 +36,11 @@ Canopy 是一个概念性 Typora 动态主题：四季天光、日出日落与�
 --canopy-shadow-opacity: 0.78;
 --canopy-static-shadow-opacity: 0.34;
 --canopy-scene-transition: 12s;
+--canopy-text-edge-radius: 0px;
+--canopy-text-edge-opacity: 0;
 ```
 
-增强模块会按当前场景更新前两项。打印和 PDF 导出会自动移除季节光场与树影。
+增强模块会按当前场景更新这些参数。打印和 PDF 导出会自动移除季节光场、树影与文字边缘补偿。
 
 ## 时间调试与演示录制
 

@@ -13,96 +13,100 @@
   --canopy-shadow-opacity: 0.78;
   --canopy-static-shadow-opacity: 0.34;
   --canopy-scene-transition: 12s;
+  --canopy-text-edge-color: 18 18 22;
+  --canopy-text-edge-radius: 0px;
+  --canopy-text-edge-opacity: 0;
 
-  --bg-color: #f7f3e7;
-  --text-color: #414638;
-  --heading-color: #252a20;
-  --muted-text-color: #6d7264;
-  --md-char-color: #aaa897;
-  --meta-content-color: #747365;
-  --primary-color: #9b6b2f;
-  --primary-btn-border-color: #9b6b2f;
-  --primary-btn-text-color: #fffaf0;
+  --bg-color: rgb(245 240 227);
+  --text-color: rgb(55 58 50);
+  --heading-color: rgb(34 37 31);
+  --muted-text-color: rgb(105 108 96);
+  --md-char-color: rgb(137 137 126);
+  --meta-content-color: rgb(105 108 96);
+  --primary-color: rgb(183 114 67);
+  --primary-btn-border-color: rgb(183 114 67);
+  --primary-btn-text-color: rgb(25 24 28);
 
-  --surface-color: #fbf8ee;
-  --surface-muted-color: #f1ecdd;
-  --surface-strong-color: #e9e2d1;
-  --surface-raised-color: #fffaf0;
-  --border-color: rgba(52, 59, 42, 0.13);
-  --border-soft-color: rgba(52, 59, 42, 0.08);
-  --border-strong-color: rgba(52, 59, 42, 0.22);
-  --divider-color: #d8d0bd;
+  --surface-color: rgb(247 242 230);
+  --surface-muted-color: rgb(246 241 228);
+  --surface-strong-color: rgb(245 240 227);
+  --surface-raised-color: rgb(248 244 231);
+  --border-color: rgb(55 58 50 / 0.14);
+  --border-soft-color: rgb(55 58 50 / 0.08);
+  --border-strong-color: rgb(55 58 50 / 0.23);
+  --divider-color: rgb(208 204 192);
 
-  --code-bg-color: #eee8d8;
-  --code-text-color: #373c30;
-  --code-fence-bg-color: #fbf8ee;
-  --code-fence-text-color: #414638;
-  --code-control-color: #848474;
-  --code-control-hover-bg-color: #ece5d5;
-  --code-tab-active-bg-color: #ece5d5;
-  --code-tab-active-text-color: #252a20;
-  --code-border-color: rgba(52, 59, 42, 0.14);
-  --code-gutter-color: #959484;
-  --code-cursor-color: #b47a31;
-  --code-active-line-color: rgba(180, 122, 49, 0.09);
-  --code-selection-color: rgba(180, 122, 49, 0.18);
+  --code-bg-color: rgb(246 241 229);
+  --code-text-color: rgb(55 58 50);
+  --code-fence-bg-color: rgb(247 242 230);
+  --code-fence-text-color: rgb(55 58 50);
+  --code-control-color: rgb(105 108 96);
+  --code-control-hover-bg-color: rgb(246 241 228);
+  --code-tab-active-bg-color: rgb(245 240 227);
+  --code-tab-active-text-color: rgb(34 37 31);
+  --code-border-color: rgb(55 58 50 / 0.16);
+  --code-gutter-color: rgb(138 138 127);
+  --code-cursor-color: rgb(183 114 67);
+  --code-active-line-color: rgb(183 114 67 / 0.12);
+  --code-selection-color: rgb(239 193 167 / 0.24);
 
-  --math-editor-bg-color: #f6f6f4;
-  --math-editor-text-color: #383835;
-  --math-command-color: #9a4f38;
-  --math-parameter-color: #356f68;
-  --math-meta-color: #898781;
-  --math-cursor-color: #c35f42;
-  --math-selection-color: rgba(195, 95, 66, 0.16);
+  --math-editor-bg-color: rgb(246 241 228);
+  --math-editor-text-color: rgb(55 58 50);
+  --math-command-color: rgb(150 75 58);
+  --math-parameter-color: rgb(70 112 77);
+  --math-meta-color: rgb(105 108 96);
+  --math-cursor-color: rgb(183 114 67);
+  --math-selection-color: rgb(239 193 167 / 0.22);
 
-  --diagram-bg-color: #ffffff;
-  --diagram-node-bg-color: #f6f6f4;
-  --diagram-node-border-color: #c9c7c1;
-  --diagram-line-color: #706e68;
-  --diagram-label-bg-color: #ffffff;
+  --diagram-bg-color: rgb(248 244 231);
+  --diagram-node-bg-color: rgb(246 241 228);
+  --diagram-node-border-color: rgb(139 137 131);
+  --diagram-line-color: rgb(105 108 96);
+  --diagram-label-bg-color: rgb(248 244 231);
 
-  --syntax-comment: #777873;
-  --syntax-keyword: #9a4f38;
-  --syntax-string: #4f7459;
-  --syntax-number: #8a5a31;
-  --syntax-variable: #315f78;
-  --syntax-operator: #6f6281;
-  --syntax-tag: #766223;
-  --syntax-error: #b42318;
+  --syntax-comment: rgb(108 110 103);
+  --syntax-keyword: rgb(150 75 58);
+  --syntax-string: rgb(70 112 77);
+  --syntax-number: rgb(137 85 46);
+  --syntax-variable: rgb(48 94 121);
+  --syntax-operator: rgb(104 88 126);
+  --syntax-tag: rgb(115 94 31);
+  --syntax-error: rgb(180 35 24);
 
-  --selection-color: rgba(199, 147, 62, 0.25);
-  --shadow-color: rgba(52, 59, 42, 0.11);
-  --shadow-strong-color: rgba(52, 59, 42, 0.18);
-  --mark-bg-color: #f0d99b;
-  --mark-text-color: #403b2b;
-  --table-header-text-color: #373c30;
+  --selection-color: rgb(239 193 167 / 0.3);
+  --shadow-color: rgb(64 62 76 / 0.13);
+  --shadow-strong-color: rgb(64 62 76 / 0.22);
+  --mark-bg-color: rgb(251 227 186);
+  --mark-text-color: rgb(55 58 50);
+  --table-header-text-color: rgb(34 37 31);
 
-  --quote-bg-color: #f2eddf;
-  --quote-border-color: rgba(52, 59, 42, 0.15);
-  --alert-note-bg-color: rgba(47, 123, 213, 0.1);
-  --alert-note-border-color: #2f7bd5;
-  --alert-note-text-color: #205a9f;
-  --alert-tip-bg-color: #ffffff;
-  --alert-tip-border-color: rgba(11, 11, 11, 0.2);
-  --alert-tip-text-color: #282724;
-  --alert-important-bg-color: rgba(111, 86, 160, 0.1);
-  --alert-important-border-color: #8064b2;
-  --alert-important-text-color: #62488f;
-  --alert-warning-bg-color: rgba(177, 112, 24, 0.1);
-  --alert-warning-border-color: #b17018;
-  --alert-warning-text-color: #80500f;
-  --alert-caution-bg-color: rgba(180, 55, 48, 0.09);
-  --alert-caution-border-color: #b43730;
-  --alert-caution-text-color: #8f2f2a;
+  --quote-bg-color: rgb(246 241 228);
+  --quote-border-color: rgb(55 58 50 / 0.16);
+  --alert-note-bg-color: rgb(47 123 213 / 0.14);
+  --alert-note-border-color: rgb(47 123 213);
+  --alert-note-text-color: rgb(32 90 159);
+  --alert-tip-bg-color: rgb(248 244 231);
+  --alert-tip-border-color: rgb(55 58 50 / 0.2);
+  --alert-tip-text-color: rgb(34 37 31);
+  --alert-important-bg-color: rgb(111 86 160 / 0.14);
+  --alert-important-border-color: rgb(128 100 178);
+  --alert-important-text-color: rgb(98 72 143);
+  --alert-warning-bg-color: rgb(177 112 24 / 0.15);
+  --alert-warning-border-color: rgb(174 110 25);
+  --alert-warning-text-color: rgb(128 80 15);
+  --alert-caution-bg-color: rgb(180 55 48 / 0.14);
+  --alert-caution-border-color: rgb(180 55 48);
+  --alert-caution-text-color: rgb(143 47 42);
 
   --window-border: 1px solid var(--border-color);
-  --side-bar-bg-color: #f2eddf;
-  --active-file-bg-color: #e8e0ce;
+  --side-bar-bg-color: rgb(233 228 217);
+  --side-bar-text-color: rgb(55 58 50);
+  --active-file-bg-color: rgb(245 240 227);
   --active-file-text-color: var(--heading-color);
   --active-file-border-color: var(--primary-color);
-  --item-hover-bg-color: #ece5d6;
+  --item-hover-bg-color: rgb(246 241 228);
   --item-hover-text-color: var(--heading-color);
-  --blur-text-color: #b5b19f;
+  --blur-text-color: rgb(137 137 126);
 
   --body-font: "Avenir Next", Avenir, "Noto Sans SC", -apple-system,
     BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
@@ -155,7 +159,45 @@ content,
   transition:
     background-color 1200ms cubic-bezier(0.65, 0, 0.35, 1),
     border-color 1200ms cubic-bezier(0.65, 0, 0.35, 1),
-    color 1200ms cubic-bezier(0.65, 0, 0.35, 1);
+    color 1200ms cubic-bezier(0.65, 0, 0.35, 1),
+    text-shadow 1200ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+#write,
+#typora-source,
+#typora-sidebar,
+.modal-content,
+.popover,
+.context-menu,
+.auto-suggest-container,
+.megamenu-content {
+  text-shadow:
+    0 0 var(--canopy-text-edge-radius)
+    rgb(var(--canopy-text-edge-color) / var(--canopy-text-edge-opacity));
+}
+
+.md-char,
+.md-meta,
+.cm-formatting,
+.ty-icon,
+.fa,
+[class^="fa-"],
+[class*=" fa-"] {
+  text-shadow: none;
+}
+
+html.canopy-contrast-flip,
+html.canopy-contrast-flip body,
+html.canopy-contrast-flip content,
+html.canopy-contrast-flip #write,
+html.canopy-contrast-flip #typora-source,
+html.canopy-contrast-flip #typora-sidebar,
+html.canopy-contrast-flip .modal-content,
+html.canopy-contrast-flip .popover,
+html.canopy-contrast-flip .context-menu,
+html.canopy-contrast-flip .auto-suggest-container,
+html.canopy-contrast-flip .megamenu-content {
+  transition: none !important;
 }
 
 /*
@@ -187,7 +229,7 @@ content,
       var(--canopy-season-angle, 155deg),
       rgb(var(--canopy-season-sky, 190 207 197) / var(--canopy-season-opacity, 0.34)),
       rgb(var(--canopy-season-horizon, 236 176 133) / var(--canopy-season-horizon-opacity, 0.24)) 62%,
-      rgb(var(--canopy-season-shadow, 66 68 80) / 0.16)
+      rgb(var(--canopy-season-shadow, 66 68 80) / var(--canopy-season-shadow-opacity, 0.16))
     );
   mix-blend-mode: color;
 }
@@ -474,7 +516,6 @@ html.canopy-debug-playing #typora-sidebar {
 
 #write del {
   color: var(--muted-text-color);
-  opacity: 0.72;
 }
 
 #write mark {
@@ -1710,13 +1751,13 @@ pre.md-meta-block {
 #typora-sidebar {
   border-right: 1px solid var(--border-color);
   background: var(--side-bar-bg-color);
-  color: var(--text-color);
+  color: var(--side-bar-text-color);
 }
 
 .typora-node,
 .file-node-content,
 .outline-item {
-  color: var(--text-color);
+  color: var(--side-bar-text-color);
 }
 
 .file-node-content:hover,
@@ -1871,10 +1912,19 @@ footer,
     --text-color: #222222 !important;
     --heading-color: #000000 !important;
     --muted-text-color: #555555 !important;
+    --md-char-color: #666666 !important;
+    --meta-content-color: #555555 !important;
+    --primary-color: #8a4f2b !important;
+    --primary-btn-border-color: #8a4f2b !important;
+    --primary-btn-text-color: #ffffff !important;
+    --surface-color: #ffffff !important;
     --surface-muted-color: #f5f5f3 !important;
     --surface-strong-color: #eeeeeb !important;
+    --surface-raised-color: #ffffff !important;
     --border-color: #d8d8d3 !important;
     --border-soft-color: #e5e5e1 !important;
+    --border-strong-color: #aaaaa4 !important;
+    --divider-color: #c7c7c1 !important;
     --code-bg-color: #f5f5f3 !important;
     --code-text-color: #222222 !important;
     --code-fence-bg-color: #ffffff !important;
@@ -1884,6 +1934,64 @@ footer,
     --code-tab-active-bg-color: #eeeeeb !important;
     --code-tab-active-text-color: #000000 !important;
     --code-border-color: #d8d8d3 !important;
+    --code-gutter-color: #666666 !important;
+    --code-cursor-color: #8a4f2b !important;
+    --code-active-line-color: rgb(138 79 43 / 0.08) !important;
+    --code-selection-color: rgb(138 79 43 / 0.16) !important;
+    --math-editor-bg-color: #f5f5f3 !important;
+    --math-editor-text-color: #222222 !important;
+    --math-command-color: #7a2d25 !important;
+    --math-parameter-color: #2f6638 !important;
+    --math-meta-color: #555555 !important;
+    --math-cursor-color: #8a4f2b !important;
+    --math-selection-color: rgb(138 79 43 / 0.14) !important;
+    --diagram-bg-color: #ffffff !important;
+    --diagram-node-bg-color: #f5f5f3 !important;
+    --diagram-node-border-color: #777777 !important;
+    --diagram-line-color: #555555 !important;
+    --diagram-label-bg-color: #ffffff !important;
+    --syntax-comment: #555555 !important;
+    --syntax-keyword: #7a2d25 !important;
+    --syntax-string: #2f6638 !important;
+    --syntax-number: #7b4317 !important;
+    --syntax-variable: #245875 !important;
+    --syntax-operator: #5b4472 !important;
+    --syntax-tag: #665117 !important;
+    --syntax-error: #991f1a !important;
+    --selection-color: rgb(138 79 43 / 0.18) !important;
+    --shadow-color: transparent !important;
+    --shadow-strong-color: transparent !important;
+    --mark-bg-color: #f6dfa8 !important;
+    --mark-text-color: #222222 !important;
+    --table-header-text-color: #000000 !important;
+    --quote-bg-color: #f5f5f3 !important;
+    --quote-border-color: #777777 !important;
+    --alert-note-bg-color: rgb(47 123 213 / 0.1) !important;
+    --alert-note-border-color: #174f87 !important;
+    --alert-note-text-color: #174f87 !important;
+    --alert-tip-bg-color: #f5f5f3 !important;
+    --alert-tip-border-color: #666666 !important;
+    --alert-tip-text-color: #222222 !important;
+    --alert-important-bg-color: rgb(111 86 160 / 0.1) !important;
+    --alert-important-border-color: #54387e !important;
+    --alert-important-text-color: #54387e !important;
+    --alert-warning-bg-color: rgb(177 112 24 / 0.11) !important;
+    --alert-warning-border-color: #714700 !important;
+    --alert-warning-text-color: #714700 !important;
+    --alert-caution-bg-color: rgb(180 55 48 / 0.1) !important;
+    --alert-caution-border-color: #842b27 !important;
+    --alert-caution-text-color: #842b27 !important;
+    --side-bar-bg-color: #f5f5f3 !important;
+    --side-bar-text-color: #222222 !important;
+    --active-file-bg-color: #eeeeeb !important;
+    --active-file-text-color: #000000 !important;
+    --active-file-border-color: #8a4f2b !important;
+    --item-hover-bg-color: #f5f5f3 !important;
+    --item-hover-text-color: #222222 !important;
+    --blur-text-color: #666666 !important;
+    --canopy-text-edge-color: 18 18 22 !important;
+    --canopy-text-edge-radius: 0px !important;
+    --canopy-text-edge-opacity: 0 !important;
   }
 
   html,
@@ -1904,6 +2012,17 @@ footer,
   #write {
     max-width: none;
     padding: 0;
+  }
+
+  #write,
+  #typora-source,
+  #typora-sidebar,
+  .modal-content,
+  .popover,
+  .context-menu,
+  .auto-suggest-container,
+  .megamenu-content {
+    text-shadow: none !important;
   }
 
   .typora-export * {

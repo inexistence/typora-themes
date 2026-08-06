@@ -11,6 +11,7 @@
   const THEME_ID = 'canopy'
   const ACTIVE_CLASS = 'canopy-video-active'
   const NIGHT_CLASS = 'canopy-night'
+  const CONTRAST_FLIP_CLASS = 'canopy-contrast-flip'
   const DEBUG_PLAYING_CLASS = 'canopy-debug-playing'
   const DEBUG_KEY = '__canopyDebug'
   const VIDEO_ID = 'canopy-leaves-overlay'
@@ -18,6 +19,12 @@
   const SHANGHAI_LONGITUDE = 121.47
   const SHANGHAI_UTC_OFFSET_MINUTES = 8 * 60
   const FULL_CIRCLE = Math.PI * 2
+  const DARK_INK_POLE = Object.freeze([18, 18, 22])
+  const LIGHT_INK_POLE = Object.freeze([247, 244, 231])
+  const ABSOLUTE_DARK_POLE = Object.freeze([0, 0, 0])
+  const ABSOLUTE_LIGHT_POLE = Object.freeze([255, 255, 255])
+  const AA_CONTRAST_TARGET = 4.6
+  const UI_CONTRAST_TARGET = 3.1
 
   const DEBUG_PRESETS = Object.freeze({
     'spring-noon': '2026-03-20T12:00:00+08:00',
@@ -120,9 +127,12 @@
     '--alert-important-text-color', '--alert-warning-bg-color',
     '--alert-warning-border-color', '--alert-warning-text-color',
     '--alert-caution-bg-color', '--alert-caution-border-color',
-    '--alert-caution-text-color', '--side-bar-bg-color', '--active-file-bg-color',
+    '--alert-caution-text-color', '--side-bar-bg-color', '--side-bar-text-color',
+    '--active-file-bg-color',
     '--active-file-text-color', '--active-file-border-color',
     '--item-hover-bg-color', '--item-hover-text-color', '--blur-text-color',
+    '--canopy-text-edge-color', '--canopy-text-edge-radius',
+    '--canopy-text-edge-opacity',
     '--canopy-shadow-opacity', '--canopy-static-shadow-opacity',
     '--canopy-video-contrast', '--canopy-video-brightness',
     '--canopy-video-sepia', '--canopy-video-saturation', '--canopy-video-hue',
@@ -198,22 +208,137 @@
     return (lighter + 0.05) / (darker + 0.05)
   }
 
-  function ensureContrast(foreground, background, target, fallback) {
-    if (contrastRatio(foreground, background) >= target) {
-      return foreground
+  function colorDistance(first, second) {
+    const firstLab = rgbToOklab(first)
+    const secondLab = rgbToOklab(second)
+    return Math.sqrt(firstLab.reduce((sum, channel, index) => (
+      sum + Math.pow(channel - secondLab[index], 2)
+    ), 0))
+  }
+
+  function backgroundList(backgrounds) {
+    return typeof backgrounds[0] === 'number' ? [backgrounds] : backgrounds
+  }
+
+  function minimumContrast(color, backgrounds) {
+    return Math.min(...backgroundList(backgrounds).map(background => (
+      contrastRatio(color, background)
+    )))
+  }
+
+  function fitTowardPole(foreground, backgrounds, target, pole, poleMode) {
+    if (minimumContrast(pole, backgrounds) < target) {
+      return null
     }
     let low = 0
     let high = 1
-    for (let index = 0; index < 12; index += 1) {
+    let passing = pole
+    for (let index = 0; index < 14; index += 1) {
       const amount = (low + high) / 2
-      const candidate = mixColor(foreground, fallback, amount)
-      if (contrastRatio(candidate, background) >= target) {
+      const candidate = mixColor(foreground, pole, amount)
+      if (minimumContrast(candidate, backgrounds) >= target) {
+        passing = candidate
         high = amount
       } else {
         low = amount
       }
     }
-    return mixColor(foreground, fallback, high)
+    return {
+      color: passing,
+      distance: colorDistance(foreground, passing),
+      mode: poleMode,
+    }
+  }
+
+  function closestPassingColor(foreground, backgrounds, target, contrastMode) {
+    if (minimumContrast(foreground, backgrounds) >= target) {
+      return foreground
+    }
+    const candidateSets = [
+      [
+        [DARK_INK_POLE, 'dark-ink'],
+        [LIGHT_INK_POLE, 'light-ink'],
+      ],
+      [
+        [ABSOLUTE_DARK_POLE, 'dark-ink'],
+        [ABSOLUTE_LIGHT_POLE, 'light-ink'],
+      ],
+    ]
+    for (const poles of candidateSets) {
+      const candidates = poles
+        .map(([pole, poleMode]) => fitTowardPole(
+          foreground,
+          backgrounds,
+          target,
+          pole,
+          poleMode,
+        ))
+        .filter(Boolean)
+        .sort((first, second) => (
+          first.distance - second.distance
+          || Number(second.mode === contrastMode) - Number(first.mode === contrastMode)
+        ))
+      if (candidates.length) {
+        return candidates[0].color
+      }
+    }
+    return null
+  }
+
+  function maximumContrastColor(foreground, backgrounds, contrastMode) {
+    return [
+      [DARK_INK_POLE, 'dark-ink'],
+      [LIGHT_INK_POLE, 'light-ink'],
+      [ABSOLUTE_DARK_POLE, 'dark-ink'],
+      [ABSOLUTE_LIGHT_POLE, 'light-ink'],
+    ]
+      .map(([color, mode]) => ({
+        color,
+        contrast: minimumContrast(color, backgrounds),
+        distance: colorDistance(foreground, color),
+        mode,
+      }))
+      .sort((first, second) => (
+        second.contrast - first.contrast
+        || Number(second.mode === contrastMode) - Number(first.mode === contrastMode)
+        || first.distance - second.distance
+      ))[0].color
+  }
+
+  function preferredContrastColor(
+    foreground,
+    backgrounds,
+    preferredTarget,
+    minimumTarget,
+    contrastMode,
+  ) {
+    const preferred = closestPassingColor(
+      foreground,
+      backgrounds,
+      preferredTarget,
+      contrastMode,
+    )
+    if (preferred) {
+      return preferred
+    }
+    const maximum = maximumContrastColor(foreground, backgrounds, contrastMode)
+    return minimumContrast(maximum, backgrounds) >= minimumTarget
+      ? maximum
+      : contrastMode === 'dark-ink'
+        ? ABSOLUTE_DARK_POLE
+        : ABSOLUTE_LIGHT_POLE
+  }
+
+  function contrastModeFor(background) {
+    return contrastRatio(DARK_INK_POLE, background) >= contrastRatio(LIGHT_INK_POLE, background)
+      ? 'dark-ink'
+      : 'light-ink'
+  }
+
+  function compositeColor(foreground, alpha, background) {
+    return foreground.map((channel, index) => Math.round(
+      channel * alpha + background[index] * (1 - alpha),
+    ))
   }
 
   function rgb(color) {
@@ -333,34 +458,110 @@
     return colorAtStops(stops, minute)
   }
 
-  function themeTokens(paper, season, mode) {
-    const darkFallback = [18, 18, 22]
-    const lightFallback = [247, 244, 231]
-    const fallback = mode === 'day' ? darkFallback : lightFallback
-    const textBase = mode === 'day' ? [55, 58, 50] : [224, 224, 214]
-    const headingBase = mode === 'day' ? [34, 37, 31] : [247, 240, 222]
-    const mutedBase = mode === 'day' ? [105, 108, 96] : [170, 172, 162]
-    const markerBase = mode === 'day' ? [153, 153, 139] : [126, 130, 124]
-    const ink = ensureContrast(textBase, paper, 4.7, fallback)
-    const heading = ensureContrast(headingBase, paper, 5.2, fallback)
-    const muted = ensureContrast(mutedBase, paper, 3.5, ink)
-    const marker = ensureContrast(markerBase, paper, 2.2, ink)
-    const accentBase = mixColor(
-      mode === 'day' ? [151, 91, 38] : [230, 185, 124],
-      season.horizon,
-      mode === 'day' ? 0.42 : 0.3,
-    )
-    const accent = ensureContrast(accentBase, paper, 3.4, ink)
+  function themeTokens(paper, season, mode, contrastMode, targets = {}) {
+    const bodyTarget = targets.body ?? 7
+    const informativeTarget = targets.informative ?? AA_CONTRAST_TARGET
+    const decorativeTarget = targets.decorative ?? UI_CONTRAST_TARGET
+    const darkInk = contrastMode === 'dark-ink'
+    const textBase = darkInk ? [55, 58, 50] : [224, 224, 214]
+    const headingBase = darkInk ? [34, 37, 31] : [247, 240, 222]
+    const mutedBase = darkInk ? [105, 108, 96] : [170, 172, 162]
+    const markerBase = darkInk ? [153, 153, 139] : [126, 130, 124]
     const surfacePole = mode === 'day' ? [255, 251, 239] : [85, 84, 98]
     const surface = mixColor(paper, surfacePole, mode === 'day' ? 0.22 : 0.16)
     const surfaceMuted = mixColor(paper, surfacePole, mode === 'day' ? 0.1 : 0.28)
     const surfaceStrong = mixColor(paper, surfacePole, mode === 'day' ? 0.04 : 0.42)
     const surfaceRaised = mixColor(paper, surfacePole, mode === 'day' ? 0.35 : 0.5)
+    const commonTextBackgrounds = [paper, surface, surfaceMuted, surfaceRaised]
+    let ink = preferredContrastColor(
+      textBase,
+      paper,
+      bodyTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    ink = closestPassingColor(ink, commonTextBackgrounds, AA_CONTRAST_TARGET, contrastMode) ?? ink
+    let heading = preferredContrastColor(
+      headingBase,
+      paper,
+      bodyTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    heading = closestPassingColor(heading, commonTextBackgrounds, AA_CONTRAST_TARGET, contrastMode) ?? heading
+    const muted = preferredContrastColor(
+      mutedBase,
+      [paper, surfaceMuted, surfaceRaised],
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const marker = preferredContrastColor(
+      markerBase,
+      [paper, surface, surfaceMuted],
+      decorativeTarget,
+      UI_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const accentBase = mixColor(
+      darkInk ? [151, 91, 38] : [230, 185, 124],
+      season.horizon,
+      darkInk ? 0.42 : 0.3,
+    )
+    const accent = preferredContrastColor(
+      accentBase,
+      [paper, surface, surfaceMuted, surfaceStrong],
+      decorativeTarget,
+      UI_CONTRAST_TARGET,
+      contrastMode,
+    )
     const divider = mixColor(paper, ink, mode === 'day' ? 0.18 : 0.23)
     const codeBackground = mixColor(paper, surfacePole, mode === 'day' ? 0.13 : 0.3)
     const markBackground = mixColor(paper, season.highlight, mode === 'day' ? 0.52 : 0.28)
     const selection = mixColor(paper, season.horizon, mode === 'day' ? 0.5 : 0.38)
-    const syntax = mode === 'day'
+    const codeText = preferredContrastColor(
+      ink,
+      codeBackground,
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const codeFenceText = preferredContrastColor(
+      ink,
+      surface,
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const codeControl = preferredContrastColor(
+      mutedBase,
+      [surface, surfaceMuted],
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const codeTabText = preferredContrastColor(
+      headingBase,
+      surfaceStrong,
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const codeGutter = preferredContrastColor(
+      markerBase,
+      surface,
+      decorativeTarget,
+      UI_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const metaContent = preferredContrastColor(
+      mutedBase,
+      [paper, surfaceMuted],
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const syntaxAnchors = darkInk
       ? {
           comment: [112, 115, 107], keyword: [150, 75, 58], string: [70, 112, 77],
           number: [137, 85, 46], variable: [48, 94, 121], operator: [104, 88, 126],
@@ -371,88 +572,228 @@
           number: [220, 164, 111], variable: [130, 181, 214], operator: [180, 157, 207],
           tag: [207, 186, 112], error: [255, 123, 112],
         }
+    const syntax = Object.fromEntries(Object.entries(syntaxAnchors).map(([name, anchor]) => [
+      name,
+      preferredContrastColor(
+        anchor,
+        surface,
+        informativeTarget,
+        AA_CONTRAST_TARGET,
+        contrastMode,
+      ),
+    ]))
+    const mathCommand = preferredContrastColor(
+      syntaxAnchors.keyword,
+      surfaceMuted,
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const mathParameter = preferredContrastColor(
+      syntaxAnchors.string,
+      surfaceMuted,
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const mathMeta = preferredContrastColor(
+      mutedBase,
+      surfaceMuted,
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const diagramLine = preferredContrastColor(
+      mutedBase,
+      surfaceRaised,
+      decorativeTarget,
+      UI_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const diagramNodeBorder = preferredContrastColor(
+      divider,
+      surfaceMuted,
+      decorativeTarget,
+      UI_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const markText = preferredContrastColor(
+      ink,
+      markBackground,
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const sideBarBackground = mixColor(paper, season.shadow, mode === 'day' ? 0.06 : 0.12)
+    const sideBarText = preferredContrastColor(
+      textBase,
+      sideBarBackground,
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const activeFileText = preferredContrastColor(
+      headingBase,
+      surfaceStrong,
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const itemHoverText = preferredContrastColor(
+      headingBase,
+      surfaceMuted,
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      contrastMode,
+    )
+    const buttonContrastMode = darkInk ? 'light-ink' : 'dark-ink'
+    const primaryButtonText = preferredContrastColor(
+      darkInk ? [255, 250, 240] : [35, 31, 38],
+      accent,
+      informativeTarget,
+      AA_CONTRAST_TARGET,
+      buttonContrastMode,
+    )
+
+    function alertPalette(dayValues, nightValues, alpha) {
+      const values = darkInk ? dayValues : nightValues
+      const background = compositeColor(values.background, alpha, paper)
+      return {
+        background: rgba(values.background, alpha),
+        border: rgb(preferredContrastColor(
+          values.border,
+          [paper, background],
+          decorativeTarget,
+          UI_CONTRAST_TARGET,
+          contrastMode,
+        )),
+        text: rgb(preferredContrastColor(
+          values.text,
+          background,
+          informativeTarget,
+          AA_CONTRAST_TARGET,
+          contrastMode,
+        )),
+      }
+    }
+
+    const note = alertPalette(
+      { background: [47, 123, 213], border: [47, 123, 213], text: [32, 90, 159] },
+      { background: [92, 157, 232], border: [111, 174, 241], text: [170, 208, 249] },
+      0.14,
+    )
+    const important = alertPalette(
+      { background: [111, 86, 160], border: [128, 100, 178], text: [98, 72, 143] },
+      { background: [164, 137, 214], border: [185, 156, 230], text: [211, 190, 244] },
+      0.14,
+    )
+    const warning = alertPalette(
+      { background: [177, 112, 24], border: [177, 112, 24], text: [128, 80, 15] },
+      { background: [222, 159, 79], border: [230, 169, 93], text: [242, 201, 143] },
+      0.15,
+    )
+    const caution = alertPalette(
+      { background: [180, 55, 48], border: [180, 55, 48], text: [143, 47, 42] },
+      { background: [234, 113, 104], border: [241, 126, 117], text: [249, 188, 180] },
+      0.14,
+    )
 
     return {
-      '--bg-color': rgb(paper),
-      '--text-color': rgb(ink),
-      '--heading-color': rgb(heading),
-      '--muted-text-color': rgb(muted),
-      '--md-char-color': rgb(marker),
-      '--meta-content-color': rgb(muted),
-      '--primary-color': rgb(accent),
-      '--primary-btn-border-color': rgb(accent),
-      '--primary-btn-text-color': rgb(ensureContrast(mode === 'day' ? [255, 250, 240] : [35, 31, 38], accent, 4.5, fallback)),
-      '--surface-color': rgb(surface),
-      '--surface-muted-color': rgb(surfaceMuted),
-      '--surface-strong-color': rgb(surfaceStrong),
-      '--surface-raised-color': rgb(surfaceRaised),
-      '--border-color': rgba(ink, mode === 'day' ? 0.14 : 0.16),
-      '--border-soft-color': rgba(ink, mode === 'day' ? 0.08 : 0.1),
-      '--border-strong-color': rgba(ink, mode === 'day' ? 0.23 : 0.28),
-      '--divider-color': rgb(divider),
-      '--code-bg-color': rgb(codeBackground),
-      '--code-text-color': rgb(ink),
-      '--code-fence-bg-color': rgb(surface),
-      '--code-fence-text-color': rgb(ink),
-      '--code-control-color': rgb(muted),
-      '--code-control-hover-bg-color': rgb(surfaceMuted),
-      '--code-tab-active-bg-color': rgb(surfaceStrong),
-      '--code-tab-active-text-color': rgb(heading),
-      '--code-border-color': rgba(ink, 0.16),
-      '--code-gutter-color': rgb(marker),
-      '--code-cursor-color': rgb(accent),
-      '--code-active-line-color': rgba(accent, 0.12),
-      '--code-selection-color': rgba(selection, 0.24),
-      '--math-editor-bg-color': rgb(surfaceMuted),
-      '--math-editor-text-color': rgb(ink),
-      '--math-command-color': rgb(syntax.keyword),
-      '--math-parameter-color': rgb(syntax.string),
-      '--math-meta-color': rgb(muted),
-      '--math-cursor-color': rgb(accent),
-      '--math-selection-color': rgba(selection, 0.22),
-      '--diagram-bg-color': rgb(surfaceRaised),
-      '--diagram-node-bg-color': rgb(surfaceMuted),
-      '--diagram-node-border-color': rgb(divider),
-      '--diagram-line-color': rgb(muted),
-      '--diagram-label-bg-color': rgb(surfaceRaised),
-      '--syntax-comment': rgb(syntax.comment),
-      '--syntax-keyword': rgb(syntax.keyword),
-      '--syntax-string': rgb(syntax.string),
-      '--syntax-number': rgb(syntax.number),
-      '--syntax-variable': rgb(syntax.variable),
-      '--syntax-operator': rgb(syntax.operator),
-      '--syntax-tag': rgb(syntax.tag),
-      '--syntax-error': rgb(syntax.error),
-      '--selection-color': rgba(selection, 0.3),
-      '--shadow-color': rgba(season.shadow, mode === 'day' ? 0.13 : 0.28),
-      '--shadow-strong-color': rgba(season.shadow, mode === 'day' ? 0.22 : 0.4),
-      '--mark-bg-color': rgb(markBackground),
-      '--mark-text-color': rgb(ensureContrast(ink, markBackground, 4.5, fallback)),
-      '--table-header-text-color': rgb(heading),
-      '--quote-bg-color': rgb(surfaceMuted),
-      '--quote-border-color': rgba(ink, 0.16),
-      '--alert-note-bg-color': rgba(mode === 'day' ? [47, 123, 213] : [92, 157, 232], 0.14),
-      '--alert-note-border-color': rgb(mode === 'day' ? [47, 123, 213] : [111, 174, 241]),
-      '--alert-note-text-color': rgb(mode === 'day' ? [32, 90, 159] : [170, 208, 249]),
-      '--alert-tip-bg-color': rgb(surfaceRaised),
-      '--alert-tip-border-color': rgba(ink, 0.2),
-      '--alert-tip-text-color': rgb(heading),
-      '--alert-important-bg-color': rgba(mode === 'day' ? [111, 86, 160] : [164, 137, 214], 0.14),
-      '--alert-important-border-color': rgb(mode === 'day' ? [128, 100, 178] : [185, 156, 230]),
-      '--alert-important-text-color': rgb(mode === 'day' ? [98, 72, 143] : [211, 190, 244]),
-      '--alert-warning-bg-color': rgba(mode === 'day' ? [177, 112, 24] : [222, 159, 79], 0.15),
-      '--alert-warning-border-color': rgb(mode === 'day' ? [177, 112, 24] : [230, 169, 93]),
-      '--alert-warning-text-color': rgb(mode === 'day' ? [128, 80, 15] : [242, 201, 143]),
-      '--alert-caution-bg-color': rgba(mode === 'day' ? [180, 55, 48] : [234, 113, 104], 0.14),
-      '--alert-caution-border-color': rgb(mode === 'day' ? [180, 55, 48] : [241, 126, 117]),
-      '--alert-caution-text-color': rgb(mode === 'day' ? [143, 47, 42] : [249, 188, 180]),
-      '--side-bar-bg-color': rgb(mixColor(paper, season.shadow, mode === 'day' ? 0.06 : 0.12)),
-      '--active-file-bg-color': rgb(surfaceStrong),
-      '--active-file-text-color': rgb(heading),
-      '--active-file-border-color': rgb(accent),
-      '--item-hover-bg-color': rgb(surfaceMuted),
-      '--item-hover-text-color': rgb(heading),
-      '--blur-text-color': rgb(marker),
+      tokens: {
+        '--bg-color': rgb(paper),
+        '--text-color': rgb(ink),
+        '--heading-color': rgb(heading),
+        '--muted-text-color': rgb(muted),
+        '--md-char-color': rgb(marker),
+        '--meta-content-color': rgb(metaContent),
+        '--primary-color': rgb(accent),
+        '--primary-btn-border-color': rgb(accent),
+        '--primary-btn-text-color': rgb(primaryButtonText),
+        '--surface-color': rgb(surface),
+        '--surface-muted-color': rgb(surfaceMuted),
+        '--surface-strong-color': rgb(surfaceStrong),
+        '--surface-raised-color': rgb(surfaceRaised),
+        '--border-color': rgba(ink, mode === 'day' ? 0.14 : 0.16),
+        '--border-soft-color': rgba(ink, mode === 'day' ? 0.08 : 0.1),
+        '--border-strong-color': rgba(ink, mode === 'day' ? 0.23 : 0.28),
+        '--divider-color': rgb(divider),
+        '--code-bg-color': rgb(codeBackground),
+        '--code-text-color': rgb(codeText),
+        '--code-fence-bg-color': rgb(surface),
+        '--code-fence-text-color': rgb(codeFenceText),
+        '--code-control-color': rgb(codeControl),
+        '--code-control-hover-bg-color': rgb(surfaceMuted),
+        '--code-tab-active-bg-color': rgb(surfaceStrong),
+        '--code-tab-active-text-color': rgb(codeTabText),
+        '--code-border-color': rgba(codeFenceText, 0.16),
+        '--code-gutter-color': rgb(codeGutter),
+        '--code-cursor-color': rgb(accent),
+        '--code-active-line-color': rgba(accent, 0.12),
+        '--code-selection-color': rgba(selection, 0.24),
+        '--math-editor-bg-color': rgb(surfaceMuted),
+        '--math-editor-text-color': rgb(preferredContrastColor(
+          ink,
+          surfaceMuted,
+          informativeTarget,
+          AA_CONTRAST_TARGET,
+          contrastMode,
+        )),
+        '--math-command-color': rgb(mathCommand),
+        '--math-parameter-color': rgb(mathParameter),
+        '--math-meta-color': rgb(mathMeta),
+        '--math-cursor-color': rgb(accent),
+        '--math-selection-color': rgba(selection, 0.22),
+        '--diagram-bg-color': rgb(surfaceRaised),
+        '--diagram-node-bg-color': rgb(surfaceMuted),
+        '--diagram-node-border-color': rgb(diagramNodeBorder),
+        '--diagram-line-color': rgb(diagramLine),
+        '--diagram-label-bg-color': rgb(surfaceRaised),
+        '--syntax-comment': rgb(syntax.comment),
+        '--syntax-keyword': rgb(syntax.keyword),
+        '--syntax-string': rgb(syntax.string),
+        '--syntax-number': rgb(syntax.number),
+        '--syntax-variable': rgb(syntax.variable),
+        '--syntax-operator': rgb(syntax.operator),
+        '--syntax-tag': rgb(syntax.tag),
+        '--syntax-error': rgb(syntax.error),
+        '--selection-color': rgba(selection, 0.3),
+        '--shadow-color': rgba(season.shadow, mode === 'day' ? 0.13 : 0.28),
+        '--shadow-strong-color': rgba(season.shadow, mode === 'day' ? 0.22 : 0.4),
+        '--mark-bg-color': rgb(markBackground),
+        '--mark-text-color': rgb(markText),
+        '--table-header-text-color': rgb(heading),
+        '--quote-bg-color': rgb(surfaceMuted),
+        '--quote-border-color': rgba(ink, 0.16),
+        '--alert-note-bg-color': note.background,
+        '--alert-note-border-color': note.border,
+        '--alert-note-text-color': note.text,
+        '--alert-tip-bg-color': rgb(surfaceRaised),
+        '--alert-tip-border-color': rgba(ink, 0.2),
+        '--alert-tip-text-color': rgb(preferredContrastColor(
+          heading,
+          surfaceRaised,
+          informativeTarget,
+          AA_CONTRAST_TARGET,
+          contrastMode,
+        )),
+        '--alert-important-bg-color': important.background,
+        '--alert-important-border-color': important.border,
+        '--alert-important-text-color': important.text,
+        '--alert-warning-bg-color': warning.background,
+        '--alert-warning-border-color': warning.border,
+        '--alert-warning-text-color': warning.text,
+        '--alert-caution-bg-color': caution.background,
+        '--alert-caution-border-color': caution.border,
+        '--alert-caution-text-color': caution.text,
+        '--side-bar-bg-color': rgb(sideBarBackground),
+        '--side-bar-text-color': rgb(sideBarText),
+        '--active-file-bg-color': rgb(surfaceStrong),
+        '--active-file-text-color': rgb(activeFileText),
+        '--active-file-border-color': rgb(accent),
+        '--item-hover-bg-color': rgb(surfaceMuted),
+        '--item-hover-text-color': rgb(itemHoverText),
+        '--blur-text-color': rgb(marker),
+      },
     }
   }
 
@@ -485,6 +826,34 @@
     const nightPaper = mixColor([34, 34, 43], season.shadow, 0.22)
     const paper = mixColor(nightPaper, dayPaper, surfaceDaylight)
     const mode = relativeLuminance(paper) >= 0.18 ? 'day' : 'night'
+    const contrastMode = contrastModeFor(paper)
+    const baseThemeState = themeTokens(paper, season, mode, contrastMode)
+    const availableContrast = Math.max(
+      contrastRatio(ABSOLUTE_DARK_POLE, paper),
+      contrastRatio(ABSOLUTE_LIGHT_POLE, paper),
+    )
+    const baseContrastGuard = smoothstep(4.5, 7, availableContrast)
+    const glareRisk = clamp(twilight * lerp(0.55, 1, daylight))
+    const twilightGuard = lerp(1, 0.18, smoothstep(0.25, 0.85, glareRisk))
+    const contrastGuard = Math.min(baseContrastGuard, twilightGuard)
+    const guardDemand = 1 - contrastGuard
+    const themeState = guardDemand > 0.001
+      ? themeTokens(paper, season, mode, contrastMode, {
+          body: lerp(7, 9, guardDemand),
+          informative: lerp(AA_CONTRAST_TARGET, 6, guardDemand),
+          decorative: lerp(UI_CONTRAST_TARGET, 3.6, guardDemand),
+        })
+      : baseThemeState
+    const seasonGuard = lerp(0.45, 1, contrastGuard)
+    const lightGuard = lerp(0.2, 1, contrastGuard)
+    const shadowGuard = lerp(0.5, 1, contrastGuard)
+    const phase = dawn > 0.02 && dawn >= dusk
+      ? 'dawn'
+      : dusk > 0.02
+        ? 'dusk'
+        : daylight > 0.02
+          ? 'day'
+          : 'night'
     const horizonWarmth = 1 - Math.pow(daylightAltitude, 0.55)
     const sunX = mode === 'day'
       ? lerp(4, 94, solarPhase)
@@ -498,9 +867,10 @@
     const directOpacity = mode === 'day'
       ? clamp(daylight * lerp(0.75, 0.46, daylightAltitude) + twilight * 0.3, 0, 0.75)
       : lerp(0.06, 0.15, moonAltitude)
-    const shadowOpacity = mode === 'day'
+    const baseShadowOpacity = mode === 'day'
       ? lerp(0.68, 0.78, horizonWarmth)
       : 0.62
+    const shadowOpacity = baseShadowOpacity * shadowGuard
     const dateSeed = Array.from(time.dateKey)
       .reduce((valueSoFar, character) => ((valueSoFar * 31) + character.charCodeAt(0)) >>> 0, 2166136261)
 
@@ -509,13 +879,23 @@
       dateKey: time.dateKey,
       season: season.name,
       mode,
+      phase,
+      contrastMode,
+      contrastGuard,
       time,
       solar,
       paper,
       shadowOpacity,
       videoRate: 0.9 + (dateSeed % 201) / 1000,
       videoPhase: (dateSeed % 10_000) / 10_000,
-      theme: themeTokens(paper, season, mode),
+      theme: {
+        ...themeState.tokens,
+        '--canopy-text-edge-color': colorChannels(
+          contrastMode === 'dark-ink' ? DARK_INK_POLE : LIGHT_INK_POLE,
+        ),
+        '--canopy-text-edge-radius': `${(0.65 * guardDemand).toFixed(3)}px`,
+        '--canopy-text-edge-opacity': (0.32 * guardDemand).toFixed(3),
+      },
       atmosphere: {
         '--canopy-sun-x': `${sunX.toFixed(2)}%`,
         '--canopy-sun-y': `${sunY.toFixed(2)}%`,
@@ -524,30 +904,43 @@
         '--canopy-season-highlight': colorChannels(season.highlight),
         '--canopy-season-horizon': colorChannels(season.horizon),
         '--canopy-season-shadow': colorChannels(season.shadow),
-        '--canopy-season-opacity': mode === 'day' ? '0.34' : '0.27',
-        '--canopy-season-highlight-opacity': mode === 'day' ? '0.24' : '0.14',
-        '--canopy-season-horizon-opacity': (0.2 + twilight * 0.28).toFixed(3),
+        '--canopy-season-opacity': (
+          (mode === 'day' ? 0.34 : 0.27) * seasonGuard
+        ).toFixed(3),
+        '--canopy-season-highlight-opacity': (
+          (mode === 'day' ? 0.24 : 0.14) * seasonGuard
+        ).toFixed(3),
+        '--canopy-season-horizon-opacity': (
+          (0.2 + twilight * 0.28) * seasonGuard
+        ).toFixed(3),
+        '--canopy-season-shadow-opacity': (0.16 * seasonGuard).toFixed(3),
         '--canopy-wash-angle': `${(132 + solarPhase * 28).toFixed(2)}deg`,
         '--canopy-ambient-top': colorChannels(mixColor(sky, season.sky, 0.36)),
         '--canopy-ambient-bottom': colorChannels(mixColor(season.shadow, sky, 0.28)),
         '--canopy-ambient-highlight': colorChannels(directColor),
-        '--canopy-ambient-opacity': (mode === 'day' ? lerp(0.36, 0.52, twilight) : 0.25).toFixed(3),
-        '--canopy-ambient-bottom-opacity': (mode === 'day' ? 0.22 : 0.24).toFixed(3),
-        '--canopy-ambient-highlight-opacity': (directOpacity * (mode === 'day' ? 0.72 : 0.35)).toFixed(3),
+        '--canopy-ambient-opacity': (
+          (mode === 'day' ? lerp(0.36, 0.52, twilight) : 0.25) * lightGuard
+        ).toFixed(3),
+        '--canopy-ambient-bottom-opacity': (
+          (mode === 'day' ? 0.22 : 0.24) * lightGuard
+        ).toFixed(3),
+        '--canopy-ambient-highlight-opacity': (
+          directOpacity * (mode === 'day' ? 0.72 : 0.35) * lightGuard
+        ).toFixed(3),
         '--canopy-ambient-radius': `${lerp(72, 52, daylightAltitude).toFixed(2)}%`,
         '--canopy-direct-color': colorChannels(directColor),
-        '--canopy-direct-opacity': directOpacity.toFixed(3),
-        '--canopy-direct-soft-opacity': (directOpacity * 0.28).toFixed(3),
+        '--canopy-direct-opacity': (directOpacity * lightGuard).toFixed(3),
+        '--canopy-direct-soft-opacity': (directOpacity * 0.28 * lightGuard).toFixed(3),
         '--canopy-direct-radius': `${lerp(74, 56, daylightAltitude || moonAltitude).toFixed(2)}%`,
         '--canopy-beam-angle': `${lerp(108, 132, solarPhase).toFixed(2)}deg`,
         '--canopy-beam-color': colorChannels(mixColor(season.highlight, season.horizon, horizonWarmth)),
-        '--canopy-beam-opacity': (mode === 'day'
+        '--canopy-beam-opacity': ((mode === 'day'
           ? daylight * lerp(0.34, 0.12, daylightAltitude)
-          : 0.02).toFixed(3),
+          : 0.02) * lightGuard).toFixed(3),
         '--canopy-horizon-x': dusk > dawn ? '88%' : '12%',
         '--canopy-horizon-y': '82%',
         '--canopy-horizon-color': colorChannels(season.horizon),
-        '--canopy-horizon-opacity': (twilight * 0.52).toFixed(3),
+        '--canopy-horizon-opacity': (twilight * 0.52 * lightGuard).toFixed(3),
       },
       video: {
         '--canopy-shadow-opacity': shadowOpacity.toFixed(3),
@@ -568,6 +961,7 @@
     let currentScene = null
     let video = null
     let scheduledFrame = 0
+    let contrastFrame = 0
     let tickTimer = 0
     let previewTimer = 0
     let destroyed = false
@@ -635,7 +1029,25 @@
       }
     }
 
+    function beginContrastFlip() {
+      if (contrastFrame) {
+        cancelAnimationFrame(contrastFrame)
+      }
+      root.classList.add(CONTRAST_FLIP_CLASS)
+      contrastFrame = requestAnimationFrame(() => {
+        contrastFrame = requestAnimationFrame(() => {
+          contrastFrame = 0
+          if (!destroyed) {
+            root.classList.remove(CONTRAST_FLIP_CLASS)
+          }
+        })
+      })
+    }
+
     function applyRootScene(scene) {
+      if (currentScene && currentScene.contrastMode !== scene.contrastMode) {
+        beginContrastFlip()
+      }
       Object.entries(scene.theme).forEach(([property, value]) => root.style.setProperty(property, value))
       Object.entries(scene.video).forEach(([property, value]) => root.style.setProperty(property, value))
       root.classList.toggle(NIGHT_CLASS, scene.mode === 'night')
@@ -672,7 +1084,7 @@
       debugControls.play.textContent = previewPlaying ? '暂停' : '播放'
       debugControls.play.setAttribute('aria-pressed', String(previewPlaying))
       debugControls.speed.value = String(previewDayDurationSeconds)
-      debugControls.mode.textContent = `${scene.season} · ${scene.mode}`
+      debugControls.mode.textContent = `${scene.season} · ${scene.phase}`
     }
 
     function pausePreview() {
@@ -1056,6 +1468,9 @@
         if (scheduledFrame) {
           cancelAnimationFrame(scheduledFrame)
         }
+        if (contrastFrame) {
+          cancelAnimationFrame(contrastFrame)
+        }
         if (tickTimer) {
           clearTimeout(tickTimer)
         }
@@ -1072,7 +1487,12 @@
         debugControls = null
         bundles.forEach(bundle => bundleElements(bundle).forEach(element => element.remove()))
         ROOT_PROPERTIES.forEach(property => root.style.removeProperty(property))
-        root.classList.remove(ACTIVE_CLASS, NIGHT_CLASS, DEBUG_PLAYING_CLASS)
+        root.classList.remove(
+          ACTIVE_CLASS,
+          NIGHT_CLASS,
+          CONTRAST_FLIP_CLASS,
+          DEBUG_PLAYING_CLASS,
+        )
         if (window[DEBUG_KEY] === debugApi) {
           delete window[DEBUG_KEY]
         }
