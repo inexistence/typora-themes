@@ -1,0 +1,1949 @@
+/*
+ * Canopy — experimental Typora theme
+ * An editorial writing surface beneath a seasonal, full-window canopy.
+ * The typography and component foundation is adapted from this repository's
+ * Folio theme; the temporary leaves video is credited in canopy/README.md.
+ */
+
+:root {
+  color-scheme: light;
+  --typora-theme-id: canopy;
+  --folio-enhancer-enabled: 0;
+
+  --canopy-shadow-opacity: 0.78;
+  --canopy-static-shadow-opacity: 0.34;
+  --canopy-scene-transition: 12s;
+
+  --bg-color: #f7f3e7;
+  --text-color: #414638;
+  --heading-color: #252a20;
+  --muted-text-color: #6d7264;
+  --md-char-color: #aaa897;
+  --meta-content-color: #747365;
+  --primary-color: #9b6b2f;
+  --primary-btn-border-color: #9b6b2f;
+  --primary-btn-text-color: #fffaf0;
+
+  --surface-color: #fbf8ee;
+  --surface-muted-color: #f1ecdd;
+  --surface-strong-color: #e9e2d1;
+  --surface-raised-color: #fffaf0;
+  --border-color: rgba(52, 59, 42, 0.13);
+  --border-soft-color: rgba(52, 59, 42, 0.08);
+  --border-strong-color: rgba(52, 59, 42, 0.22);
+  --divider-color: #d8d0bd;
+
+  --code-bg-color: #eee8d8;
+  --code-text-color: #373c30;
+  --code-fence-bg-color: #fbf8ee;
+  --code-fence-text-color: #414638;
+  --code-control-color: #848474;
+  --code-control-hover-bg-color: #ece5d5;
+  --code-tab-active-bg-color: #ece5d5;
+  --code-tab-active-text-color: #252a20;
+  --code-border-color: rgba(52, 59, 42, 0.14);
+  --code-gutter-color: #959484;
+  --code-cursor-color: #b47a31;
+  --code-active-line-color: rgba(180, 122, 49, 0.09);
+  --code-selection-color: rgba(180, 122, 49, 0.18);
+
+  --math-editor-bg-color: #f6f6f4;
+  --math-editor-text-color: #383835;
+  --math-command-color: #9a4f38;
+  --math-parameter-color: #356f68;
+  --math-meta-color: #898781;
+  --math-cursor-color: #c35f42;
+  --math-selection-color: rgba(195, 95, 66, 0.16);
+
+  --diagram-bg-color: #ffffff;
+  --diagram-node-bg-color: #f6f6f4;
+  --diagram-node-border-color: #c9c7c1;
+  --diagram-line-color: #706e68;
+  --diagram-label-bg-color: #ffffff;
+
+  --syntax-comment: #777873;
+  --syntax-keyword: #9a4f38;
+  --syntax-string: #4f7459;
+  --syntax-number: #8a5a31;
+  --syntax-variable: #315f78;
+  --syntax-operator: #6f6281;
+  --syntax-tag: #766223;
+  --syntax-error: #b42318;
+
+  --selection-color: rgba(199, 147, 62, 0.25);
+  --shadow-color: rgba(52, 59, 42, 0.11);
+  --shadow-strong-color: rgba(52, 59, 42, 0.18);
+  --mark-bg-color: #f0d99b;
+  --mark-text-color: #403b2b;
+  --table-header-text-color: #373c30;
+
+  --quote-bg-color: #f2eddf;
+  --quote-border-color: rgba(52, 59, 42, 0.15);
+  --alert-note-bg-color: rgba(47, 123, 213, 0.1);
+  --alert-note-border-color: #2f7bd5;
+  --alert-note-text-color: #205a9f;
+  --alert-tip-bg-color: #ffffff;
+  --alert-tip-border-color: rgba(11, 11, 11, 0.2);
+  --alert-tip-text-color: #282724;
+  --alert-important-bg-color: rgba(111, 86, 160, 0.1);
+  --alert-important-border-color: #8064b2;
+  --alert-important-text-color: #62488f;
+  --alert-warning-bg-color: rgba(177, 112, 24, 0.1);
+  --alert-warning-border-color: #b17018;
+  --alert-warning-text-color: #80500f;
+  --alert-caution-bg-color: rgba(180, 55, 48, 0.09);
+  --alert-caution-border-color: #b43730;
+  --alert-caution-text-color: #8f2f2a;
+
+  --window-border: 1px solid var(--border-color);
+  --side-bar-bg-color: #f2eddf;
+  --active-file-bg-color: #e8e0ce;
+  --active-file-text-color: var(--heading-color);
+  --active-file-border-color: var(--primary-color);
+  --item-hover-bg-color: #ece5d6;
+  --item-hover-text-color: var(--heading-color);
+  --blur-text-color: #b5b19f;
+
+  --body-font: "Avenir Next", Avenir, "Noto Sans SC", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  --heading-font: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+    Palatino, "Noto Serif SC", "Source Han Serif SC", "Songti SC", STSong,
+    serif;
+  --monospace: "SFMono-Regular", "SF Mono", ui-monospace, Menlo, Monaco,
+    Consolas, "Liberation Mono", monospace;
+
+  --content-width: 58rem;
+  --content-gutter: clamp(1.75rem, 5vw, 4rem);
+  --radius-small: 0.375rem;
+  --radius-medium: 0.625rem;
+  --radius-large: 0.875rem;
+}
+
+html {
+  font-size: 16px;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+html,
+body {
+  font-family: var(--body-font);
+  line-height: 1.72;
+}
+
+body,
+content {
+  background: var(--bg-color);
+}
+
+html.canopy-night {
+  color-scheme: dark;
+}
+
+html,
+body,
+content,
+#write,
+#typora-source,
+#typora-sidebar,
+.modal-content,
+.popover,
+.context-menu,
+.auto-suggest-container,
+.megamenu-content {
+  transition:
+    background-color 1200ms cubic-bezier(0.65, 0, 0.35, 1),
+    border-color 1200ms cubic-bezier(0.65, 0, 0.35, 1),
+    color 1200ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/*
+ * The runtime maintains two copies of the CSS light field. It paints the next
+ * date/time scene into the hidden copy and crossfades opacity, so complex
+ * gradients never jump even though no canvas is used.
+ */
+.canopy-atmosphere-layer {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--canopy-scene-transition) linear;
+}
+
+.canopy-atmosphere-layer.is-active {
+  opacity: 1;
+}
+
+.canopy-season-color {
+  z-index: 86;
+  background:
+    radial-gradient(
+      ellipse at var(--canopy-sun-x, 22%) var(--canopy-sun-y, 18%),
+      rgb(var(--canopy-season-highlight, 255 226 176) / var(--canopy-season-highlight-opacity, 0.22)),
+      transparent 54%
+    ),
+    linear-gradient(
+      var(--canopy-season-angle, 155deg),
+      rgb(var(--canopy-season-sky, 190 207 197) / var(--canopy-season-opacity, 0.34)),
+      rgb(var(--canopy-season-horizon, 236 176 133) / var(--canopy-season-horizon-opacity, 0.24)) 62%,
+      rgb(var(--canopy-season-shadow, 66 68 80) / 0.16)
+    );
+  mix-blend-mode: color;
+}
+
+.canopy-ambient-wash {
+  z-index: 87;
+  background:
+    radial-gradient(
+      ellipse at var(--canopy-sun-x, 22%) var(--canopy-sun-y, 18%),
+      rgb(var(--canopy-ambient-highlight, 255 229 183) / var(--canopy-ambient-highlight-opacity, 0.36)),
+      transparent var(--canopy-ambient-radius, 58%)
+    ),
+    linear-gradient(
+      var(--canopy-wash-angle, 142deg),
+      rgb(var(--canopy-ambient-top, 221 226 211) / var(--canopy-ambient-opacity, 0.36)),
+      transparent 48%,
+      rgb(var(--canopy-ambient-bottom, 131 117 130) / var(--canopy-ambient-bottom-opacity, 0.22))
+    );
+  mix-blend-mode: soft-light;
+}
+
+.canopy-direct-light {
+  z-index: 88;
+  background:
+    radial-gradient(
+      ellipse at var(--canopy-sun-x, 22%) var(--canopy-sun-y, 18%),
+      rgb(var(--canopy-direct-color, 255 225 170) / var(--canopy-direct-opacity, 0.62)) 0,
+      rgb(var(--canopy-direct-color, 255 225 170) / var(--canopy-direct-soft-opacity, 0.174)) 28%,
+      transparent var(--canopy-direct-radius, 63%)
+    ),
+    linear-gradient(
+      var(--canopy-beam-angle, 118deg),
+      transparent 13%,
+      rgb(var(--canopy-beam-color, 255 209 142) / var(--canopy-beam-opacity, 0.22)) 42%,
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse at var(--canopy-horizon-x, 12%) var(--canopy-horizon-y, 78%),
+      rgb(var(--canopy-horizon-color, 238 133 102) / var(--canopy-horizon-opacity, 0.18)),
+      transparent 58%
+    );
+  mix-blend-mode: screen;
+}
+
+/*
+ * The still frame is a CSS-only fallback. The enhancer crossfades it out only
+ * after the video is actually playing, so a failed or blocked video never
+ * leaves the theme without its signature atmosphere.
+ */
+content::after {
+  position: fixed;
+  z-index: 89;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: center top / cover no-repeat url("./canopy/assets/leaves-still.jpg");
+  mix-blend-mode: multiply;
+  opacity: var(--canopy-static-shadow-opacity);
+  transition: opacity 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.canopy-video-active content::after {
+  opacity: 0;
+}
+
+#canopy-leaves-overlay {
+  position: fixed;
+  z-index: 89;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  filter:
+    contrast(var(--canopy-video-contrast, 1))
+    brightness(var(--canopy-video-brightness, 1))
+    sepia(var(--canopy-video-sepia, 0))
+    saturate(var(--canopy-video-saturation, 1))
+    hue-rotate(var(--canopy-video-hue, 0deg));
+}
+
+html.canopy-debug-playing {
+  --canopy-scene-transition: 280ms;
+}
+
+html.canopy-debug-playing,
+html.canopy-debug-playing body,
+html.canopy-debug-playing content,
+html.canopy-debug-playing #write,
+html.canopy-debug-playing #typora-source,
+html.canopy-debug-playing #typora-sidebar {
+  transition-duration: 280ms;
+}
+
+.canopy-debug-hud {
+  position: fixed;
+  z-index: 10000;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  display: grid;
+  grid-template-columns: auto minmax(180px, 1fr) auto auto auto auto auto;
+  gap: 10px;
+  align-items: center;
+  width: min(920px, calc(100% - 36px));
+  margin: 0 auto;
+  padding: 12px 14px;
+  border: 1px solid rgb(245 235 211 / 0.2);
+  border-radius: 10px;
+  background: rgb(28 29 26 / 0.94);
+  box-shadow: 0 18px 55px rgb(7 8 7 / 0.34);
+  color: rgb(247 240 222);
+  font-family: var(--body-font);
+  font-size: 12px;
+  line-height: 1.2;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.canopy-debug-hud[hidden] {
+  display: none;
+}
+
+.canopy-debug-hud input,
+.canopy-debug-hud select,
+.canopy-debug-hud button {
+  min-height: 32px;
+  border: 1px solid rgb(247 240 222 / 0.17);
+  border-radius: 6px;
+  background: rgb(247 240 222 / 0.08);
+  color: inherit;
+  font: inherit;
+}
+
+.canopy-debug-hud button,
+.canopy-debug-hud select,
+.canopy-debug-date {
+  padding: 0 10px;
+}
+
+.canopy-debug-hud button {
+  cursor: pointer;
+}
+
+.canopy-debug-hud button:hover,
+.canopy-debug-hud button[aria-pressed="true"] {
+  border-color: rgb(245 190 105 / 0.45);
+  background: rgb(245 190 105 / 0.18);
+}
+
+.canopy-debug-slider {
+  width: 100%;
+  padding: 0;
+  accent-color: rgb(235 174 85);
+  cursor: ew-resize;
+}
+
+.canopy-debug-time {
+  min-width: 48px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  text-align: center;
+}
+
+.canopy-debug-mode {
+  min-width: 90px;
+  color: rgb(247 240 222 / 0.56);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+::selection {
+  background: var(--selection-color);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+#write {
+  box-sizing: border-box;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 3rem var(--content-gutter) 5rem;
+  color: var(--text-color);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+#write p {
+  margin: 0 0 1.15rem;
+  color: var(--text-color);
+  font-size: 1rem;
+  line-height: 1.72;
+  letter-spacing: 0.006em;
+}
+
+#write h1,
+#write h2,
+#write h3,
+#write h4,
+#write h5,
+#write h6 {
+  padding: 0;
+  color: var(--heading-color);
+  text-wrap: balance;
+}
+
+#write h1,
+#write h2,
+#write h3 {
+  font-family: var(--heading-font);
+  font-weight: 500;
+}
+
+#write h1 {
+  margin: 0 0 1.75rem;
+  font-size: 2.25rem;
+  line-height: 1.22;
+  letter-spacing: -0.018em;
+}
+
+#write h2 {
+  margin: 3rem 0 1rem;
+  font-size: 1.625rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+#write h3 {
+  margin: 2.3rem 0 0.8rem;
+  font-size: 1.35rem;
+  line-height: 1.35;
+}
+
+#write h4,
+#write h5,
+#write h6 {
+  font-family: var(--body-font);
+  font-weight: 650;
+}
+
+#write h4 {
+  margin: 2rem 0 0.7rem;
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+#write h5 {
+  margin: 1.75rem 0 0.65rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+#write h6 {
+  margin: 1.65rem 0 0.6rem;
+  color: var(--muted-text-color);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#write > h1:first-child,
+#write > h2:first-child,
+#write > h3:first-child {
+  margin-top: 0;
+}
+
+#write strong {
+  color: var(--heading-color);
+  font-weight: 650;
+}
+
+#write em {
+  font-style: italic;
+}
+
+#write del {
+  color: var(--muted-text-color);
+  opacity: 0.72;
+}
+
+#write mark {
+  padding: 0.08em 0.24em;
+  border-radius: 0.22rem;
+  background: var(--mark-bg-color);
+  color: var(--mark-text-color);
+}
+
+#write a {
+  color: var(--text-color);
+  font-weight: 450;
+  text-decoration-color: var(--muted-text-color);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+#write a:hover {
+  color: var(--heading-color);
+  text-decoration-color: var(--primary-color);
+  text-decoration-thickness: 2px;
+}
+
+#write hr {
+  height: 0;
+  margin: 2.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  background: transparent;
+}
+
+#write blockquote:not(.md-alert) {
+  margin: 1.5rem 0;
+  padding: 0.75rem 1rem;
+  border: 0.5px solid var(--quote-border-color);
+  border-radius: 0.5rem;
+  background: var(--quote-bg-color);
+  color: var(--text-color);
+  font-size: 0.9375rem;
+  line-height: 1.625;
+}
+
+#write blockquote:not(.md-alert) blockquote:not(.md-alert) {
+  margin: 0.85rem 0 0.2rem;
+  border-color: var(--border-strong-color);
+  background: var(--surface-color);
+}
+
+#write blockquote:not(.md-alert) p,
+#write blockquote:not(.md-alert) ul,
+#write blockquote:not(.md-alert) ol {
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+#write blockquote > :last-child,
+#write .md-alert > :last-child {
+  margin-bottom: 0;
+}
+
+/* Claude Docs-inspired semantic callouts for Typora's [!TYPE] alerts. */
+#write .md-alert {
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 0.5px solid var(--alert-tip-border-color);
+  border-radius: 0.5rem;
+  background: var(--alert-tip-bg-color);
+  color: var(--alert-tip-text-color);
+  font-size: 0.9375rem;
+  line-height: 1.625;
+}
+
+#write .md-alert .md-alert-text {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+#write .md-alert .md-alert-text-container {
+  position: absolute;
+  top: 1.375rem;
+  left: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  color: inherit;
+}
+
+#write .md-alert .md-alert-text-container svg,
+.typora-export #write .md-alert .md-alert-text svg {
+  top: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0;
+  fill: currentColor;
+}
+
+#write .md-alert .md-alert-text-container::after {
+  display: none;
+}
+
+#write .md-alert .md-alert-text + br,
+#write .md-alert .md-alert-text + .md-softbreak,
+#write .md-alert .md-alert-text + .md-linebreak {
+  display: none;
+}
+
+#write .md-alert .md-alert-text.md-expand + br,
+#write .md-alert .md-alert-text.md-expand + .md-softbreak,
+#write .md-alert .md-alert-text.md-expand + .md-linebreak {
+  display: initial;
+}
+
+.typora-export #write .md-alert .md-alert-text {
+  position: absolute;
+  top: 1.375rem;
+  left: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  overflow: hidden;
+  font-size: 0;
+}
+
+#write .md-alert p,
+#write .md-alert ul,
+#write .md-alert ol {
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+#write .md-alert p {
+  margin-top: 0.45rem;
+  margin-bottom: 0.45rem;
+}
+
+#write .md-alert strong {
+  color: inherit;
+}
+
+#write .md-alert code {
+  border-color: transparent;
+  background: rgba(127, 127, 127, 0.12);
+  color: inherit;
+}
+
+#write .md-alert a {
+  color: inherit;
+  text-decoration-color: currentColor;
+}
+
+#write .md-alert.md-alert-note {
+  border-color: var(--alert-note-border-color);
+  background: var(--alert-note-bg-color);
+  color: var(--alert-note-text-color);
+}
+
+#write .md-alert.md-alert-tip {
+  border-color: var(--alert-tip-border-color);
+  background: var(--alert-tip-bg-color);
+  color: var(--alert-tip-text-color);
+}
+
+#write .md-alert.md-alert-important {
+  border-color: var(--alert-important-border-color);
+  background: var(--alert-important-bg-color);
+  color: var(--alert-important-text-color);
+}
+
+#write .md-alert.md-alert-warning {
+  border-color: var(--alert-warning-border-color);
+  background: var(--alert-warning-bg-color);
+  color: var(--alert-warning-text-color);
+}
+
+#write .md-alert.md-alert-caution {
+  border-color: var(--alert-caution-border-color);
+  background: var(--alert-caution-bg-color);
+  color: var(--alert-caution-text-color);
+}
+
+/*
+ * Code-tab group fallback.
+ * Without the experimental enhancer, grouped fences stay as ordinary
+ * vertical code blocks. The blockquote remains a neutral Markdown wrapper.
+ */
+#write
+  blockquote:not(.folio-code-tab-group):has(> .md-fences ~ .md-fences) {
+  display: block;
+  margin: 1.5rem 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+
+#write
+  blockquote:not(.folio-code-tab-group):has(> .md-fences ~ .md-fences)
+  > .md-fences {
+  width: auto;
+  min-width: 0;
+  margin: 1.5rem 0;
+}
+
+#write
+  blockquote:not(.folio-code-tab-group):has(> .md-fences ~ .md-fences)
+  > .md-fences:first-child {
+  margin-top: 0;
+}
+
+#write
+  blockquote:not(.folio-code-tab-group):has(> .md-fences ~ .md-fences)
+  > .md-fences:last-child {
+  margin-bottom: 0;
+}
+
+#write ul,
+#write ol {
+  margin: 0 0 1.15rem;
+  padding-left: 1.55em;
+  color: var(--text-color);
+}
+
+#write ul ul,
+#write ul ol,
+#write ol ul,
+#write ol ol {
+  margin-top: 0.35rem;
+  margin-bottom: 0;
+}
+
+#write li {
+  margin: 0 0 0.38rem;
+  padding-left: 0.12rem;
+  line-height: 1.65;
+}
+
+#write li::marker {
+  color: var(--muted-text-color);
+  font-variant-numeric: tabular-nums;
+}
+
+#write li > p {
+  margin-bottom: 0.38rem;
+}
+
+.task-list-item input {
+  border-radius: 3px;
+  accent-color: var(--primary-color);
+}
+
+#write figure.md-table-fig {
+  margin: 1.7rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  background: transparent;
+}
+
+#write table {
+  width: 100%;
+  min-width: 100%;
+  margin: 1.7rem 0;
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+  color: var(--text-color);
+  font-variant-numeric: tabular-nums;
+}
+
+#write figure.md-table-fig table {
+  margin: 0;
+  border: 0;
+}
+
+#write th,
+#write td {
+  min-width: 5.5rem;
+  padding: 0.72rem 0.8rem;
+  border: 0;
+  color: var(--text-color);
+  text-align: left;
+  vertical-align: top;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+#write th {
+  border-bottom: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--table-header-text-color);
+  font-size: 0.875rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+#write td {
+  background: transparent;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+#write tbody tr:not(:last-child) td {
+  border-bottom: 1px solid var(--border-soft-color);
+}
+
+#write tbody tr:hover td {
+  background: var(--surface-muted-color);
+}
+
+.md-table-edit {
+  border-color: var(--border-color);
+  border-radius: var(--radius-medium);
+  background: var(--surface-raised-color);
+  color: var(--text-color);
+  box-shadow: 0 0.7rem 1.7rem var(--shadow-color);
+}
+
+#write img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.8rem auto;
+  border: 1px solid var(--border-soft-color);
+  border-radius: var(--radius-medium);
+}
+
+#write code,
+#write tt,
+#write kbd {
+  margin: 0;
+  padding: 0.12em 0.46em;
+  border: 1px solid var(--code-border-color);
+  border-radius: var(--radius-small);
+  background: var(--code-bg-color);
+  color: var(--code-text-color);
+  font-family: var(--monospace);
+  font-size: 0.875rem;
+  font-variant-ligatures: none;
+  letter-spacing: 0;
+  line-height: 1.45;
+}
+
+.md-fences {
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 3.125rem 1rem 1rem;
+  overflow: hidden;
+  border: 0.5px solid var(--code-border-color);
+  border-radius: 0.5rem;
+  background: var(--code-fence-bg-color);
+  color: var(--code-fence-text-color);
+  font-family: var(--monospace);
+  font-size: 0.875rem;
+  font-variant-ligatures: none;
+  line-height: 1.25rem;
+  tab-size: 4;
+}
+
+.md-fences::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2.0625rem;
+  border-bottom: 0.5px solid var(--code-border-color);
+  background: transparent;
+  content: "";
+  pointer-events: none;
+}
+
+.md-fences[lang]::after {
+  position: absolute;
+  z-index: 2;
+  top: 0.5rem;
+  right: auto;
+  left: 1rem;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--code-control-color);
+  content: attr(lang);
+  font-family: var(--body-font);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.0625rem;
+  letter-spacing: 0;
+  pointer-events: none;
+}
+
+.md-fences:has(> .code-tooltip)::after {
+  display: none;
+}
+
+.md-fences .code-tooltip {
+  z-index: 3;
+  top: 0.1875rem;
+  right: auto;
+  bottom: auto;
+  left: 0.3125rem;
+  padding: 0;
+  background: transparent;
+  color: var(--code-control-color);
+  box-shadow: none;
+  font-family: var(--body-font);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.0625rem;
+  text-align: left;
+  pointer-events: auto;
+}
+
+.md-fences .code-tooltip .ty-cm-lang-input {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: inline-block;
+  min-width: 5rem;
+  min-height: 1.6875rem;
+  margin: 0;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid var(--code-border-color);
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  font: inherit;
+  line-height: inherit;
+  text-align: left;
+  cursor: text;
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-modify: read-write-plaintext-only;
+}
+
+.md-fences .code-tooltip .ty-cm-lang-input:hover {
+  border-color: var(--border-strong-color);
+}
+
+.md-fences .code-tooltip .ty-cm-lang-input:focus,
+.md-fences .code-tooltip .ty-cm-lang-input:focus-visible {
+  border-color: var(--primary-color);
+  outline: 0;
+  background: var(--code-tab-active-bg-color);
+  color: var(--code-tab-active-text-color);
+  box-shadow: none;
+}
+
+#write
+  .md-fences:not(.folio-code-tab-panel).md-focus
+  .code-tooltip
+  .ty-cm-lang-input {
+  border-color: transparent;
+  background: var(--code-tab-active-bg-color);
+  color: var(--code-tab-active-text-color);
+}
+
+#write
+  .md-fences:not(.folio-code-tab-panel).md-focus
+  .code-tooltip
+  .ty-cm-lang-input:hover {
+  border-color: var(--code-border-color);
+}
+
+#write
+  .md-fences:not(.folio-code-tab-panel).md-focus
+  .code-tooltip
+  .ty-cm-lang-input:focus,
+#write
+  .md-fences:not(.folio-code-tab-panel).md-focus
+  .code-tooltip
+  .ty-cm-lang-input:focus-visible {
+  border-color: var(--primary-color);
+}
+
+.md-fences:not(.md-fences-advanced).md-focus {
+  border-color: var(--border-strong-color);
+  box-shadow: none;
+}
+
+/* Experimental Folio Enhancer: generated code-tab UI. */
+#write blockquote.folio-code-tab-group {
+  display: block;
+  margin: 1.5rem 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0.5px solid var(--code-border-color);
+  border-radius: 0.5rem;
+  background: var(--code-fence-bg-color);
+  color: var(--code-fence-text-color);
+}
+
+.folio-code-tabs {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 1rem;
+  border-bottom: 0.5px solid var(--code-border-color);
+  background: transparent;
+  user-select: none;
+}
+
+.folio-code-tab-list {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 0.125rem;
+  margin: -0.25rem 0;
+  padding: 0.25rem 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.folio-code-tab-list::-webkit-scrollbar {
+  display: none;
+}
+
+.folio-code-tab,
+.folio-code-tab-copy,
+.folio-code-copy {
+  appearance: none;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--code-control-color);
+  font-family: var(--body-font);
+  cursor: pointer;
+}
+
+.folio-code-tab {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.0625rem;
+  white-space: nowrap;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.folio-code-tab:hover {
+  color: var(--heading-color);
+}
+
+.folio-code-tab.is-active {
+  background: var(--code-tab-active-bg-color);
+  color: var(--code-tab-active-text-color);
+  font-weight: 500;
+}
+
+.folio-code-tab:focus-visible,
+.folio-code-tab-copy:focus-visible,
+.folio-code-copy:focus-visible {
+  box-shadow: 0 0 0 2px var(--selection-color);
+}
+
+.folio-code-tab-copy,
+.folio-code-copy {
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  padding: 0;
+  place-items: center;
+  border-radius: 0.375rem;
+}
+
+.folio-code-copy {
+  position: absolute;
+  z-index: 4;
+  top: 0.28125rem;
+  right: 0.5rem;
+}
+
+.folio-code-tab-copy:hover,
+.folio-code-copy:hover {
+  background: var(--code-control-hover-bg-color);
+  color: var(--code-tab-active-text-color);
+}
+
+.folio-code-tab-copy.is-copied,
+.folio-code-copy.is-copied {
+  color: var(--primary-color);
+}
+
+.folio-code-tab-copy svg,
+.folio-code-copy svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+#write blockquote.folio-code-tab-group > .folio-code-tab-panel {
+  width: auto;
+  height: auto !important;
+  min-width: 0;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  scroll-snap-align: none;
+}
+
+#write
+  blockquote.folio-code-tab-group
+  > .folio-code-tab-panel
+  > .CodeMirror {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+#write blockquote.folio-code-tab-group > .folio-code-tab-panel::before,
+#write blockquote.folio-code-tab-group > .folio-code-tab-panel::after {
+  display: none;
+}
+
+/* Keep Typora's native language editor as a compact control below the code. */
+#write
+  blockquote.folio-code-tab-group
+  > .folio-code-tab-panel
+  .code-tooltip {
+  display: none !important;
+  position: absolute;
+  top: auto;
+  right: auto;
+  bottom: 0.5rem;
+  left: 1rem;
+  box-sizing: border-box;
+  width: max-content;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+#write
+  blockquote.folio-code-tab-group
+  > .folio-code-tab-panel.md-focus {
+  padding-bottom: 2.75rem;
+}
+
+#write
+  blockquote.folio-code-tab-group
+  > .folio-code-tab-panel.md-focus
+  .code-tooltip {
+  display: block !important;
+}
+
+#write
+  blockquote.folio-code-tab-group
+  > .folio-code-tab-panel
+  .code-tooltip
+  .ty-cm-lang-input {
+  border-color: transparent;
+  background: var(--code-tab-active-bg-color);
+  color: var(--code-tab-active-text-color);
+}
+
+#write
+  blockquote.folio-code-tab-group
+  > .folio-code-tab-panel
+  .code-tooltip
+  .ty-cm-lang-input:hover {
+  border-color: var(--code-border-color);
+}
+
+#write
+  blockquote.folio-code-tab-group
+  > .folio-code-tab-panel
+  .code-tooltip
+  .ty-cm-lang-input:focus,
+#write
+  blockquote.folio-code-tab-group
+  > .folio-code-tab-panel
+  .code-tooltip
+  .ty-cm-lang-input:focus-visible {
+  border-color: var(--primary-color);
+}
+
+#write blockquote.folio-code-tab-group > .folio-code-tab-panel:not(.is-active) {
+  display: none !important;
+}
+
+#write blockquote.folio-code-tab-group > .folio-code-tab-panel.md-focus {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+pre.md-fences-advanced:not(.md-focus) {
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: var(--diagram-bg-color);
+}
+
+pre.md-fences-advanced:not(.md-focus)::before,
+pre.md-fences-advanced:not(.md-focus)::after {
+  display: none;
+}
+
+pre.md-fences-advanced:not(.md-focus) .CodeMirror {
+  display: none !important;
+}
+
+pre.md-fences-advanced:not(.md-focus) .md-fences-adv-panel {
+  position: static;
+  border: 0;
+}
+
+pre.md-fences-advanced:not(.md-focus) .md-diagram-panel-preview {
+  padding-top: 0;
+}
+
+pre.md-fences-advanced:not(.md-focus) .md-diagram-panel {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+pre.md-fences-advanced.md-focus {
+  overflow: visible;
+}
+
+.cm-s-inner.CodeMirror,
+.cm-s-inner .CodeMirror-gutters {
+  background: transparent;
+  color: var(--code-fence-text-color);
+}
+
+.cm-s-inner .CodeMirror-gutters {
+  border-right-color: var(--code-border-color);
+}
+
+.cm-s-inner .CodeMirror-linenumber {
+  color: var(--code-gutter-color);
+}
+
+#write .md-fences {
+  caret-color: var(--code-cursor-color);
+}
+
+.cm-s-inner .CodeMirror-cursor,
+#write .md-fences .CodeMirror div.CodeMirror-cursor {
+  border-left: 2px solid var(--code-cursor-color) !important;
+}
+
+#write
+  .md-fences:not(.md-fences-math)
+  .cm-s-inner.CodeMirror-focused
+  .CodeMirror-activeline-background {
+  background: var(--code-active-line-color) !important;
+}
+
+.cm-s-inner .CodeMirror-selected,
+.cm-s-inner.CodeMirror-focused .CodeMirror-selected {
+  background: var(--code-selection-color);
+}
+
+.cm-s-inner .cm-comment {
+  color: var(--syntax-comment);
+  font-style: italic;
+}
+
+.cm-s-inner .cm-keyword,
+.cm-s-inner .cm-builtin {
+  color: var(--syntax-keyword);
+}
+
+.cm-s-inner .cm-string,
+.cm-s-inner .cm-string-2 {
+  color: var(--syntax-string);
+}
+
+.cm-s-inner .cm-number,
+.cm-s-inner .cm-atom {
+  color: var(--syntax-number);
+}
+
+.cm-s-inner .cm-def,
+.cm-s-inner .cm-variable,
+.cm-s-inner .cm-variable-2,
+.cm-s-inner .cm-variable-3,
+.cm-s-inner .cm-property {
+  color: var(--syntax-variable);
+}
+
+.cm-s-inner .cm-operator,
+.cm-s-inner .cm-meta,
+.cm-s-inner .cm-type,
+.cm-s-inner .cm-bracket {
+  color: var(--syntax-operator);
+}
+
+.cm-s-inner .cm-tag,
+.cm-s-inner .cm-attribute,
+.cm-s-inner .cm-qualifier {
+  color: var(--syntax-tag);
+}
+
+.cm-s-inner .cm-error {
+  color: var(--syntax-error);
+  text-decoration: underline wavy;
+}
+
+.md-math-block.md-focus .md-math-container {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-medium);
+  background: var(--math-editor-bg-color);
+  color: var(--math-editor-text-color);
+}
+
+.md-math-block .md-math-container.math-jax-preprocess {
+  opacity: 1;
+}
+
+.ty-before-first-render
+  .md-math-block
+  .md-math-container.math-jax-preprocess {
+  opacity: 0;
+}
+
+.md-math-block .cm-s-inner.CodeMirror,
+.md-math-block .cm-s-inner .CodeMirror-gutters {
+  background: transparent;
+  color: var(--math-editor-text-color);
+}
+
+.md-math-block .cm-s-inner .cm-comment,
+.md-math-block .cm-s-inner .cm-meta,
+.md-math-block .cm-s-inner .cm-operator {
+  color: var(--math-meta-color);
+}
+
+.md-math-block .cm-s-inner .cm-keyword,
+.md-math-block .cm-s-inner .cm-string,
+.md-math-block .cm-s-inner .cm-string-2,
+.md-math-block .cm-s-inner .cm-tag,
+.md-math-block .cm-s-inner .cm-attribute,
+.md-math-block .cm-s-inner .cm-qualifier {
+  color: var(--math-command-color);
+}
+
+.md-math-block .cm-s-inner .cm-atom,
+.md-math-block .cm-s-inner .cm-builtin,
+.md-math-block .cm-s-inner .cm-number,
+.md-math-block .cm-s-inner .cm-variable,
+.md-math-block .cm-s-inner .cm-variable-2,
+.md-math-block .cm-s-inner .cm-variable-3,
+.md-math-block .cm-s-inner .cm-def,
+.md-math-block .cm-s-inner .cm-property,
+.md-math-block .cm-s-inner .cm-type,
+.md-math-block .cm-s-inner .cm-bracket {
+  color: var(--math-parameter-color);
+}
+
+.md-math-block .cm-s-inner .CodeMirror-cursor {
+  border-left: 2px solid var(--math-cursor-color) !important;
+}
+
+.md-math-block .cm-s-inner .CodeMirror-selected,
+.md-math-block .cm-s-inner.CodeMirror-focused .CodeMirror-selected {
+  background: var(--math-selection-color);
+}
+
+pre.md-meta-block {
+  margin: 0 0 2rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-medium);
+  background: var(--surface-muted-color);
+  color: var(--meta-content-color);
+  font-family: var(--monospace);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.md-meta {
+  color: var(--md-char-color);
+}
+
+.md-content,
+.md-def-link,
+.md-def-footnote {
+  color: var(--meta-content-color);
+}
+
+.md-toc {
+  margin: 1.7rem 0;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-medium);
+  background: var(--surface-muted-color);
+}
+
+.md-toc-content {
+  color: var(--text-color);
+}
+
+.md-toc-tooltip,
+.md-tooltip {
+  border-color: var(--border-color);
+  background: var(--surface-raised-color);
+  color: var(--muted-text-color);
+}
+
+.md-image > .md-meta {
+  border-color: var(--border-color);
+  background: transparent;
+  color: var(--muted-text-color);
+}
+
+[mdtype="math_block"],
+.mathjax-block,
+.md-diagram-panel {
+  margin: 1.7rem 0;
+  overflow-x: auto;
+  color: var(--text-color);
+}
+
+.md-diagram-panel {
+  padding: 1.1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-medium);
+  background: var(--diagram-bg-color);
+}
+
+/* Mermaid emits a mixture of SVG text and HTML foreignObject labels. */
+.md-diagram-panel svg text,
+.md-diagram-panel svg .classTitleText,
+.md-diagram-panel svg .classText,
+.md-diagram-panel svg .messageText,
+.md-diagram-panel svg .noteText,
+.md-diagram-panel svg .labelText,
+.md-diagram-panel svg .taskText,
+.md-diagram-panel svg .taskTextOutsideRight,
+.md-diagram-panel svg .titleText,
+.md-diagram-panel svg .sectionTitle {
+  fill: var(--text-color) !important;
+}
+
+.md-diagram-panel svg .nodeLabel,
+.md-diagram-panel svg .nodeLabel p,
+.md-diagram-panel svg .nodeLabel span,
+.md-diagram-panel svg .edgeLabel,
+.md-diagram-panel svg .edgeLabel div,
+.md-diagram-panel svg .edgeLabel p,
+.md-diagram-panel svg .edgeLabel span,
+.md-diagram-panel svg foreignObject,
+.md-diagram-panel svg foreignObject div,
+.md-diagram-panel svg foreignObject p,
+.md-diagram-panel svg foreignObject span {
+  color: var(--text-color) !important;
+}
+
+.md-diagram-panel svg .edgeLabel,
+.md-diagram-panel svg .edgeLabel foreignObject,
+.md-diagram-panel svg .edgeLabel div,
+.md-diagram-panel svg .edgeLabel p,
+.md-diagram-panel svg .edgeLabel span {
+  background: var(--diagram-label-bg-color) !important;
+}
+
+/* Mermaid sequence participants apply an actor-specific text fill. */
+.md-diagram-panel svg text.actor,
+.md-diagram-panel svg text.actor-bottom,
+.md-diagram-panel svg .actor text,
+.md-diagram-panel svg .actor-bottom text,
+.md-diagram-panel svg .actorLabel,
+.md-diagram-panel svg .actorLabel *,
+.md-diagram-panel svg .actorText,
+.md-diagram-panel svg .actorText *,
+.md-diagram-panel svg foreignObject.actor,
+.md-diagram-panel svg foreignObject.actor *,
+.md-diagram-panel svg foreignObject.actor-bottom,
+.md-diagram-panel svg foreignObject.actor-bottom * {
+  color: var(--text-color) !important;
+  fill: var(--text-color) !important;
+  stroke: none !important;
+}
+
+.md-diagram-panel svg .node rect,
+.md-diagram-panel svg .node circle,
+.md-diagram-panel svg .node ellipse,
+.md-diagram-panel svg .node polygon,
+.md-diagram-panel svg .node path,
+.md-diagram-panel svg .cluster rect {
+  fill: var(--diagram-node-bg-color) !important;
+  stroke: var(--diagram-node-border-color) !important;
+  stroke-width: 1.25px !important;
+}
+
+.md-diagram-panel svg .node rect {
+  rx: var(--radius-small);
+  ry: var(--radius-small);
+}
+
+.md-diagram-panel svg .classGroup rect,
+.md-diagram-panel svg .classGroup .classTitle,
+.md-diagram-panel svg .classGroup .classMembers,
+.md-diagram-panel svg .classGroup .classMethods {
+  fill: var(--diagram-node-bg-color) !important;
+  stroke: var(--diagram-node-border-color) !important;
+  stroke-width: 1.25px !important;
+}
+
+/* Sequence, gantt, timeline and quadrant diagrams have their own containers. */
+.md-diagram-panel svg .actor rect,
+.md-diagram-panel svg .actor-bottom rect,
+.md-diagram-panel svg .note rect,
+.md-diagram-panel svg rect.actor,
+.md-diagram-panel svg rect.actor-bottom,
+.md-diagram-panel svg rect.note,
+.md-diagram-panel svg .labelBox,
+.md-diagram-panel svg .task,
+.md-diagram-panel svg .section,
+.md-diagram-panel svg .quadrant,
+.md-diagram-panel svg rect.activation0,
+.md-diagram-panel svg rect.activation1,
+.md-diagram-panel svg rect.activation2 {
+  fill: var(--diagram-node-bg-color) !important;
+  stroke: var(--diagram-node-border-color) !important;
+}
+
+.md-diagram-panel svg rect.activation0,
+.md-diagram-panel svg rect.activation1,
+.md-diagram-panel svg rect.activation2 {
+  fill: var(--surface-muted-color) !important;
+  stroke: var(--primary-color) !important;
+}
+
+.md-diagram-panel svg .note rect,
+.md-diagram-panel svg rect.note {
+  fill: var(--mark-bg-color) !important;
+  stroke: var(--border-strong-color) !important;
+}
+
+.md-diagram-panel svg .noteText {
+  fill: var(--mark-text-color) !important;
+}
+
+.md-diagram-panel svg .edgePath path,
+.md-diagram-panel svg path.flowchart-link,
+.md-diagram-panel svg .relationshipLine,
+.md-diagram-panel svg .relation,
+.md-diagram-panel svg .transition,
+.md-diagram-panel svg .messageLine0,
+.md-diagram-panel svg .messageLine1,
+.md-diagram-panel svg .actor-line,
+.md-diagram-panel svg .loopLine,
+.md-diagram-panel svg .grid path,
+.md-diagram-panel svg .grid line {
+  stroke: var(--diagram-line-color) !important;
+  stroke-width: 1.4px !important;
+}
+
+.md-diagram-panel svg marker path,
+.md-diagram-panel svg .arrowheadPath,
+.md-diagram-panel svg .marker {
+  fill: var(--diagram-line-color) !important;
+  stroke: var(--diagram-line-color) !important;
+}
+
+.md-diagram-panel svg .edgeLabel rect,
+.md-diagram-panel svg rect.labelBkg {
+  fill: var(--diagram-label-bg-color) !important;
+  opacity: 1 !important;
+}
+
+/*
+ * Mermaid assigns explicit fills to nested tspans (notably sequence actors and
+ * gantt task labels). Apply the final text pass at the editor scope so those
+ * inline diagram rules cannot leave individual labels black in dark mode.
+ */
+#write .md-diagram-panel svg text,
+#write .md-diagram-panel svg text *,
+#write .md-diagram-panel svg foreignObject,
+#write .md-diagram-panel svg foreignObject *,
+#write .md-diagram-panel svg text.actor,
+#write .md-diagram-panel svg text.actor *,
+#write .md-diagram-panel svg text.actor-bottom,
+#write .md-diagram-panel svg text.actor-bottom *,
+#write .md-diagram-panel svg .actor text,
+#write .md-diagram-panel svg .actor text *,
+#write .md-diagram-panel svg .actor-bottom text,
+#write .md-diagram-panel svg .actor-bottom text *,
+#write .md-diagram-panel svg .taskText,
+#write .md-diagram-panel svg .taskText *,
+#write .md-diagram-panel svg .taskTextOutsideRight,
+#write .md-diagram-panel svg .taskTextOutsideRight *,
+#write .md-diagram-panel svg .sectionTitle,
+#write .md-diagram-panel svg .sectionTitle * {
+  color: var(--text-color) !important;
+  fill: var(--text-color) !important;
+}
+
+/*
+ * HTML blocks use a hybrid editor: Typora keeps the markup visible while also
+ * rendering its child elements. Give that shared surface a theme-owned
+ * background so the rendered content never falls back to Typora's light canvas.
+ */
+#write .md-htmlblock {
+  margin: 1.5rem 0;
+  color: var(--text-color);
+}
+
+#write .md-htmlblock .md-htmlblock-container {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+
+#write .md-htmlblock .md-htmlblock-panel {
+  box-sizing: border-box;
+  margin: 1.25rem 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-medium);
+  background: var(--surface-muted-color);
+  color: var(--text-color);
+}
+
+#write .md-htmlblock .md-rawblock-control,
+#write .md-htmlblock .md-rawblock-tooltip {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-small) var(--radius-small) 0 0;
+  background: var(--surface-raised-color);
+  color: var(--muted-text-color);
+  box-shadow: none;
+}
+
+#write .md-htmlblock .md-htmlblock-panel > :not(.CodeMirror) {
+  color: inherit;
+}
+
+.footnotes {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--muted-text-color);
+  font-size: 0.875rem;
+}
+
+#typora-source,
+.cm-s-typora-default {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--monospace);
+  font-size: 0.9375rem;
+  font-variant-ligatures: none;
+  line-height: 1.72;
+}
+
+#typora-source .CodeMirror-lines {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 3rem var(--content-gutter) 5rem;
+}
+
+.cm-s-typora-default .CodeMirror-cursor {
+  border-left: 2px solid var(--primary-color);
+}
+
+.cm-s-typora-default .CodeMirror-selected,
+.cm-s-typora-default.CodeMirror-focused .CodeMirror-selected {
+  background: var(--selection-color);
+}
+
+.cm-s-typora-default .cm-header {
+  color: var(--heading-color);
+  font-weight: 650;
+}
+
+.cm-s-typora-default .cm-comment,
+.cm-s-typora-default .cm-formatting {
+  color: var(--md-char-color);
+}
+
+.cm-s-typora-default .cm-link,
+.cm-s-typora-default .cm-string,
+.cm-s-typora-default .cm-url {
+  color: var(--meta-content-color);
+}
+
+.cm-s-typora-default .cm-quote {
+  color: var(--muted-text-color);
+  font-style: italic;
+}
+
+.cm-s-typora-default .cm-comment.cm-code {
+  color: var(--meta-content-color);
+}
+
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) {
+  color: var(--blur-text-color);
+}
+
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) img,
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) .md-fences {
+  opacity: 0.5;
+}
+
+#typora-sidebar {
+  border-right: 1px solid var(--border-color);
+  background: var(--side-bar-bg-color);
+  color: var(--text-color);
+}
+
+.typora-node,
+.file-node-content,
+.outline-item {
+  color: var(--text-color);
+}
+
+.file-node-content:hover,
+.outline-item:hover,
+.typora-node:hover {
+  background: var(--item-hover-bg-color);
+  color: var(--item-hover-text-color);
+}
+
+.file-node-content.active,
+.outline-item-active,
+.typora-node.active {
+  background: var(--active-file-bg-color);
+  color: var(--active-file-text-color);
+}
+
+.modal-content,
+.popover,
+.context-menu,
+.auto-suggest-container,
+.megamenu-content {
+  border-color: var(--border-color);
+  background: var(--surface-raised-color);
+  color: var(--text-color);
+  box-shadow: 0 0.7rem 1.7rem var(--shadow-color);
+}
+
+input,
+textarea,
+select,
+.form-control {
+  border-color: var(--border-color);
+  border-radius: var(--radius-small);
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+button,
+.btn {
+  border-radius: var(--radius-small);
+}
+
+.btn-primary {
+  border-color: var(--primary-btn-border-color);
+  background: var(--primary-color);
+  color: var(--primary-btn-text-color);
+}
+
+.searchpanel-search-option-btn.active,
+.menuitem:hover,
+.dropdown-menu > li > a:hover {
+  background: var(--item-hover-bg-color);
+  color: var(--item-hover-text-color);
+}
+
+footer,
+.status-bar {
+  border-top-color: var(--border-color);
+  background: var(--bg-color);
+  color: var(--muted-text-color);
+}
+
+::-webkit-scrollbar {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 0.2rem solid transparent;
+  border-radius: 999px;
+  background: var(--border-strong-color);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-text-color);
+  background-clip: padding-box;
+}
+
+@media (max-width: 640px) {
+  .canopy-debug-hud {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    grid-template-columns: 1fr auto auto;
+    width: calc(100% - 16px);
+  }
+
+  .canopy-debug-date,
+  .canopy-debug-slider {
+    grid-column: 1 / -1;
+  }
+
+  .canopy-debug-mode,
+  .canopy-debug-hide {
+    display: none;
+  }
+
+  #write {
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  #write h1 {
+    font-size: 2rem;
+  }
+
+  #write th,
+  #write td {
+    padding: 0.65rem 0.7rem;
+  }
+
+  .folio-code-tabs {
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+  }
+
+  #typora-source .CodeMirror-lines {
+    padding: 2rem 1.25rem 4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body,
+  content,
+  #write,
+  #typora-source,
+  #typora-sidebar,
+  .canopy-atmosphere-layer,
+  .canopy-debug-hud,
+  content::after,
+  #canopy-leaves-overlay {
+    transition: none !important;
+  }
+}
+
+.typora-export .canopy-atmosphere-layer,
+.typora-export .canopy-debug-hud,
+.typora-export #canopy-leaves-overlay,
+.typora-export content::after {
+  display: none !important;
+}
+
+@media print {
+  :root {
+    color-scheme: light !important;
+    --bg-color: #ffffff !important;
+    --text-color: #222222 !important;
+    --heading-color: #000000 !important;
+    --muted-text-color: #555555 !important;
+    --surface-muted-color: #f5f5f3 !important;
+    --surface-strong-color: #eeeeeb !important;
+    --border-color: #d8d8d3 !important;
+    --border-soft-color: #e5e5e1 !important;
+    --code-bg-color: #f5f5f3 !important;
+    --code-text-color: #222222 !important;
+    --code-fence-bg-color: #ffffff !important;
+    --code-fence-text-color: #222222 !important;
+    --code-control-color: #555555 !important;
+    --code-control-hover-bg-color: #eeeeeb !important;
+    --code-tab-active-bg-color: #eeeeeb !important;
+    --code-tab-active-text-color: #000000 !important;
+    --code-border-color: #d8d8d3 !important;
+  }
+
+  html,
+  body,
+  content,
+  #write {
+    background: #ffffff;
+    color: var(--text-color);
+  }
+
+  .canopy-atmosphere-layer,
+  .canopy-debug-hud,
+  content::after,
+  #canopy-leaves-overlay {
+    display: none !important;
+  }
+
+  #write {
+    max-width: none;
+    padding: 0;
+  }
+
+  .typora-export * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #write a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  #write pre,
+  #write blockquote,
+  #write .md-alert,
+  #write table,
+  #write img {
+    break-inside: avoid;
+  }
+
+  #write blockquote:has(> .md-fences ~ .md-fences) {
+    break-inside: auto;
+  }
+
+  .folio-code-tabs {
+    display: none !important;
+  }
+
+  #write blockquote.folio-code-tab-group {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+
+  #write blockquote.folio-code-tab-group > .folio-code-tab-panel,
+  #write blockquote.folio-code-tab-group > .folio-code-tab-panel:not(.is-active) {
+    display: block !important;
+    margin: 1rem 0;
+    border: 0.5px solid var(--code-border-color);
+    border-radius: 0.5rem;
+    background: var(--code-fence-bg-color);
+  }
+}

@@ -114,35 +114,52 @@ assert_file "$THEME_DIR/sunlit/sunlit-module.js"
 [[ "$(grep -Fc 'typora-themes-runtime:v1' "$TYPORA_INDEX")" -eq 1 ]] \
   || fail 'runtime entry is not unique'
 
+run_installer install canopy >/dev/null
+assert_file "$THEME_DIR/canopy.css"
+assert_file "$THEME_DIR/canopy/assets/leaves.mp4"
+assert_file "$THEME_DIR/canopy/canopy-module.js"
+assert_file "$THEME_DIR/sunlit/sunlit-module.js"
+[[ "$(grep -Fc 'typora-themes-runtime:v1' "$TYPORA_INDEX")" -eq 1 ]] \
+  || fail 'runtime entry is not unique after Canopy installation'
+
 run_installer uninstall folio >/dev/null
 assert_missing "$THEME_DIR/folio.css"
 assert_missing "$THEME_DIR/folio"
 assert_file "$THEME_DIR/typora-themes-runtime.js"
 assert_file "$THEME_DIR/sunlit/sunlit-module.js"
+assert_file "$THEME_DIR/canopy/canopy-module.js"
 assert_contains "$TYPORA_INDEX" 'typora-themes-runtime:v1'
 
 run_installer uninstall sunlit >/dev/null
 assert_missing "$THEME_DIR/sunlit.css"
-assert_missing "$THEME_DIR/typora-themes-runtime.js"
 assert_missing "$THEME_DIR/sunlit"
+assert_file "$THEME_DIR/typora-themes-runtime.js"
+assert_file "$THEME_DIR/canopy/canopy-module.js"
+assert_contains "$TYPORA_INDEX" 'typora-themes-runtime:v1'
+
+run_installer uninstall canopy >/dev/null
+assert_missing "$THEME_DIR/canopy.css"
+assert_missing "$THEME_DIR/canopy"
+assert_missing "$THEME_DIR/typora-themes-runtime.js"
 assert_not_contains "$TYPORA_INDEX" 'typora-themes-runtime:v1'
 
 run_installer install all >/dev/null
-for theme in island geek folio sunlit; do
+for theme in island geek folio sunlit canopy cupertino; do
   assert_file "$THEME_DIR/$theme.css"
 done
 assert_file "$THEME_DIR/folio/folio-module.js"
 assert_file "$THEME_DIR/sunlit/sunlit-module.js"
+assert_file "$THEME_DIR/canopy/canopy-module.js"
 
 run_installer uninstall all >/dev/null
-for theme in island geek folio sunlit; do
+for theme in island geek folio sunlit canopy cupertino; do
   assert_missing "$THEME_DIR/$theme.css"
 done
 assert_missing "$THEME_DIR/geek"
 assert_missing "$THEME_DIR/typora-themes-runtime.js"
 
 run_installer restore latest >/dev/null
-for theme in island geek folio sunlit; do
+for theme in island geek folio sunlit canopy cupertino; do
   assert_file "$THEME_DIR/$theme.css"
 done
 assert_file "$THEME_DIR/typora-themes-runtime.js"

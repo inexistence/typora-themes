@@ -114,6 +114,7 @@ const window = {
 window[configKey] = Object.freeze({
   folio: 'folio/folio-module.js',
   sunlit: 'sunlit/sunlit-module.js',
+  canopy: 'canopy/canopy-module.js',
 })
 
 function moduleFactory(name) {
@@ -132,6 +133,7 @@ function moduleFactory(name) {
 
 factories.set('folio', moduleFactory('folio'))
 factories.set('sunlit', moduleFactory('sunlit'))
+factories.set('canopy', moduleFactory('canopy'))
 
 const context = {
   HTMLLinkElement: FakeHTMLLinkElement,
@@ -194,10 +196,18 @@ async function main() {
   await settle()
   assert.ok(lifecycle.includes('update:sunlit:true'))
 
-  themeId = ''
+  themeId = 'canopy'
   observers.forEach(observer => observer.callback())
   await settle()
   assert.equal(lifecycle.filter(item => item === 'destroy:sunlit').length, 1)
+  assert.equal(lifecycle.filter(item => item.startsWith('create:canopy')).length, 1)
+  assert.equal(moduleScripts.length, 3)
+  assert.match(moduleScripts[2].src, /canopy\/canopy-module\.js$/)
+
+  themeId = ''
+  observers.forEach(observer => observer.callback())
+  await settle()
+  assert.equal(lifecycle.filter(item => item === 'destroy:canopy').length, 1)
 
   window[runtimeKey].destroy()
   assert.equal(moduleScripts.length, 0)

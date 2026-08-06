@@ -58,6 +58,18 @@
     </dict>
     <dict>
       <key>id</key>
+      <string>canopy</string>
+      <key>name</key>
+      <string>Canopy</string>
+      <key>css</key>
+      <array>
+        <string>canopy.css</string>
+      </array>
+      <key>module</key>
+      <string>canopy-module.js</string>
+    </dict>
+    <dict>
+      <key>id</key>
       <string>cupertino</string>
       <key>name</key>
       <string>Cupertino</string>

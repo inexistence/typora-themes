@@ -266,6 +266,16 @@ Sunlit 展示了受上下文控制的媒体增强：
 
 视频事件回调会检查 `destroyed`，防止切换主题后迟到的 `playing` 事件重新开启效果。
 
+### Canopy：日期驱动的 CSS 光场
+
+Canopy 在同一媒体生命周期上增加日期与太阳模型，但不逐帧处理视频，也不使用 Canvas：
+
+1. 按 `Asia/Shanghai` 的日期计算季节、日出、日落和太阳位置。
+2. 创建两组由 `color`、`soft-light` 和 `screen` 混合模式组成的固定 CSS 光场。
+3. 每分钟把下一场景写入隐藏组，只交叉淡化 `opacity`。
+4. 视频继续作为最上方的 `multiply` 树影层，页面隐藏或减少动态时暂停。
+5. `destroy()` 同时清理光场 DOM、媒体、定时器、根 class 和动态 CSS 变量。
+
 ## 12. 安装器如何维持单入口
 
 统一安装器将“已安装”和“当前激活”分开处理：
@@ -344,6 +354,7 @@ window[Symbol.for('typora-themes-runtime-config@1')]
 | 切换主题后效果残留 | `destroy()` 是否清理 DOM、根 class、监听器、观察器、RAF 和媒体 |
 | 切换很快时出现旧主题效果 | 异步回调是否检查 `destroyed`，是否绕开了共享运行时直接修改 DOM |
 | Sunlit 只有静态树影 | 是否启用“减少动态”、页面是否隐藏、视频路径和自动播放是否正常 |
+| Canopy 光色不更新 | 系统是否支持 `Asia/Shanghai` 时区、定时器是否被清理或模块是否仍处于活动状态 |
 | Typora 更新后失效 | `index.html` 是否被覆盖、入口位置和内部 DOM 选择器是否变化 |
 
 不要通过增加第二个入口标签来排查问题，这会破坏唯一实例和生命周期保证。
@@ -353,7 +364,7 @@ window[Symbol.for('typora-themes-runtime-config@1')]
 `tests/runtime-manager.test.js` 使用模拟 DOM 验证共享层：
 
 - 初始主题模块按需加载。
-- Folio 切换到 Sunlit 时先销毁旧实例。
+- Folio、Sunlit 和 Canopy 依次切换时先销毁旧实例。
 - `reducedMotion` 变化传递给活动模块。
 - 切到纯 CSS 主题后销毁活动实例。
 - 销毁运行时后移除动态模块脚本和全局实例。
@@ -376,5 +387,7 @@ window[Symbol.for('typora-themes-runtime-config@1')]
 - 配置生成的主题可以通过快照恢复。
 
 `tests/sunlit-module.test.js` 验证已销毁视频实例的迟到异步回调不会覆盖新实例的活动状态。
+
+`tests/canopy-module.test.js` 验证上海四季与昼夜场景、双 CSS 光场、视频降级和完整销毁。
 
 测试不会写入真实 Typora 用户目录或 `/Applications/Typora.app`。真实 DOM 兼容性、媒体播放和视觉效果仍需在目标 Typora 版本中人工验证。

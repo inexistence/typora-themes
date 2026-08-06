@@ -10,6 +10,7 @@
 
 - `../folio/folio/folio-module.js`：代码标签组和复制按钮，安装到 `themes/folio/`。
 - `../sunlit/sunlit/sunlit-module.js`：动态树影视频，安装到 `themes/sunlit/`。
+- `../canopy/canopy/canopy-module.js`：日期驱动的 CSS 天光和动态树影，安装到 `themes/canopy/`。
 
 具体主题、CSS 文件名和模块文件名声明在根目录 `themes.plist`，目录由主题 ID 推导。安装器会校验注册表，并把模块允许列表编译进安装后的共享运行时；运行时源码不硬编码主题 ID。
 
