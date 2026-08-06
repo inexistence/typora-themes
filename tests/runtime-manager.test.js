@@ -68,11 +68,39 @@ const media = {
 }
 const documentListeners = new Map()
 const windowListeners = new Map()
+const storedValues = new Map([
+  ['typora-themes-prepaint:folio', JSON.stringify({
+    version: 1,
+    savedAt: Date.now(),
+    properties: { '--bg-color': 'rgb(32 33 34)', color: 'ignored' },
+    rootClasses: ['folio-cached', 'invalid class'],
+  })],
+])
+
+const rootProperties = new Map()
+const rootClasses = new Set()
 
 const document = {
   body: {},
   currentScript: { src: 'file:///tmp/user/themes/typora-themes-runtime.js' },
-  documentElement: {},
+  documentElement: {
+    classList: {
+      add(className) {
+        rootClasses.add(className)
+      },
+      remove(className) {
+        rootClasses.delete(className)
+      },
+    },
+    style: {
+      removeProperty(property) {
+        rootProperties.delete(property)
+      },
+      setProperty(property, value) {
+        rootProperties.set(property, value)
+      },
+    },
+  },
   head: {
     append(script) {
       moduleScripts.push(script)
@@ -101,6 +129,11 @@ const document = {
 }
 
 const window = {
+  localStorage: {
+    getItem(key) {
+      return storedValues.get(key) ?? null
+    },
+  },
   addEventListener(type, listener) {
     windowListeners.set(type, listener)
   },
@@ -177,6 +210,11 @@ async function settle() {
 
 async function main() {
   vm.runInNewContext(runtimeSource, context)
+  assert.equal(rootProperties.get('--bg-color'), 'rgb(32 33 34)')
+  assert.equal(rootProperties.has('color'), false)
+  assert.ok(rootClasses.has('folio-cached'))
+  assert.equal(rootClasses.has('invalid class'), false)
+  assert.equal(moduleScripts.length, 1, 'initial module load waited for a paint frame')
   await settle()
 
   assert.equal(moduleScripts.length, 1)

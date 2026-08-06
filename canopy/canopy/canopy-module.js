@@ -12,8 +12,12 @@
   const ACTIVE_CLASS = 'canopy-video-active'
   const NIGHT_CLASS = 'canopy-night'
   const CONTRAST_FLIP_CLASS = 'canopy-contrast-flip'
+  const STARTUP_CLASS = 'canopy-starting'
   const DEBUG_PLAYING_CLASS = 'canopy-debug-playing'
   const DEBUG_KEY = '__canopyDebug'
+  const PREPAINT_KEY = 'typora-themes-prepaint:canopy'
+  const PREPAINT_VERSION = 1
+  const VIDEO_LAYER_ID = 'canopy-video-layer'
   const VIDEO_ID = 'canopy-leaves-overlay'
   const SHANGHAI_LATITUDE = 31.23
   const SHANGHAI_LONGITUDE = 121.47
@@ -957,11 +961,15 @@
   function canopyFactory({ context, themesBaseUrl }) {
     const videoUrl = new URL('canopy/assets/leaves.mp4', themesBaseUrl).href
     const root = document.documentElement
+    root.classList.add(STARTUP_CLASS)
     let currentContext = context
     let currentScene = null
+    let videoLayer = null
     let video = null
     let scheduledFrame = 0
     let contrastFrame = 0
+    let startupFrame = 0
+    let videoActivationFrame = 0
     let tickTimer = 0
     let previewTimer = 0
     let destroyed = false
@@ -1045,12 +1053,27 @@
     }
 
     function applyRootScene(scene) {
-      if (currentScene && currentScene.contrastMode !== scene.contrastMode) {
+      /*
+       * The CSS fallback is a warm daytime scene. Suppress transitions while
+       * the first live scene replaces it so a newly opened window does not
+       * spend 1.2 seconds visibly assembling its current colors.
+       */
+      if (!currentScene || currentScene.contrastMode !== scene.contrastMode) {
         beginContrastFlip()
       }
       Object.entries(scene.theme).forEach(([property, value]) => root.style.setProperty(property, value))
       Object.entries(scene.video).forEach(([property, value]) => root.style.setProperty(property, value))
       root.classList.toggle(NIGHT_CLASS, scene.mode === 'night')
+      try {
+        window.localStorage?.setItem(PREPAINT_KEY, JSON.stringify({
+          version: PREPAINT_VERSION,
+          savedAt: Date.now(),
+          properties: { ...scene.theme, ...scene.video },
+          rootClasses: scene.mode === 'night' ? [NIGHT_CLASS, STARTUP_CLASS] : [STARTUP_CLASS],
+        }))
+      } catch {
+        /* The live scene remains authoritative when storage is unavailable. */
+      }
       if (video) {
         video.playbackRate = scene.videoRate
       }
@@ -1333,11 +1356,67 @@
       return !currentContext.hidden && !currentContext.reducedMotion
     }
 
-    function setVideoActive(active) {
-      root.classList.toggle(ACTIVE_CLASS, active)
-      if (video) {
-        video.style.opacity = active ? 'var(--canopy-shadow-opacity, 0.78)' : '0'
+    function cancelVideoActivation() {
+      if (videoActivationFrame) {
+        cancelAnimationFrame(videoActivationFrame)
+        videoActivationFrame = 0
       }
+    }
+
+    function finishStartup() {
+      if (!startupFrame && root.classList.contains(STARTUP_CLASS)) {
+        startupFrame = requestAnimationFrame(() => {
+          startupFrame = 0
+          if (!destroyed) {
+            root.classList.remove(STARTUP_CLASS)
+          }
+        })
+      }
+    }
+
+    function setVideoActive(active) {
+      if (!active) {
+        cancelVideoActivation()
+      }
+      root.classList.toggle(ACTIVE_CLASS, active)
+      if (videoLayer) {
+        videoLayer.style.opacity = active ? 'var(--canopy-shadow-opacity, 0.78)' : '0'
+      }
+    }
+
+    /*
+     * WKWebView can promote the native video surface separately from the paper
+     * and composite it normally. Keep the blend mode on a regular wrapper and,
+     * outside startup, establish that wrapper before revealing it.
+     * This also gives theme switches a cancellable activation boundary.
+     */
+    function scheduleVideoActivation(target) {
+      if (videoActivationFrame
+        || destroyed
+        || video !== target
+        || !shouldPlay()
+        || root.classList.contains(ACTIVE_CLASS)) {
+        return
+      }
+      if (root.classList.contains(STARTUP_CLASS)) {
+        if (!target.paused) {
+          setVideoActive(true)
+          finishStartup()
+        }
+        return
+      }
+      videoActivationFrame = requestAnimationFrame(() => {
+        videoActivationFrame = 0
+        if (destroyed || video !== target || !shouldPlay()) {
+          return
+        }
+        videoActivationFrame = requestAnimationFrame(() => {
+          videoActivationFrame = 0
+          if (!destroyed && video === target && shouldPlay() && !target.paused) {
+            setVideoActive(true)
+          }
+        })
+      })
     }
 
     function seedVideo(target) {
@@ -1349,10 +1428,26 @@
     }
 
     function ensureVideo() {
-      if (video?.isConnected) {
+      if (video?.isConnected && videoLayer?.isConnected) {
         return video
       }
+      document.getElementById(VIDEO_LAYER_ID)?.remove()
       document.getElementById(VIDEO_ID)?.remove()
+      const layer = document.createElement('div')
+      videoLayer = layer
+      layer.id = VIDEO_LAYER_ID
+      layer.setAttribute('aria-hidden', 'true')
+      layer.setAttribute('contenteditable', 'false')
+      Object.assign(layer.style, {
+        position: 'fixed',
+        zIndex: '89',
+        inset: '0',
+        display: 'block',
+        pointerEvents: 'none',
+        mixBlendMode: 'multiply',
+        opacity: '0',
+        transition: 'opacity 700ms cubic-bezier(0.16, 1, 0.3, 1)',
+      })
       const target = document.createElement('video')
       video = target
       target.id = VIDEO_ID
@@ -1367,18 +1462,12 @@
       target.setAttribute('aria-hidden', 'true')
       target.setAttribute('contenteditable', 'false')
       Object.assign(target.style, {
-        position: 'fixed',
-        zIndex: '89',
-        inset: '0',
         display: 'block',
         width: '100%',
         height: '100%',
         objectFit: 'cover',
         objectPosition: 'center top',
         pointerEvents: 'none',
-        mixBlendMode: 'multiply',
-        opacity: '0',
-        transition: 'opacity 700ms cubic-bezier(0.16, 1, 0.3, 1)',
       })
       target.addEventListener('loadedmetadata', () => {
         if (!destroyed && video === target) {
@@ -1387,16 +1476,18 @@
       })
       target.addEventListener('playing', () => {
         if (!destroyed && video === target && shouldPlay()) {
-          setVideoActive(true)
+          scheduleVideoActivation(target)
         }
       })
       target.addEventListener('canplay', scheduleReconcile)
       target.addEventListener('error', () => {
         if (!destroyed && video === target) {
           setVideoActive(false)
+          finishStartup()
         }
       })
-      document.body.append(target)
+      layer.append(target)
+      document.body.append(layer)
       seedVideo(target)
       return target
     }
@@ -1410,6 +1501,7 @@
       if (!shouldPlay()) {
         setVideoActive(false)
         video?.pause()
+        finishStartup()
         return
       }
       const target = ensureVideo()
@@ -1419,14 +1511,16 @@
           playResult.catch(() => {
             if (!destroyed && video === target) {
               setVideoActive(false)
+              finishStartup()
             }
           })
         }
       } catch {
         setVideoActive(false)
+        finishStartup()
       }
       if (!target.paused && target.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
-        setVideoActive(true)
+        scheduleVideoActivation(target)
       }
     }
 
@@ -1471,6 +1565,10 @@
         if (contrastFrame) {
           cancelAnimationFrame(contrastFrame)
         }
+        if (startupFrame) {
+          cancelAnimationFrame(startupFrame)
+        }
+        cancelVideoActivation()
         if (tickTimer) {
           clearTimeout(tickTimer)
         }
@@ -1480,7 +1578,8 @@
         previewPlaying = false
         setVideoActive(false)
         video?.pause()
-        video?.remove()
+        videoLayer?.remove()
+        videoLayer = null
         video = null
         debugHud?.remove()
         debugHud = null
@@ -1491,6 +1590,7 @@
           ACTIVE_CLASS,
           NIGHT_CLASS,
           CONTRAST_FLIP_CLASS,
+          STARTUP_CLASS,
           DEBUG_PLAYING_CLASS,
         )
         if (window[DEBUG_KEY] === debugApi) {

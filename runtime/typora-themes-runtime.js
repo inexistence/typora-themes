@@ -8,6 +8,9 @@
 
   const RUNTIME_KEY = Symbol.for('typora-themes-runtime@1')
   const CONFIG_KEY = Symbol.for('typora-themes-runtime-config@1')
+  const PREPAINT_PREFIX = 'typora-themes-prepaint:'
+  const PREPAINT_VERSION = 1
+  const PREPAINT_MAX_AGE_MS = 30 * 60 * 1000
   if (window[RUNTIME_KEY]) {
     return
   }
@@ -34,6 +37,7 @@
   let scheduledFrame = 0
   let revision = 0
   let destroyed = false
+  let activePrepaint = null
 
   function report(message, error) {
     console.warn(`[Typora Themes] ${message}`, error)
@@ -59,6 +63,60 @@
       hidden: document.hidden,
       reducedMotion: reducedMotion.matches,
     })
+  }
+
+  function applyCachedPrepaint(themeId) {
+    if (!themeId) {
+      return
+    }
+    try {
+      const cached = JSON.parse(window.localStorage?.getItem(`${PREPAINT_PREFIX}${themeId}`) ?? 'null')
+      const cacheAge = Date.now() - cached?.savedAt
+      if (cached?.version !== PREPAINT_VERSION
+        || !Number.isFinite(cacheAge)
+        || cacheAge < 0
+        || cacheAge > PREPAINT_MAX_AGE_MS
+        || !cached.properties
+        || typeof cached.properties !== 'object') {
+        return
+      }
+      const appliedProperties = []
+      const appliedRootClasses = []
+      Object.entries(cached.properties).forEach(([property, value]) => {
+        if (property.startsWith('--') && typeof value === 'string') {
+          document.documentElement.style.setProperty(property, value)
+          appliedProperties.push(property)
+        }
+      })
+      if (Array.isArray(cached.rootClasses)) {
+        cached.rootClasses.forEach(className => {
+          if (typeof className === 'string' && /^[a-z0-9-]+$/.test(className)) {
+            document.documentElement.classList.add(className)
+            appliedRootClasses.push(className)
+          }
+        })
+      }
+      activePrepaint = {
+        themeId,
+        properties: appliedProperties,
+        rootClasses: appliedRootClasses,
+      }
+    } catch {
+      /* Storage can be unavailable for file origins; the CSS fallback remains. */
+    }
+  }
+
+  function clearCachedPrepaint() {
+    if (!activePrepaint) {
+      return
+    }
+    activePrepaint.properties.forEach(property => {
+      document.documentElement.style.removeProperty(property)
+    })
+    activePrepaint.rootClasses.forEach(className => {
+      document.documentElement.classList.remove(className)
+    })
+    activePrepaint = null
   }
 
   function destroyActive() {
@@ -128,6 +186,9 @@
 
     const desiredTheme = readThemeId()
     const context = currentContext()
+    if (activePrepaint && activePrepaint.themeId !== desiredTheme) {
+      clearCachedPrepaint()
+    }
     if (desiredTheme === activeTheme && activeInstance) {
       updateActive(context)
       return
@@ -142,6 +203,9 @@
       await loadModule(desiredTheme)
     } catch (error) {
       report(`Failed to load the ${desiredTheme} theme module.`, error)
+      if (activePrepaint?.themeId === desiredTheme) {
+        clearCachedPrepaint()
+      }
       return
     }
     if (destroyed || expectedRevision !== revision || readThemeId() !== desiredTheme) {
@@ -158,9 +222,15 @@
         themesBaseUrl,
       }) ?? null
       activeTheme = activeInstance ? desiredTheme : ''
+      if (activeInstance && activePrepaint?.themeId === desiredTheme) {
+        activePrepaint = null
+      }
       updateActive(currentContext())
     } catch (error) {
       report(`Failed to start the ${desiredTheme} theme module.`, error)
+      if (activePrepaint?.themeId === desiredTheme) {
+        clearCachedPrepaint()
+      }
       destroyActive()
     }
   }
@@ -212,9 +282,15 @@
     register(themeId, factory) {
       if (Object.prototype.hasOwnProperty.call(moduleFiles, themeId)
         && typeof factory === 'function') {
+        const resolvesPendingLoad = pendingLoads.has(themeId)
         factories.set(themeId, factory)
         failedLoads.delete(themeId)
-        scheduleReconcile()
+        /* The reconcile already awaiting this script can create the instance
+         * immediately. Scheduling another frame here would deliberately paint
+         * one frame of the static fallback before every enhanced theme. */
+        if (!resolvesPendingLoad) {
+          scheduleReconcile()
+        }
       }
     },
     destroy() {
@@ -232,6 +308,7 @@
       if (scheduledFrame) {
         cancelAnimationFrame(scheduledFrame)
       }
+      clearCachedPrepaint()
       destroyActive()
       document.querySelectorAll('script[data-typora-theme-module]').forEach(script => script.remove())
       delete window[RUNTIME_KEY]
@@ -239,5 +316,10 @@
     },
   }
 
-  scheduleReconcile()
+  /* Start before the first rendering opportunity. Later changes still use
+   * scheduleReconcile() so bursts of theme and visibility events are merged. */
+  const initialTheme = readThemeId()
+  applyCachedPrepaint(initialTheme)
+  revision += 1
+  void reconcile(revision)
 })()

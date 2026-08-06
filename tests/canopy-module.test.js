@@ -15,6 +15,7 @@ const frames = []
 const timers = []
 const elements = []
 const pendingPlays = []
+const storedValues = new Map()
 let factory = null
 let fakeNow = Date.parse('2026-08-06T06:00:00Z')
 
@@ -89,6 +90,9 @@ function createElement(tagName) {
     setAttribute() {},
     append(...children) {
       this.children.push(...children)
+      children.forEach(child => {
+        child.isConnected = this.isConnected
+      })
     },
     addEventListener(type, listener) {
       listeners.set(type, listener)
@@ -98,6 +102,7 @@ function createElement(tagName) {
     },
     remove() {
       this.isConnected = false
+      this.children.forEach(child => child.remove())
     },
   }
 
@@ -131,6 +136,9 @@ const document = {
   body: {
     append(element) {
       element.isConnected = true
+      element.children.forEach(child => {
+        child.isConnected = true
+      })
     },
   },
   documentElement: root,
@@ -141,6 +149,14 @@ const document = {
 }
 
 const window = {
+  localStorage: {
+    getItem(key) {
+      return storedValues.get(key) ?? null
+    },
+    setItem(key, value) {
+      storedValues.set(key, value)
+    },
+  },
   [runtimeKey]: {
     register(themeId, registeredFactory) {
       assert.equal(themeId, 'canopy')
@@ -190,6 +206,10 @@ function flushFrames() {
   while (frames.length) {
     frames.shift().callback()
   }
+}
+
+function flushNextFrame() {
+  frames.shift()?.callback()
 }
 
 function connected(id) {
@@ -391,6 +411,10 @@ function assertSceneContrast(scene, label) {
 }
 
 async function main() {
+  assert.match(
+    cssSource,
+    /body\s*{[^}]*--bg-color:\s*inherit\s*!important;[^}]*background-color:\s*var\(--bg-color\)\s*!important;[^}]*isolation:\s*isolate;/,
+  )
   assertSceneContrast({ theme: rootThemeTokens() }, 'CSS fallback')
   vm.runInNewContext(moduleSource, context)
   assert.equal(typeof factory, 'function')
@@ -489,6 +513,27 @@ async function main() {
   assert.equal(atmosphereLayerCount(), 6)
   assert.notEqual(root.style.getPropertyValue('--bg-color'), '')
   assert.equal(typeof window.__canopyDebug, 'object')
+  const cachedPrepaint = JSON.parse(storedValues.get('typora-themes-prepaint:canopy'))
+  assert.equal(cachedPrepaint.version, 1)
+  assert.equal(cachedPrepaint.properties['--bg-color'], root.style.getPropertyValue('--bg-color'))
+  assert.ok(cachedPrepaint.rootClasses.includes('canopy-starting'))
+  assert.ok(root.classList.contains('canopy-contrast-flip'))
+  assert.ok(root.classList.contains('canopy-starting'))
+
+  while (!connected(VIDEO_ID).length && frames.length) {
+    flushNextFrame()
+  }
+  const startupVideo = connected(VIDEO_ID)[0]
+  assert.ok(startupVideo)
+  const startupVideoLayer = connected(VIDEO_LAYER_ID)[0]
+  assert.ok(startupVideoLayer)
+  assert.equal(startupVideoLayer.style.mixBlendMode, 'multiply')
+  assert.ok(root.classList.contains('canopy-video-active'))
+  assert.equal(startupVideoLayer.style.opacity, 'var(--canopy-shadow-opacity, 0.78)')
+  flushFrames()
+  assert.equal(root.classList.contains('canopy-contrast-flip'), false)
+  assert.equal(root.classList.contains('canopy-starting'), false)
+  assert.equal(startupVideoLayer.style.opacity, 'var(--canopy-shadow-opacity, 0.78)')
 
   const debug = window.__canopyDebug
   debug.preset('winter-midnight')
@@ -536,7 +581,11 @@ async function main() {
 
   debug.preset('winter-midnight')
   assert.ok(root.classList.contains('canopy-contrast-flip'))
+  first.update(visibleContext)
+  flushNextFrame()
+  assert.equal(root.classList.contains('canopy-video-active'), false)
   first.destroy()
+  flushFrames()
   assert.equal(connected().length, 0)
   assert.equal(root.style.getPropertyValue('--bg-color'), '')
   assert.equal(root.style.getPropertyValue('--side-bar-text-color'), '')
@@ -566,6 +615,7 @@ async function main() {
 }
 
 const VIDEO_ID = 'canopy-leaves-overlay'
+const VIDEO_LAYER_ID = 'canopy-video-layer'
 
 main().catch(error => {
   console.error(error)
