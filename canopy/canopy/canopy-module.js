@@ -12,6 +12,7 @@
   const ACTIVE_CLASS = 'canopy-video-active'
   const NIGHT_CLASS = 'canopy-night'
   const CONTRAST_FLIP_CLASS = 'canopy-contrast-flip'
+  const INSTANT_SCENE_CLASS = 'canopy-scene-instant'
   const STARTUP_CLASS = 'canopy-starting'
   const DEBUG_PLAYING_CLASS = 'canopy-debug-playing'
   const DEBUG_KEY = '__canopyDebug'
@@ -22,6 +23,7 @@
   const SHANGHAI_LATITUDE = 31.23
   const SHANGHAI_LONGITUDE = 121.47
   const SHANGHAI_UTC_OFFSET_MINUTES = 8 * 60
+  const LIVE_TICK_INTERVAL_MS = 5_000
   const FULL_CIRCLE = Math.PI * 2
   const DARK_INK_POLE = Object.freeze([18, 18, 22])
   const LIGHT_INK_POLE = Object.freeze([247, 244, 231])
@@ -968,6 +970,7 @@
     let video = null
     let scheduledFrame = 0
     let contrastFrame = 0
+    let instantSceneFrame = 0
     let startupFrame = 0
     let videoActivationFrame = 0
     let tickTimer = 0
@@ -981,6 +984,7 @@
     let previewDayDurationSeconds = 90
     let debugHud = null
     let debugControls = null
+    let cachedPrepaintKey = ''
 
     function clockNow() {
       return debugTimestamp ?? Date.now()
@@ -1052,34 +1056,55 @@
       })
     }
 
+    function beginInstantScene() {
+      if (instantSceneFrame) {
+        cancelAnimationFrame(instantSceneFrame)
+      }
+      root.classList.add(INSTANT_SCENE_CLASS)
+      instantSceneFrame = requestAnimationFrame(() => {
+        instantSceneFrame = requestAnimationFrame(() => {
+          instantSceneFrame = 0
+          if (!destroyed) {
+            root.classList.remove(INSTANT_SCENE_CLASS)
+          }
+        })
+      })
+    }
+
     function applyRootScene(scene) {
       /*
        * The CSS fallback is a warm daytime scene. Suppress transitions while
        * the first live scene replaces it so a newly opened window does not
        * spend 1.2 seconds visibly assembling its current colors.
        */
-      if (!currentScene || currentScene.contrastMode !== scene.contrastMode) {
+      if (!currentScene
+        || currentScene.contrastMode !== scene.contrastMode
+        || currentScene.mode !== scene.mode) {
         beginContrastFlip()
       }
       Object.entries(scene.theme).forEach(([property, value]) => root.style.setProperty(property, value))
       Object.entries(scene.video).forEach(([property, value]) => root.style.setProperty(property, value))
       root.classList.toggle(NIGHT_CLASS, scene.mode === 'night')
-      try {
-        window.localStorage?.setItem(PREPAINT_KEY, JSON.stringify({
-          version: PREPAINT_VERSION,
-          savedAt: Date.now(),
-          properties: { ...scene.theme, ...scene.video },
-          rootClasses: scene.mode === 'night' ? [NIGHT_CLASS, STARTUP_CLASS] : [STARTUP_CLASS],
-        }))
-      } catch {
-        /* The live scene remains authoritative when storage is unavailable. */
+      const prepaintKey = `${scene.dateKey}:${scene.time.hour}:${Math.floor(scene.time.minute)}`
+      if (debugTimestamp === null && prepaintKey !== cachedPrepaintKey) {
+        cachedPrepaintKey = prepaintKey
+        try {
+          window.localStorage?.setItem(PREPAINT_KEY, JSON.stringify({
+            version: PREPAINT_VERSION,
+            savedAt: Date.now(),
+            properties: { ...scene.theme, ...scene.video },
+            rootClasses: scene.mode === 'night' ? [NIGHT_CLASS, STARTUP_CLASS] : [STARTUP_CLASS],
+          }))
+        } catch {
+          /* The live scene remains authoritative when storage is unavailable. */
+        }
       }
       if (video) {
         video.playbackRate = scene.videoRate
       }
     }
 
-    function render(value = Date.now(), force = false) {
+    function render(value = Date.now(), force = false, immediate = false) {
       if (destroyed) {
         return currentScene
       }
@@ -1087,10 +1112,11 @@
       if (!force && nextScene.key === renderedKey) {
         return currentScene
       }
-      const nextBundle = renderedKey ? 1 - activeBundle : activeBundle
+      const crossfade = previewPlaying && renderedKey && !immediate && !currentContext.reducedMotion
+      const nextBundle = crossfade ? 1 - activeBundle : activeBundle
       setBundleScene(bundles[nextBundle], nextScene)
       applyRootScene(nextScene)
-      activateBundle(nextBundle, !renderedKey || currentContext.reducedMotion)
+      activateBundle(nextBundle, !crossfade)
       activeBundle = nextBundle
       renderedKey = nextScene.key
       currentScene = nextScene
@@ -1131,7 +1157,8 @@
       }
       pausePreview()
       debugTimestamp = timestamp
-      const scene = render(debugTimestamp, true)
+      beginInstantScene()
+      const scene = render(debugTimestamp, true, true)
       updateDebugHud(scene)
       return scene
     }
@@ -1152,7 +1179,8 @@
     function resetDebugTime() {
       pausePreview()
       debugTimestamp = null
-      const scene = render(Date.now(), true)
+      beginInstantScene()
+      const scene = render(Date.now(), true, true)
       updateDebugHud(scene)
       return scene
     }
@@ -1185,7 +1213,13 @@
           sceneTime.day,
           nextMinute,
         )
-        updateDebugHud(render(debugTimestamp))
+        /*
+         * Playback follows the slider's single-layer, transition-free path.
+         * Crossfading two translucent blend layers changes their combined
+         * luminance mid-fade, which reads as a pulse at every preview tick.
+         */
+        beginInstantScene()
+        updateDebugHud(render(debugTimestamp, false, true))
       }
       previewLastTick = realNow
       schedulePreviewTick()
@@ -1447,7 +1481,6 @@
         pointerEvents: 'none',
         mixBlendMode: 'multiply',
         opacity: '0',
-        transition: 'opacity 700ms cubic-bezier(0.16, 1, 0.3, 1)',
       })
       const target = document.createElement('video')
       video = target
@@ -1535,7 +1568,7 @@
       if (tickTimer || destroyed) {
         return
       }
-      const delay = 60_050 - (Date.now() % 60_000)
+      const delay = LIVE_TICK_INTERVAL_MS + 50 - (Date.now() % LIVE_TICK_INTERVAL_MS)
       tickTimer = setTimeout(() => {
         tickTimer = 0
         if (!currentContext.hidden) {
@@ -1545,7 +1578,7 @@
       }, delay)
     }
 
-    render(clockNow(), true)
+    render(clockNow(), true, true)
     scheduleTick()
     scheduleReconcile()
 
@@ -1565,6 +1598,9 @@
         }
         if (contrastFrame) {
           cancelAnimationFrame(contrastFrame)
+        }
+        if (instantSceneFrame) {
+          cancelAnimationFrame(instantSceneFrame)
         }
         if (startupFrame) {
           cancelAnimationFrame(startupFrame)
@@ -1591,6 +1627,7 @@
           ACTIVE_CLASS,
           NIGHT_CLASS,
           CONTRAST_FLIP_CLASS,
+          INSTANT_SCENE_CLASS,
           STARTUP_CLASS,
           DEBUG_PLAYING_CLASS,
         )

@@ -208,7 +208,29 @@ html.canopy-contrast-flip .modal-content,
 html.canopy-contrast-flip .popover,
 html.canopy-contrast-flip .context-menu,
 html.canopy-contrast-flip .auto-suggest-container,
-html.canopy-contrast-flip .megamenu-content {
+html.canopy-contrast-flip .megamenu-content,
+html.canopy-contrast-flip .canopy-atmosphere-layer,
+html.canopy-contrast-flip content::after,
+html.canopy-contrast-flip #canopy-video-layer,
+html.canopy-contrast-flip #canopy-leaves-overlay {
+  transition: none !important;
+}
+
+html.canopy-scene-instant,
+html.canopy-scene-instant body,
+html.canopy-scene-instant content,
+html.canopy-scene-instant #write,
+html.canopy-scene-instant #typora-source,
+html.canopy-scene-instant #typora-sidebar,
+html.canopy-scene-instant .modal-content,
+html.canopy-scene-instant .popover,
+html.canopy-scene-instant .context-menu,
+html.canopy-scene-instant .auto-suggest-container,
+html.canopy-scene-instant .megamenu-content,
+html.canopy-scene-instant .canopy-atmosphere-layer,
+html.canopy-scene-instant content::after,
+html.canopy-scene-instant #canopy-video-layer,
+html.canopy-scene-instant #canopy-leaves-overlay {
   transition: none !important;
 }
 
@@ -227,7 +249,8 @@ html.canopy-starting .auto-suggest-container,
 html.canopy-starting .megamenu-content,
 html.canopy-starting .canopy-atmosphere-layer,
 html.canopy-starting content::after,
-html.canopy-starting #canopy-video-layer {
+html.canopy-starting #canopy-video-layer,
+html.canopy-starting #canopy-leaves-overlay {
   transition: none !important;
 }
 
@@ -319,7 +342,7 @@ content::after {
   background: center top / cover no-repeat url("./canopy/assets/leaves-still.jpg");
   mix-blend-mode: multiply;
   opacity: var(--canopy-static-shadow-opacity);
-  transition: opacity 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 1200ms cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 html.canopy-video-active content::after {
@@ -334,7 +357,7 @@ html.canopy-video-active content::after {
   pointer-events: none;
   mix-blend-mode: multiply;
   opacity: 0;
-  transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 1200ms cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 #canopy-leaves-overlay {
@@ -344,6 +367,7 @@ html.canopy-video-active content::after {
   object-fit: cover;
   object-position: center top;
   pointer-events: none;
+  transition: filter 1200ms cubic-bezier(0.65, 0, 0.35, 1);
   filter:
     contrast(var(--canopy-video-contrast, 1))
     brightness(var(--canopy-video-brightness, 1))
@@ -353,7 +377,7 @@ html.canopy-video-active content::after {
 }
 
 html.canopy-debug-playing {
-  --canopy-scene-transition: 280ms;
+  --canopy-scene-transition: 180ms;
 }
 
 html.canopy-debug-playing,
@@ -361,8 +385,11 @@ html.canopy-debug-playing body,
 html.canopy-debug-playing content,
 html.canopy-debug-playing #write,
 html.canopy-debug-playing #typora-source,
-html.canopy-debug-playing #typora-sidebar {
-  transition-duration: 280ms;
+html.canopy-debug-playing #typora-sidebar,
+html.canopy-debug-playing content::after,
+html.canopy-debug-playing #canopy-video-layer,
+html.canopy-debug-playing #canopy-leaves-overlay {
+  transition-duration: 180ms;
 }
 
 .canopy-debug-hud {

@@ -415,6 +415,7 @@ async function main() {
     cssSource,
     /body\s*{[^}]*--bg-color:\s*inherit\s*!important;[^}]*background-color:\s*var\(--bg-color\)\s*!important;[^}]*isolation:\s*isolate;/,
   )
+  assert.match(cssSource, /html\.canopy-debug-playing\s*{\s*--canopy-scene-transition:\s*180ms;/)
   assertSceneContrast({ theme: rootThemeTokens() }, 'CSS fallback')
   vm.runInNewContext(moduleSource, context)
   assert.equal(typeof factory, 'function')
@@ -535,8 +536,23 @@ async function main() {
   assert.equal(root.classList.contains('canopy-starting'), false)
   assert.equal(startupVideoLayer.style.opacity, 'var(--canopy-shadow-opacity, 0.78)')
 
+  const realtimeBundleId = connected().find(element => (
+    element.className.includes('canopy-season-color')
+      && element.classList.contains('is-active')
+  )).id
+  fakeNow += 60_000
+  first.update(visibleContext)
+  const nextRealtimeBundleId = connected().find(element => (
+    element.className.includes('canopy-season-color')
+      && element.classList.contains('is-active')
+  )).id
+  assert.equal(nextRealtimeBundleId, realtimeBundleId)
+  const realtimeCache = storedValues.get('typora-themes-prepaint:canopy')
+
   const debug = window.__canopyDebug
   debug.preset('winter-midnight')
+  assert.equal(storedValues.get('typora-themes-prepaint:canopy'), realtimeCache)
+  assert.ok(root.classList.contains('canopy-scene-instant'))
   assert.equal(debug.getScene().mode, 'night')
   assert.ok(root.classList.contains('canopy-night'))
   assert.ok(root.classList.contains('canopy-contrast-flip'))
@@ -551,11 +567,21 @@ async function main() {
   assert.equal(debug.getState().playing, true)
   assert.ok(root.classList.contains('canopy-debug-playing'))
   const previewStart = debug.getState().timestamp
+  const previewBundleId = connected().find(element => (
+    element.className.includes('canopy-season-color')
+      && element.classList.contains('is-active')
+  )).id
   fakeNow += 1000
   const previewTick = timers.find(timer => !timer.cleared && timer.delay === 250)
   assert.ok(previewTick)
   previewTick.callback()
   assert.equal(debug.getState().timestamp - previewStart, 24 * 60_000)
+  const nextPreviewBundleId = connected().find(element => (
+    element.className.includes('canopy-season-color')
+      && element.classList.contains('is-active')
+  )).id
+  assert.equal(nextPreviewBundleId, previewBundleId)
+  assert.ok(root.classList.contains('canopy-scene-instant'))
   debug.pause()
   assert.equal(debug.getState().playing, false)
   assert.equal(root.classList.contains('canopy-debug-playing'), false)
