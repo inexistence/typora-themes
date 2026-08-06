@@ -50,7 +50,7 @@ Canopy 启用后，可在 Typora 开发者工具 Console 中打开调试 HUD：
 window.__canopyDebug.show()
 ```
 
-HUD 提供日期、时刻滑杆、播放/暂停、完整一天的播放时长、恢复实时和隐藏控件。默认以 90 秒播放完整一天；隐藏 HUD 后自动播放仍会继续，适合录制演示视频。
+HUD 提供日期、时刻滑杆、播放/暂停、完整一天的播放时长、恢复实时和隐藏控件。默认以 90 秒播放完整一天；也可选择 1440 秒/天，此时现实 1 秒对应场景 1 分钟。隐藏 HUD 后自动播放仍会继续，适合录制演示视频。
 
 也可以直接使用控制台 API：
 
@@ -68,6 +68,9 @@ window.__canopyDebug.preset('winter-midnight')
 window.__canopyDebug.play({ dayDurationSeconds: 60 })
 window.__canopyDebug.pause()
 window.__canopyDebug.toggle()
+
+// 现实 1 秒推进场景 1 分钟
+window.__canopyDebug.play({ dayDurationSeconds: 1440 })
 
 // 隐藏控件但继续播放；恢复真实时间会停止自动播放
 window.__canopyDebug.hide()

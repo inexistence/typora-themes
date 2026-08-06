@@ -1200,7 +1200,7 @@
         if (!Number.isFinite(duration) || duration <= 0) {
           throw new TypeError('Canopy preview day duration must be a positive number of seconds.')
         }
-        previewDayDurationSeconds = clamp(duration, 10, 600)
+        previewDayDurationSeconds = clamp(duration, 10, 1440)
       }
       if (debugTimestamp === null) {
         debugTimestamp = Date.now()
@@ -1284,6 +1284,7 @@
         [60, '60 秒/天'],
         [90, '90 秒/天'],
         [120, '120 秒/天'],
+        [1440, '1440 秒/天（1 秒 = 1 分钟）'],
       ]
       speedOptions.forEach(([value, label]) => {
         const option = document.createElement('option')
