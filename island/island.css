@@ -78,7 +78,7 @@
 }
 
 :root {
-  --bg-color: #faf8f2;
+  --bg-color: #f7f2e1;
   --text-color: #654c36;
   --muted-text-color: #917a66;
   --md-char-color: #b7a897;
@@ -88,6 +88,9 @@
   --primary-btn-text-color: #ffffff;
   --surface-color: #fffefb;
   --surface-muted-color: #e9f5e9;
+  --blockquote-bg-color: #edf1df;
+  --table-bg-color: #eee8da;
+  --table-row-alt-color: #f3eee3;
   --highlight-color: #fef2d7;
   --highlight-text-color: #56845d;
   --secondary-color: #f7cd67;
@@ -96,6 +99,8 @@
   --code-bg-color: #2b2118;
   --code-text-color: #e8d5bc;
   --code-border-color: #3d3028;
+  --inline-code-bg-color: #efe3ca;
+  --inline-code-text-color: #8a4d3c;
   --code-cursor-color: #f7cd67;
   --code-active-line-color: rgba(247, 205, 103, 0.1);
   --selection-color: rgba(79, 159, 112, 0.24);
@@ -112,8 +117,11 @@
 
   --body-font: Nunito, "Noto Sans SC", -apple-system, "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --reading-font: "Noto Sans SC", -apple-system, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   --heading-font: var(--body-font);
   --monospace: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  --reading-line-height: 1.82;
   --content-width: 48rem;
   --content-gutter: clamp(1.625rem, 5vw, 4rem);
   --radius-medium: 1.125rem;
@@ -147,22 +155,19 @@ content {
   margin: 0 auto;
   padding: 2.25rem var(--content-gutter) 3.5rem;
   color: var(--text-color);
+  font-family: var(--reading-font);
   font-size: 1rem;
+  line-height: var(--reading-line-height);
   overflow-wrap: anywhere;
 }
 
 #write p {
-  margin: 0 0 1.3em;
+  margin: 0 0 1.2em;
   color: var(--text-color);
   font-size: 1rem;
-  line-height: 1.95;
-  letter-spacing: 0.025em;
-  text-align: justify;
-}
-
-#write p:has(code),
-#write p:has(tt) {
-  text-align: left;
+  line-height: var(--reading-line-height);
+  letter-spacing: 0;
+  text-align: start;
 }
 
 #write h1,
@@ -275,10 +280,10 @@ content {
   padding: 1.375rem 1.375rem 1.375rem 2.5rem;
   border: 0;
   border-radius: var(--radius-medium) 1.75rem 1.25rem 1.625rem;
-  background: var(--surface-muted-color);
+  background: var(--blockquote-bg-color);
   color: var(--text-color);
   font-size: 0.9375rem;
-  line-height: 1.95;
+  line-height: var(--reading-line-height);
 }
 
 #write blockquote::before {
@@ -307,7 +312,7 @@ content {
 #write li {
   margin: 0.45em 0;
   padding-left: 0.2em;
-  line-height: 1.95;
+  line-height: var(--reading-line-height);
 }
 
 #write li::marker {
@@ -414,12 +419,12 @@ content {
   box-sizing: border-box;
   width: 100%;
   margin: 1.8em 0;
-  border: 6px solid #f7f3df;
+  border: 6px solid var(--table-bg-color);
   border-radius: 20px;
   border-collapse: separate;
   border-spacing: 0;
   overflow: hidden;
-  background: #f7f3df;
+  background: var(--table-bg-color);
   color: #725d42;
   font-family: var(--body-font);
   font-size: 14px;
@@ -450,7 +455,7 @@ content {
 
 #write thead,
 #write tbody {
-  background: #f7f3df;
+  background: var(--table-bg-color);
 }
 
 #write tbody tr {
@@ -475,7 +480,7 @@ content {
 }
 
 #write tbody tr:nth-child(even) {
-  background: rgba(248, 248, 240, 0.6);
+  background: var(--table-row-alt-color);
 }
 
 #write tbody tr:last-child::after {
@@ -598,8 +603,8 @@ content {
   padding: 0.12em 0.5em;
   border: 1.5px solid transparent;
   border-radius: 999px;
-  background: #f5f0e6;
-  color: #7d623f;
+  background: var(--inline-code-bg-color);
+  color: var(--inline-code-text-color);
   font-family: inherit;
   font-size: 1rem;
   font-weight: 600;
