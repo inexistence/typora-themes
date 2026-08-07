@@ -84,10 +84,13 @@ function createElement(tagName) {
     className: '',
     classList: createClassList(),
     children: [],
+    attributes: {},
     hidden: false,
     style: createStyle(),
     isConnected: false,
-    setAttribute() {},
+    setAttribute(name, value) {
+      this.attributes[name] = String(value)
+    },
     append(...children) {
       this.children.push(...children)
       children.forEach(child => {
@@ -418,6 +421,10 @@ async function main() {
   assert.doesNotMatch(cssSource, /\.canopy-direct-light\s*{/)
   assert.match(cssSource, /\.canopy-season-color\s*{\s*z-index:\s*86;/)
   assert.match(cssSource, /\.canopy-ambient-wash\s*{\s*z-index:\s*87;/)
+  assert.match(
+    cssSource,
+    /html\.canopy-debug-hide-shadow content::after,[^}]*#canopy-video-layer\s*{\s*opacity:\s*0\s*!important;/,
+  )
   assert.doesNotMatch(cssSource, /#write,\s*#typora-source\s*{[^}]*z-index:/)
   assert.match(
     cssSource,
@@ -569,8 +576,38 @@ async function main() {
   assert.equal(connected('canopy-debug-hud').length, 1)
   const debugPlay = connected().find(element => element.className === 'canopy-debug-play')
   const debugSpeed = connected().find(element => element.className === 'canopy-debug-speed')
+  const debugLayersControl = connected().find(element => element.className === 'canopy-debug-layers')
+  const debugSeason = debugLayersControl.children.find(
+    element => element.className === 'canopy-debug-layer-season',
+  )
+  const debugAmbient = debugLayersControl.children.find(
+    element => element.className === 'canopy-debug-layer-ambient',
+  )
+  const debugShadow = debugLayersControl.children.find(
+    element => element.className === 'canopy-debug-layer-shadow',
+  )
   const minuteSpeed = debugSpeed.children.find(option => option.value === '1440')
   assert.equal(minuteSpeed.textContent, '1440 秒/天（1 秒 = 1 分钟）')
+  assert.equal(debug.getLayers().ambient, true)
+  assert.equal(debug.getLayers().season, true)
+  assert.equal(debug.getLayers().shadow, true)
+  debugAmbient.dispatch('click')
+  assert.equal(root.classList.contains('canopy-debug-hide-ambient'), true)
+  assert.equal(debugAmbient.attributes['aria-pressed'], 'false')
+  debug.setLayer('season', false)
+  assert.equal(root.classList.contains('canopy-debug-hide-season'), true)
+  assert.equal(debugSeason.attributes['aria-pressed'], 'false')
+  debug.toggleLayer('shadow')
+  assert.equal(root.classList.contains('canopy-debug-hide-shadow'), true)
+  assert.equal(debugShadow.attributes['aria-pressed'], 'false')
+  assert.equal(debug.getState().layers.ambient, false)
+  assert.equal(debug.getState().layers.season, false)
+  assert.equal(debug.getState().layers.shadow, false)
+  debug.setLayer('ambient', true)
+  debug.setLayer('season', true)
+  debug.setLayer('shadow', true)
+  assert.throws(() => debug.setLayer('moon', false), /Unknown Canopy layer/)
+  flushFrames()
   debug.play({ dayDurationSeconds: 60 })
   assert.equal(debug.getState().playing, true)
   assert.ok(root.classList.contains('canopy-debug-playing'))
@@ -607,6 +644,9 @@ async function main() {
   assert.equal(debug.getState().timestamp, Date.parse('2026-12-21T17:30:00Z'))
   debug.reset()
   assert.equal(debug.getState().timestamp, null)
+  assert.equal(debug.getLayers().ambient, true)
+  assert.equal(debug.getLayers().season, true)
+  assert.equal(debug.getLayers().shadow, true)
 
   flushFrames()
   assert.equal(connected(VIDEO_ID).length, 1)
@@ -638,6 +678,9 @@ async function main() {
   assert.equal(root.style.getPropertyValue('--canopy-text-edge-opacity'), '')
   assert.equal(root.classList.contains('canopy-night'), false)
   assert.equal(root.classList.contains('canopy-contrast-flip'), false)
+  assert.equal(root.classList.contains('canopy-debug-hide-season'), false)
+  assert.equal(root.classList.contains('canopy-debug-hide-ambient'), false)
+  assert.equal(root.classList.contains('canopy-debug-hide-shadow'), false)
   assert.equal(window.__canopyDebug, undefined)
 
   const second = factory({

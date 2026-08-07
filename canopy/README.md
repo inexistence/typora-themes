@@ -49,7 +49,7 @@ Canopy 启用后，可在 Typora 开发者工具 Console 中打开调试 HUD：
 window.__canopyDebug.show()
 ```
 
-HUD 提供日期、时刻滑杆、播放/暂停、完整一天的播放时长、恢复实时和隐藏控件。默认以 90 秒播放完整一天；也可选择 1440 秒/天，此时现实 1 秒对应场景 1 分钟。隐藏 HUD 后自动播放仍会继续，适合录制演示视频。
+HUD 提供日期、时刻滑杆、播放/暂停、完整一天的播放时长、季节色/环境光/树影开关、恢复实时和隐藏控件。默认以 90 秒播放完整一天；也可选择 1440 秒/天，此时现实 1 秒对应场景 1 分钟。隐藏 HUD 后自动播放仍会继续，适合录制演示视频。
 
 实时模式每分钟整点后更新当前光场；拖动时刻滑杆会立即显示目标场景。自动播放使用单套季节色与环境色，由浏览器动画帧调度并以最高 20 FPS 连续计算场景，在保持录制流畅度的同时为界面点击留出响应时间。它不再通过两套半透明背景交叉淡入，直射光也已移除。
 
@@ -75,9 +75,15 @@ window.__canopyDebug.toggle()
 // 现实 1 秒推进场景 1 分钟
 window.__canopyDebug.play({ dayDurationSeconds: 1440 })
 
+// 隔离光影图层；树影会同时控制静态降级图与动态视频
+window.__canopyDebug.setLayer('season', false)
+window.__canopyDebug.setLayer('ambient', false)
+window.__canopyDebug.toggleLayer('shadow')
+window.__canopyDebug.getLayers()
+
 // 隐藏控件但继续播放；恢复真实时间会停止自动播放
 window.__canopyDebug.hide()
 window.__canopyDebug.reset()
 ```
 
-调试时间只保存在当前 Canopy 实例的内存中；切换主题或重启 Typora 后自动清除。
+图层开关只改变最终合成，日期、太阳位置和时间轴仍会继续计算；重新开启时会立即显示当前调试时刻的效果。“实时”只恢复真实时间，不会重置图层。调试状态只保存在当前 Canopy 实例的内存中；切换主题或重启 Typora 后自动清除。

@@ -15,6 +15,11 @@
   const INSTANT_SCENE_CLASS = 'canopy-scene-instant'
   const STARTUP_CLASS = 'canopy-starting'
   const DEBUG_PLAYING_CLASS = 'canopy-debug-playing'
+  const DEBUG_LAYER_CLASSES = Object.freeze({
+    ambient: 'canopy-debug-hide-ambient',
+    season: 'canopy-debug-hide-season',
+    shadow: 'canopy-debug-hide-shadow',
+  })
   const DEBUG_KEY = '__canopyDebug'
   const PREPAINT_KEY = 'typora-themes-prepaint:canopy'
   const PREPAINT_VERSION = 1
@@ -971,6 +976,11 @@
     let previewDayDurationSeconds = 90
     let debugHud = null
     let debugControls = null
+    const debugLayers = {
+      ambient: true,
+      season: true,
+      shadow: true,
+    }
     let cachedPrepaintKey = ''
 
     function clockNow() {
@@ -1096,6 +1106,9 @@
       debugControls.play.setAttribute('aria-pressed', String(previewPlaying))
       debugControls.speed.value = String(previewDayDurationSeconds)
       debugControls.mode.textContent = `${scene.season} · ${scene.phase}`
+      Object.entries(debugControls.layers).forEach(([name, button]) => {
+        button.setAttribute('aria-pressed', String(debugLayers[name]))
+      })
     }
 
     function pausePreview() {
@@ -1212,10 +1225,33 @@
     function getDebugState() {
       return Object.freeze({
         dayDurationSeconds: previewDayDurationSeconds,
+        layers: getDebugLayers(),
         playing: previewPlaying,
         timestamp: debugTimestamp,
         scene: currentScene,
       })
+    }
+
+    function getDebugLayers() {
+      return Object.freeze({ ...debugLayers })
+    }
+
+    function setDebugLayer(name, enabled) {
+      if (!Object.prototype.hasOwnProperty.call(DEBUG_LAYER_CLASSES, name)) {
+        throw new TypeError(`Unknown Canopy layer: ${name}`)
+      }
+      debugLayers[name] = Boolean(enabled)
+      beginInstantScene()
+      root.classList.toggle(DEBUG_LAYER_CLASSES[name], !debugLayers[name])
+      updateDebugHud()
+      return getDebugLayers()
+    }
+
+    function toggleDebugLayer(name) {
+      if (!Object.prototype.hasOwnProperty.call(DEBUG_LAYER_CLASSES, name)) {
+        throw new TypeError(`Unknown Canopy layer: ${name}`)
+      }
+      return setDebugLayer(name, !debugLayers[name])
     }
 
     function createDebugButton(label, className) {
@@ -1281,6 +1317,21 @@
 
       const realtime = createDebugButton('实时', 'canopy-debug-realtime')
       const hide = createDebugButton('隐藏', 'canopy-debug-hide')
+      const layers = document.createElement('div')
+      layers.className = 'canopy-debug-layers'
+      layers.setAttribute('role', 'group')
+      layers.setAttribute('aria-label', '光影图层')
+      const layerButtons = {
+        season: createDebugButton('季节', 'canopy-debug-layer-season'),
+        ambient: createDebugButton('环境', 'canopy-debug-layer-ambient'),
+        shadow: createDebugButton('树影', 'canopy-debug-layer-shadow'),
+      }
+      Object.entries(layerButtons).forEach(([name, button]) => {
+        button.setAttribute('aria-label', `${button.textContent}图层`)
+        button.setAttribute('aria-pressed', String(debugLayers[name]))
+        button.addEventListener('click', () => toggleDebugLayer(name))
+        layers.append(button)
+      })
 
       slider.addEventListener('input', () => {
         const scene = currentScene ?? sceneAt(clockNow())
@@ -1305,10 +1356,20 @@
         hud.hidden = true
       })
 
-      hud.append(date, slider, time, mode, play, speed, realtime, hide)
+      hud.append(date, slider, time, mode, play, speed, layers, realtime, hide)
       document.body.append(hud)
       debugHud = hud
-      debugControls = { date, hide, mode, play, realtime, slider, speed, time }
+      debugControls = {
+        date,
+        hide,
+        layers: layerButtons,
+        mode,
+        play,
+        realtime,
+        slider,
+        speed,
+        time,
+      }
       updateDebugHud()
       return hud
     }
@@ -1320,6 +1381,7 @@
     }
 
     const debugApi = Object.freeze({
+      getLayers: getDebugLayers,
       getScene: () => currentScene,
       getState: getDebugState,
       hide: hideDebugHud,
@@ -1332,10 +1394,12 @@
         return setDebugTime(DEBUG_PRESETS[name])
       },
       reset: resetDebugTime,
+      setLayer: setDebugLayer,
       setTime: setDebugTime,
       show: showDebugHud,
       stepMinutes: stepDebugMinutes,
       toggle: togglePreview,
+      toggleLayer: toggleDebugLayer,
     })
     window[DEBUG_KEY] = debugApi
 
@@ -1582,6 +1646,7 @@
           INSTANT_SCENE_CLASS,
           STARTUP_CLASS,
           DEBUG_PLAYING_CLASS,
+          ...Object.values(DEBUG_LAYER_CLASSES),
         )
         if (window[DEBUG_KEY] === debugApi) {
           delete window[DEBUG_KEY]
