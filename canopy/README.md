@@ -19,7 +19,7 @@ Canopy 是一个概念性 Typora 动态主题：四季天光、日出日落与�
 ## 文件
 
 - `canopy.css`：完整 Typora 排版、静态降级和 CSS 光场样式。
-- `canopy/canopy-module.js`：上海日期/太阳模型、双场景交叉淡化和视频生命周期。
+- `canopy/canopy-module.js`：上海日期/太阳模型、单套季节与环境光场、语义色更新和视频生命周期。
 - `canopy/assets/leaves.mp4`：临时动态树影素材。
 - `canopy/assets/leaves-still.jpg`：减少动态或增强模块不可用时的静态树影。
 - `canopy-test.md`：昼夜、树影与完整 Markdown 排版验证文档。

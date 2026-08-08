@@ -1968,8 +1968,7 @@ footer,
     flex: 1;
   }
 
-  .canopy-debug-mode,
-  .canopy-debug-hide {
+  .canopy-debug-mode {
     display: none;
   }
 

@@ -299,6 +299,7 @@ find . -name '*-module.js' -exec node --check {} \;
 node tests/runtime-manager.test.js
 node tests/sunlit-module.test.js
 node tests/canopy-module.test.js
+node tests/dayroom-demo.test.js
 ./tests/theme-scaffold.test.sh
 ./tests/install-macos-smoke.sh
 ./tests/config-driven-installer.test.sh

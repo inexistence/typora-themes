@@ -425,6 +425,11 @@ async function main() {
     cssSource,
     /html\.canopy-debug-hide-shadow content::after,[^}]*#canopy-video-layer\s*{\s*opacity:\s*0\s*!important;/,
   )
+  assert.doesNotMatch(
+    cssSource,
+    /[^{}]*\.canopy-debug-hide[^{}]*\{[^{}]*display:\s*none\s*;/,
+    'the narrow debug HUD must retain its hide control',
+  )
   assert.doesNotMatch(cssSource, /#write,\s*#typora-source\s*{[^}]*z-index:/)
   assert.match(
     cssSource,
